@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bar Chart Demo</title>
+    <link href="./vizart-basic.css" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+    <script src="http://chancejs.com/chance.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/lodash/4.17.4/lodash.min.js"></script>
+    <script src="./vizart-basic.standalone.js" type="text/javascript"></script>
+    <style>
+        html,
+        body {
+            height: 100%;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="dropdown" style="position: fixed; top: 10px; left: 10px;">
+    <button  class="btn btn-info dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+        Stack
+        <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+        <li id="group"><a href="#">Group</a></li>
+        <li id="zero"><a href="#">Stack: Zero</a></li>
+        <li id="expand"><a href="#">Stack: Expand</a></li>
+    </ul>
+</div>
+
+
+<div id="chart" style="width: 100%; height: 800px"></div>
+
+<script>
+    $(document).ready(function () {
+        var options = {
+            data: {
+                s: { name: 'dep', type: 'string', accessor: 'ms'},
+                x:
+                    { name: 'name', type: 'string', accessor: 'mx'}
+                ,
+                y: [
+                    { name: 'performance', type: 'number', accessor: 'my'}
+                ],
+            },
+
+            plots: {
+                levels: 0,				//How many levels or inner circles should there be drawn
+                maxValue: 0, 			//What is the value that the biggest circle will represent
+                labelFactor: 1.15, 	//How much farther than the radius of the outer circle should the labels be placed
+                wrapWidth: 60, 		//The number of pixels after which a label needs to be given a new line
+                opacityArea: 0.35, 	//The opacity of the area of the blob
+                dotRadius: 4, 			//The size of the colored circles of each blog
+                opacityCircles: 0.1, 	//The opacity of the circles of each blob
+                strokeWidth: 2, 		//The width of the stroke around each blob
+                innerRadiusRatio: 0.4,
+                showDots: false,
+                sortArea: true, // show smallest area on top
+                stackLayout: false, // stack areas
+                stackMethod: 'expand',
+                isArea: true	//If true the area and stroke will follow a round path (cardinal-closed),
+            }
+        };
+
+        var fakeData = [];
+
+        var dep = ['hr', 'r&d', 'financial', 'scales'];
+
+        _.each(dep, function(d, i){
+            for (var i = 1; i < 21; i++) {
+                fakeData.push({
+                    ms: d,
+                    mx: i + '',
+                    my: chance.floating({min: 0, max: 0.01})
+                })
+            }
+        });
+
+
+
+        var chart = new VizArtBasic.Corona('#chart', options);
+        chart.render(fakeData);
+
+        var options2 = chart.options();
+
+        // change color
+        $('#group').click(function(){
+            options2.plots.stackLayout = false;
+            chart.options(options2);
+            chart.update();
+        });
+
+        $('#zero').click(function(){
+            options2.plots.stackLayout = true;
+            options2.plots.stackMethod = 'zero';
+            chart.options(options2);
+            chart.update();
+
+        });
+
+        $('#expand').click(function(){
+            options2.plots.stackLayout = true;
+            options2.plots.stackMethod = 'expand';
+            chart.options(options2);
+            chart.update();
+        });
+
+    });
+</script>
+</body>
+</html>

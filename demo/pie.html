@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pie Chart Demo</title>
+    <link href="./vizart-basic.css" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+    <script src="http://chancejs.com/chance.min.js"></script>
+    <script src="./vizart-basic.standalone.js" type="text/javascript"></script>
+    <style>
+        html,
+        body {
+            height: 100%;
+        }
+
+    </style>
+</head>
+<body>
+
+<div id="update" class="btn btn-info" style="position: fixed;top: 10px; left: 70px">Update</div>
+<div class="dropdown" style="position: fixed; top: 10px; left: 160px;">
+    <button  class="btn btn-info dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+        Color
+        <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+        <li id="color1"><a href="#">BuGn</a></li>
+        <li id="color2"><a href="#">Blues</a></li>
+        <li id="color3"><a href="#">Warm</a></li>
+        <li id="color4"><a href="#">Cubehelix</a></li>
+        <li id="set1"><a href="#">color 2</a></li>
+        <li id="set2"><a href="#">color 3</a></li>
+        <li id="set3"><a href="#">color 5</a></li>
+        <li id="set4"><a href="#">color 9</a></li>
+    </ul>
+</div>
+
+<div class="dropdown2" style="position: fixed; top: 10px; left: 250px;">
+    <button  class="btn btn-info dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+        Sort
+        <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+        <li id="a1"><a href="#">dimension asc</a></li>
+        <li id="a2"><a href="#">dim desc</a></li>
+        <li id="a3"><a href="#">metric asc</a></li>
+        <li id="a4"><a href="#">metric desc</a></li>
+    </ul>
+</div>
+<div id="pie" style="width: 100%; height: 800px"></div>
+
+<script>
+    $(document).ready(function () {
+        var options = {
+            data: {
+                x:
+                    { name: 'name', type: 'string', accessor: 'x'}
+                ,
+                y: [
+                    { name: 'performance', type: 'number', accessor: 'y'}
+                ],
+            },
+
+            slice: {
+                label : 'end'
+            },
+
+            plots: {
+                isDonut: true,
+                innerRadiusRatio: 0.4
+            }
+
+        };
+
+        var fakeData = [];
+
+        for (var i = 0; i < 50; i++) {
+            fakeData.push({
+                x: chance.name(),
+                y: chance.floating({min: 1, max: 10})
+            })
+        }
+
+        var pieChart = new VizArtBasic.Pie('#pie', options);
+        pieChart.render(fakeData);
+
+        // live update button is clicked
+        $('#update').click(function(){
+            var ranIndex = chance.integer({min:0, max:49});
+            fakeData[ranIndex].y = chance.floating({min: 1, max: 10});
+            pieChart.data(fakeData);
+            pieChart.update();
+        });
+
+        var options2 = pieChart.options();
+
+        // change color
+        $('#color1').click(function(){
+            options2.color.scheme = "BuGn";
+            pieChart.transitionColor(options2.color);
+        });
+
+        $('#color2').click(function(){
+            options2.color.scheme = "Blues";
+            pieChart.transitionColor(options2.color)
+        });
+
+        $('#color3').click(function(){
+            options2.color.scheme = "Warm";
+            pieChart.transitionColor(options2.color)
+        });
+
+        $('#color4').click(function(){
+            options2.color.scheme = "Cubehelix";
+            pieChart.transitionColor(options2.color);
+        });
+
+        $('#set1').click(function(){
+            options2.color.scheme = [
+                '#deebf7',
+                '#3182bd'
+            ];
+            pieChart.transitionColor(options2.color);
+        });
+
+
+        $('#set2').click(function(){
+            options2.color.scheme = [
+                '#deebf7',
+                '#9ecae1',
+                '#3182bd'
+            ];
+            pieChart.transitionColor(options2.color);
+        });
+
+
+        $('#set3').click(function(){
+            options2.color.scheme = [
+                '#eff3ff',
+                '#bdd7e7',
+                '#6baed6',
+                '#3182bd',
+                '#08519c',
+            ];
+            pieChart.transitionColor(options2.color);
+        });
+
+
+
+
+        $('#set4').click(function(){
+            options2.color.scheme = [
+                '#f7fbff',
+                '#deebf7',
+                '#c6dbef',
+                '#9ecae1',
+                '#6baed6',
+                '#4292c6',
+                '#2171b5',
+                '#08519c',
+                '#08306b'
+            ];
+            barChart.transitionColor(options2.color);
+        });
+
+
+        $('#a1').click(function(){
+            pieChart.sort('x', 'asc');
+        })
+        $('#a2').click(function(){
+            pieChart.sort('x', 'desc');
+        });
+        $('#a3').click(function(){
+            pieChart.sort('y', 'asc');
+        });
+        $('#a4').click(function(){
+            pieChart.sort('y', 'desc');
+        });
+
+    });
+</script>
+</body>
+</html>

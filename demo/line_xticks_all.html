@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Line Chart Demo</title>
+    <link href="./vizart-basic.css" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+    <script src="http://chancejs.com/chance.min.js"></script>
+    <script src="./vizart-basic.standalone.js" type="text/javascript"></script>
+    <style>
+        html,
+        body {
+            height: 100%;
+        }
+
+    </style>
+
+</head>
+<body>
+
+<div id="update" class="btn btn-info" style="position: fixed;top: 10px; left: 70px">Update</div>
+<div class="dropdown" style="position: fixed; top: 10px; left: 160px;">
+    <button  class="btn btn-info dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+        Color
+        <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+        <li id="color1"><a href="#">BuGn</a></li>
+        <li id="color2"><a href="#">Blues</a></li>
+        <li id="color3"><a href="#">Warm</a></li>
+        <li id="color4"><a href="#">Cubehelix</a></li>
+    </ul>
+</div>
+<div id="bar" style="width: 100%; height: 800px"></div>
+
+<script>
+    $(document).ready(function () {
+        var options = {
+            data: {
+                x:  { name: 'age', type: 'number', accessor: 'x'}
+                ,
+                y: [
+                    { name: 'performance', type: 'number', accessor: 'y'}
+                ],
+            },
+            xAxis: {
+                labelAngle : 0,
+                ticks : 100
+            },
+        };
+
+        var fakeData = [];
+        var inc = 0;
+        for (var i = 1; i < 50; i++) {
+            inc = inc + chance.floating({min: 0.01, max: 0.03});
+            fakeData.push({
+                x: inc,
+                y: chance.integer({min: 30, max: 90})
+            })
+        }
+
+        var chart = new VizArtBasic.Line('#bar', options);
+        chart.render(fakeData);
+
+        // live update button is clicked
+        $('#update').click(function(){
+            var ranIndex = chance.integer({min:0, max:49});
+            fakeData[ranIndex].dimensionY = chance.integer({min: 30, max: 90});
+            chart.data(fakeData);
+            chart.update();
+        });
+
+        // change color
+        $('#color1').click(function(){
+            options.color.name = "BuGn";
+            chart.transitionColor(options.color);
+        });
+
+        $('#color2').click(function(){
+            options.color.name = "Blues";
+            chart.transitionColor(options.color)
+        });
+
+        $('#color3').click(function(){
+            options.color.name = "Warm";
+            chart.transitionColor(options.color)
+        });
+
+        $('#color4').click(function(){
+            options.color.name = "Cubehelix";
+            chart.transitionColor(options.color);
+        });
+
+
+
+    });
+</script>
+</body>
+</html>
