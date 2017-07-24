@@ -26,7 +26,7 @@ const _bar = new Bar(_domId, _opt)....
 1. Clone repository
 2. Run commands
 ```
-npm install         //i nstall dependencies
+npm install         // install dependencies
 npm run dev         // view demos in web browser at localhost:3005
 npm run build       // build
 npm run test        // run tests only
