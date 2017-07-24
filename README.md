@@ -57,9 +57,25 @@ npm run test        // run tests only
 npm run test:cover  // run tests and view coverage report
 ```
 
+## API
+
+### Bar
+[<img alt="Bar" src="https://raw.githubusercontent.com/vizartjs/vizartjs.github.io/img/charts/bar.jpg" width="250" height="250">](https://vizartjs.github.io/bar.html)
+### Area
+### Line
+### Scatter
+### Pie
+### Stacked Area
+### Stream
+### Grouped Bar
+### Multi-Line
+### Corona
+### 
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
+
 
 
 
