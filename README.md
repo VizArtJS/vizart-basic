@@ -37,11 +37,11 @@ npm run dev
 ```
 npm run build
 ```
-5. run test coverage
+5. run tests and view coverage report
 ```
 npm run test:cover
 ```
-6. run test only
+6. run tests only
 
 ```
 npm run test
