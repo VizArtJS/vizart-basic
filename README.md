@@ -61,6 +61,30 @@ npm run test:cover  // run tests and view coverage report
 
 ### Bar
 [<img alt="Bar" src="https://github.com/vizartjs/vizartjs.github.io/blob/master/img/charts/bar.jpg">](https://vizartjs.github.io/bar.html)
+```javascript
+import { Bar } from 'vizart-basic';
+import 'vizart-basic/dist/vizart-basic.css';
+
+const options = {
+	chart: {
+		height: 420,
+		margin: { left: 30, right: 30, top: 10, bottom: 30 }
+	},
+
+	data: {
+		x: { accessor: 'age', type: 'number', name: 'Age' },
+		y: [ { accessor: 'income', type: 'number', name: 'Monthly Income' } ]
+	},
+};
+
+const fakeData = [
+	{ age: 19, income: 9 }
+]
+
+const _chart = new Bar('#chart', options);
+_chart.render(fakeData);
+```
+
 ### Area
 ### Line
 ### Scatter
