@@ -23,12 +23,12 @@ const _bar = new Bar(_domId, _opt)....
 ```
 
 ## Development
-1. clone repository
-2.
+1. Clone repository
+2. Install dependencies
 ```
 npm install
 ```
-3. view demos in web browser at localhost:3005
+3. View demos in web browser at localhost:3005
 ```
 npm run dev
 ```
