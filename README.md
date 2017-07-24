@@ -26,13 +26,12 @@ const _bar = new Bar(_domId, _opt)....
 1. Clone repository
 2. Run commands
 ```
-npm install //Install dependencies
-npm run dev //View demos in web browser at localhost:3005
-npm run build // build
-npm run test // run tests only
-npm run test:cover //run tests and view coverage report
+npm install         //i nstall dependencies
+npm run dev         // view demos in web browser at localhost:3005
+npm run build       // build
+npm run test        // run tests only
+npm run test:cover  // run tests and view coverage report
 ```
-
 
 ## License
 
