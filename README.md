@@ -60,6 +60,16 @@ npm run test:cover  // run tests and view coverage report
 ## API
 
 * [Bar](#bar)
+* [Area](#area)
+* [Line](#line)
+* [Pie](#pie)
+* [Scatter](#scatter)
+* [Corona](#corona)
+* [Stacked Area](#stacked-area)
+* [Stream](#stream)
+* [Grouped Bar](#grouped-bar)
+* [Multi Line](#multi-line)
+
 
 ### Bar
 [<img alt="Bar" src="https://github.com/vizartjs/vizartjs.github.io/blob/master/img/charts/bar.jpg">](https://vizartjs.github.io/bar.html)
