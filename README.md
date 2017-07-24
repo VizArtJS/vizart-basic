@@ -60,7 +60,7 @@ npm run test:cover  // run tests and view coverage report
 ## API
 
 ### Bar
-[[https://github.com/vizartjs/vizartjs.github.io/blob/master/img/charts/bar.jpg]](https://vizartjs.github.io/bar.html)
+[<img alt="Circular Sector Centroids" src="https://raw.githubusercontent.com/d3/d3-shape/master/img/centroid-circular-sector.png" width="250" height="250">](https://vizartjs.github.io/bar.html)
 ### Area
 ### Line
 ### Scatter
