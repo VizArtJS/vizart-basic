@@ -60,7 +60,7 @@ npm run test:cover  // run tests and view coverage report
 ## API
 
 ### Bar
-[<img alt="Bar" src="https://raw.githubusercontent.com/vizartjs/vizartjs.github.io/img/charts/bar.jpg" width="250" height="250">](https://vizartjs.github.io/bar.html)
+[<img alt="Bar" src="https://github.com/vizartjs/vizartjs.github.io/img/charts/bar.jpg" width="250" height="250">](https://vizartjs.github.io/bar.html)
 ### Area
 ### Line
 ### Scatter
