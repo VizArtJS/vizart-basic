@@ -1,7 +1,7 @@
 # vizart-basic
 
 * [Demo](https://vizartjs.github.io/demo.html) quick reference with source code
-* [Documentation](https://github.com/VizArtJS/vizart-basic/wiki)
+* [Documentation](https://github.com/VizArtJS/vizart-basic/wiki) for API and options
 
 
 
