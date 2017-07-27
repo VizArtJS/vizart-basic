@@ -1,6 +1,6 @@
 {
   "name": "vizart-basic",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "VizArt: Basic Charts",
   "main": "dist/vizart-basic.js",
   "module": "dist/vizart-basic.mjs",
@@ -35,7 +35,7 @@
     "d3-time-format": "^2.0.5",
     "d3-transition": "^1.1.0",
     "lodash-es": "^4.17.4",
-    "vizart-core": "^0.6.0"
+    "vizart-core": "^0.6.1"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
@@ -54,7 +54,7 @@
     "rollup-plugin-livereload": "^0.4.0",
     "rollup-plugin-local-resolve": "^1.0.7",
     "rollup-plugin-node-resolve": "^3.0.0",
-    "rollup-plugin-postcss": "^0.5.3",
+    "rollup-plugin-postcss": "^0.5.4",
     "rollup-plugin-serve": "^0.4.0",
     "rollup-watch": "^4.3.1"
   },
