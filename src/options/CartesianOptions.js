@@ -4,7 +4,7 @@ const CartesianOptions = {
     color: DefaultSequentialColor,
     chart: {
         margin: {
-            left: 30,
+            left: 60,
             bottom: 50,
             right: 10,
             top: 20

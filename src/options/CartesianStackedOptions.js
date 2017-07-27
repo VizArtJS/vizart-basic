@@ -1,6 +1,14 @@
 import { FieldType, DefaultCategoricalColor } from 'vizart-core';
 
 const CartesianStackedOptions = {
+    chart: {
+        margin: {
+            left: 60,
+            bottom: 50,
+            right: 10,
+            top: 20
+        }
+    },
     color: DefaultCategoricalColor,
     ordering: {
         accessor: null,
