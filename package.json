@@ -35,7 +35,7 @@
     "d3-time-format": "^2.0.5",
     "d3-transition": "^1.1.0",
     "lodash-es": "^4.17.4",
-    "vizart-core": "^0.6.1"
+    "vizart-core": "^0.6.3"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
@@ -46,7 +46,7 @@
     "babelrc-rollup": "^3.0.0",
     "eslint": "^4.3.0",
     "istanbul": "^1.1.0-alpha.1",
-    "mocha": "^3.4.2",
+    "mocha": "^3.5.0",
     "rollup": "^0.45.2",
     "rollup-plugin-babel": "^2.7.1",
     "rollup-plugin-commonjs": "^8.0.2",
