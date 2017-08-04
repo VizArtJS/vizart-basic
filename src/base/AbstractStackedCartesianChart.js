@@ -1,7 +1,8 @@
-import AbstractCartesianChart from './AbstractCartesianChart';
 import { check, mergeBase } from 'vizart-core';
 import has from 'lodash-es/has';
-import { prepareCartesianStacked, refreshCartesianStacked } from '../data/index';
+
+import AbstractCartesianChart from './AbstractCartesianChart';
+import { prepareCartesianStacked } from '../data';
 
 class AbstractStackedCartesianChart extends AbstractCartesianChart {
     constructor(canvasId, _userOptions) {

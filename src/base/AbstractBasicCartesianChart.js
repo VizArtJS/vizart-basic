@@ -1,13 +1,13 @@
-import AbstractCartesianChart from './AbstractCartesianChart';
 import {
     makeColorScale,
     check
 } from 'vizart-core';
 
+import AbstractCartesianChart from './AbstractCartesianChart';
 import {
     prepareCartesian,
     refreshCartesian,
-} from '../data/index';
+} from '../data';
 
 class AbstractBasicCartesianChart extends AbstractCartesianChart {
     constructor(canvasId, _userOptions) {
