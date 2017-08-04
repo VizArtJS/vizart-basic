@@ -1,13 +1,13 @@
 import {
     interpolateCurve,
-    LinearGradient
+    uuid
 } from 'vizart-core';
 import { easeCubicOut } from 'd3-ease';
 import { area, line } from 'd3-shape';
 
-import { AbstractBasicCartesianChartWithAxes } from '../base';
-import createCartesianOpt from '../options/createCartesianOpt';
-
+import { AbstractBasicCartesianChartWithAxes } from '../../base';
+import createCartesianOpt from '../../options/createCartesianOpt';
+import LinearGradient from './LinearGradient';
 
 const AreaOpt = {
     chart: {
@@ -29,7 +29,6 @@ class Area extends AbstractBasicCartesianChartWithAxes {
 
         this.pathLayer;
         this.nodeLayer;
-        this.voronoiLayer;
         this._curve;
         this._baseLine;
         this.linearGradent = new LinearGradient(this._options.color.scheme);
@@ -43,7 +42,6 @@ class Area extends AbstractBasicCartesianChartWithAxes {
 
         this.pathLayer = this._svg.append('g').attr('class', 'series-layer');
         this.nodeLayer = this._svg.append('g').attr('class', 'node-layer');
-        this.voronoiLayer = this._svg.append('g').attr('class', 'voronoi-layer');
 
         if (this._options.plots.drawArea === true) {
             this._curve = area()
