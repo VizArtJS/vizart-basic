@@ -4,12 +4,10 @@ import { format } from 'd3-format'
 import isString from 'lodash-es/isString';
 import isNumber from 'lodash-es/isNumber';
 
-import {
-    rotateXTicks,
-    cnTimeFormat,
-    FieldType
-} from 'vizart-core';
+import { FieldType } from 'vizart-core';
 
+import cnTimeFormat from './cn-time-format';
+import rotateXTicks from './rotete-ticks';
 
 const isTickDiv = function(_data, _units) {
     return (_data.length - 1) % _units == 0;
