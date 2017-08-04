@@ -1,10 +1,10 @@
-import { AbstractStackedCartesianChartWithAxes } from '../base';
 import { check } from 'vizart-core';
-import { Stacks } from '../data';
-import { prepareCartesianStacked } from '../data';
 import { min } from 'd3-array';
 import { area, curveCardinal } from 'd3-shape';
-import createCartesianStackedOpt from '../options/createCartesianStackedOpt';
+
+import { AbstractStackedCartesianChartWithAxes } from '../../base';
+import { Stacks, prepareCartesianStacked } from '../../data';
+import createCartesianStackedOpt from '../../options/createCartesianStackedOpt';
 
 
 const DefaultOptions = {

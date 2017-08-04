@@ -1,8 +1,8 @@
-import { interpolateCurve } from 'vizart-core';
 import { area } from 'd3-shape';
 
 import { AbstractStackedCartesianChartWithAxes } from '../../base';
 import createCartesianStackedOpt from '../../options/createCartesianStackedOpt';
+import interpolateCurve from '../../util/curve';
 
 import {
     StackedOptions,

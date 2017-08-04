@@ -1,12 +1,10 @@
-import {
-    interpolateCurve,
-    uuid
-} from 'vizart-core';
+import { uuid } from 'vizart-core';
 import { easeCubicOut } from 'd3-ease';
 import { area, line } from 'd3-shape';
 
 import { AbstractBasicCartesianChartWithAxes } from '../../base';
 import createCartesianOpt from '../../options/createCartesianOpt';
+import interpolateCurve from '../../util/curve';
 import LinearGradient from './LinearGradient';
 
 const AreaOpt = {

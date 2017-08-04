@@ -1,9 +1,10 @@
-import { AbstractStackedCartesianChartWithAxes } from '../base';
-import { interpolateCurve } from 'vizart-core';
 import { transition } from 'd3-transition';
 import { easeCubicOut } from 'd3-ease';
 import { line } from 'd3-shape';
-import createCartesianStackedOpt from '../options/createCartesianStackedOpt';
+
+import { AbstractStackedCartesianChartWithAxes } from '../../base';
+import createCartesianStackedOpt from '../../options/createCartesianStackedOpt';
+import interpolateCurve from '../../util/curve';
 
 const DefaultOptions = {
     chart: {
@@ -15,6 +16,7 @@ const DefaultOptions = {
         dotRadius: 4
     }
 };
+
 class MultiLine extends AbstractStackedCartesianChartWithAxes {
     constructor(canvasId, _userOptions) {
         super(canvasId, _userOptions);

@@ -1,0 +1,1 @@
+export { default as interpolateCurve } from './curve';

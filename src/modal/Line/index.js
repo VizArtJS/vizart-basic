@@ -1,5 +1,5 @@
-import Area from './Area';
-import createCartesianOpt from '../options/createCartesianOpt';
+import Area from '../Area';
+import createCartesianOpt from '../../options/createCartesianOpt';
 
 const DefaultOptions = {
     chart: {

@@ -1,9 +1,9 @@
 import { FieldType, mergeOptions } from 'vizart-core';
 
-import { AbstractBasicCartesianChartWithAxes } from '../base';
-import { refreshCartesian } from '../data';
-import getSortDef from '../data/helper/get-sort-def';
-import createCartesianOpt from '../options/createCartesianOpt';
+import { AbstractBasicCartesianChartWithAxes } from '../../base';
+import { refreshCartesian } from '../../data';
+import getSortDef from '../../data/helper/get-sort-def';
+import createCartesianOpt from '../../options/createCartesianOpt';
 
 const BarOpt = {
     chart: { type: 'bar_horizontal'}
