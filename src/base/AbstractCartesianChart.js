@@ -1,9 +1,7 @@
 import {
     AbstractChart,
     mergeBase,
-    GRADIENT,
-    DISTINCT,
-    CATEGORICAL,
+    Globals,
     uuid
 } from 'vizart-core';
 import TooltipTpl from './tooltip-tpl';
@@ -33,10 +31,10 @@ class AbstractCartesianChart extends AbstractChart {
             }
 
             switch (this._options.color.type){
-                case CATEGORICAL:
+                case Globals.ColorType.CATEGORICAL:
                     return this._colorScale(this._getDimensionVal(d));
-                case GRADIENT:
-                case DISTINCT:
+                case Globals.ColorType.GRADIENT:
+                case Globals.ColorType.DISTINCT:
                     return this._colorScale(this._getMetricVal(d));
                 default:
                     return this._colorScale(this._getMetricVal(d));

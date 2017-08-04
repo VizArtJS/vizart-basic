@@ -1,4 +1,4 @@
-import { FieldType, mergeOptions } from 'vizart-core';
+import { Globals, mergeOptions } from 'vizart-core';
 
 import { AbstractBasicCartesianChartWithAxes } from '../../base';
 import { refreshCartesian } from '../../data';
@@ -111,7 +111,7 @@ class Bar extends AbstractBasicCartesianChartWithAxes {
         let _accessor = _field.accessor;
 
         switch (_field.type) {
-            case FieldType.STRING:
+            case Globals.DataType.STRING:
                 this._svg.selectAll('.bar')
                     .sort((a, b) => {
                         return (direction === 'asc')

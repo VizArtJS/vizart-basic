@@ -1,4 +1,4 @@
-import { FieldType, DefaultCategoricalColor } from 'vizart-core';
+import { Globals, DefaultCategoricalColor } from 'vizart-core';
 
 const CartesianStackedOptions = {
     chart: {
@@ -60,18 +60,18 @@ const CartesianStackedOptions = {
     data: {
         s: {
             accessor: null,
-            type:  FieldType.STRING,
+            type:  Globals.DataType.STRING,
             formatter: function () { }
         },
         x: {
             accessor: null,
-            type:  FieldType.NUMBER,
+            type:  Globals.DataType.STRING,
             formatter: ()=> { }
         },
         y: [
             {
                 accessor: null,
-                type:  FieldType.NUMBER,
+                type:  Globals.DataType.NUMBER,
                 formatter: function () { },
                 yAxis: 0
             }

@@ -4,7 +4,7 @@ import { format } from 'd3-format'
 import isString from 'lodash-es/isString';
 import isNumber from 'lodash-es/isNumber';
 
-import { FieldType } from 'vizart-core';
+import { Globals } from 'vizart-core';
 
 import cnTimeFormat from './cn-time-format';
 import rotateXTicks from './rotete-ticks';
@@ -116,7 +116,7 @@ class Axis {
         if (isBar === true) {
             this.updateTickValues(_data);
         } else {
-            if (dimension.type === FieldType.DATE) {
+            if (dimension.type === Globals.DataType.DATE) {
                 if (this._options.xAxis.ticks > 0) { //follow user specification
                     this._xAxis.ticks (Math.min(_data.length, this._options.xAxis.ticks));
                 } else if (_data.length > 31) {
@@ -124,7 +124,7 @@ class Axis {
                 } else {
                     this._xAxis.ticks (_data.length);
                 }
-            } else if (dimension.type === FieldType.NUMBER) {
+            } else if (dimension.type === Globals.DataType.NUMBER) {
                 if (this._options.ordering.accessor !== this._options.data.y[0].accessor) {
                     if (this._options.xAxis.ticks > 0) { //follow user specification
                         this._xAxis.ticks (Math.min(_data.length, this._options.xAxis.ticks));
@@ -134,7 +134,7 @@ class Axis {
                 } else {
                     this.updateTickValues(_data);
                 }
-            } else if (dimension.type === FieldType.STRING) {
+            } else if (dimension.type === Globals.DataType.STRING) {
                 this.updateTickValues(_data);
             }
         }
@@ -151,7 +151,7 @@ class Axis {
         if (isString(this._options.xAxis.tickFormat)
             && this._options.xAxis.tickFormat.length > 0) {
             this._xAxis.tickFormat(format(this._options.xAxis.tickFormat));
-        } else if (dimension.type === FieldType.DATE) {
+        } else if (dimension.type === Globals.DataType.DATE) {
             if (this._options.locale === 'zh') {
                 this._xAxis.tickFormat(cnTimeFormat);
             } else {

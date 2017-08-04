@@ -1,4 +1,4 @@
-import { FieldType, DefaultSequentialColor } from 'vizart-core';
+import { Globals, DefaultSequentialColor } from 'vizart-core';
 
 const CartesianOptions = {
     color: DefaultSequentialColor,
@@ -48,13 +48,13 @@ const CartesianOptions = {
     data: {
         x: {
             accessor: null,
-            type:  FieldType.NUMBER,
+            type:  Globals.DataType.NUMBER,
             formatter: null,
         },
         y: [
             {
                 accessor: null,
-                type:  FieldType.NUMBER,
+                type:  Globals.DataType.NUMBER,
                 formatter:  null,
                 yAxis: 0,
                 tooltip: {

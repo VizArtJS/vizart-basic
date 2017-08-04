@@ -1,4 +1,4 @@
-import { FieldType } from 'vizart-core';
+import { Globals } from 'vizart-core';
 import { AbstractBasicCartesianChartWithAxes } from '../../base';
 import createCartesianOpt from '../../options/createCartesianOpt';
 import './Scatter.css';
@@ -27,7 +27,7 @@ const ScatterOptions = {
     data: {
         z: {
             accessor: null,
-            type:  FieldType.NUMBER,
+            type:  Globals.DataType.NUMBER,
             formatter:  null,
         },
     }

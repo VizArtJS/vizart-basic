@@ -1,4 +1,4 @@
-import { FieldType } from 'vizart-core';
+import { Globals } from 'vizart-core';
 
 import {
     scaleLinear,
@@ -41,7 +41,7 @@ const dimensionScale = (_data, _options)=> {
     }
 
     switch (_dim.type) {
-        case FieldType.DATE:
+        case Globals.DataType.DATE:
             _dim.values = uniq(map(_data, _dim.accessor));
 
             let _range = extent(_data, function (d) { return d[_dim.accessor];  });
@@ -56,7 +56,7 @@ const dimensionScale = (_data, _options)=> {
 
             break;
 
-        case FieldType.NUMBER:
+        case Globals.DataType.NUMBER:
             // todo number format
             _dim.values = uniq(map(_data, _dim.accessor));
 
@@ -70,7 +70,7 @@ const dimensionScale = (_data, _options)=> {
                 .range([0, _options.chart.innerWidth]);
 
             break;
-        case FieldType.STRING:
+        case Globals.DataType.STRING:
             _dim.values = uniq(map(_data, _dim.accessor));
             _dim.scale = scalePoint()
                 .domain(_dim.values)

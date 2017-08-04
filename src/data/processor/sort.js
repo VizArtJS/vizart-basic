@@ -1,4 +1,4 @@
-import { FieldType, check } from 'vizart-core'
+import { Globals, check } from 'vizart-core'
 import has from 'lodash-es/has';
 import getSortDef from '../helper/get-sort-def';
 
@@ -9,7 +9,7 @@ const sortData = (_data, _options)=> {
         let _accessor = _field.accessor;
 
         switch (_field.type) {
-            case FieldType.STRING:
+            case Globals.DataType.STRING:
                 _data.sort(function (a, b) {
                     return (_options.ordering.direction === 'asc')
                         ? a[_accessor].localeCompare(b[_accessor])
