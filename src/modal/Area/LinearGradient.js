@@ -1,4 +1,4 @@
-import {Duration, uuid, linearStops } from 'vizart-core';
+import { uuid, linearStops } from 'vizart-core';
 
 class LinearGradient {
     constructor(scheme) {
@@ -47,8 +47,8 @@ class LinearGradient {
             .selectAll("stop")
             .data(this._colorStops)
             .transition()
-            .duration(Duration.CHANGE)
-            .delay((d, i)=> { return i / _dataLength * Duration.CHANGE; })
+            .duration(1000)
+            .delay((d, i)=> { return i / _dataLength * 1000; })
             .attr("offset",  (d)=> { return d.offset;  })
             .attr("stop-color", (d) => { return d.color; });
     }
