@@ -2,11 +2,11 @@ import isUndefined from 'lodash-es/isUndefined';
 import isNull from 'lodash-es/isNull';
 import isNaN from 'lodash-es/isNaN';
 
-let _judgeMax = function(_maxLength) {
+const _judgeMax = (_maxLength)=> {
     return Math.pow(10, _maxLength);
 }
 
-let _maxLength = function(_max) {
+const _maxLength = (_max)=> {
     if ( _max >= 1 ) {
         return Math.round(_max).toString().length;
     } else {
@@ -19,7 +19,7 @@ let _maxLength = function(_max) {
 }
 
 // ticks only positive
-let _tickPositive = function(_range, _ticks, _tier) {
+const _tickPositive = (_range, _ticks, _tier)=> {
     let min = 0;
     let max = _range[1];
     let adjust = 0.9525; 
@@ -121,7 +121,7 @@ let _tickPositive = function(_range, _ticks, _tier) {
 }
 
 // contains both positive and negative
-let tickBothNegativeAndPositive = function(_range, _ticks, _tier) {
+const tickBothNegativeAndPositive = (_range, _ticks, _tier)=> {
     let adjust = 0.9525; 
     let maxTicks = 0;
 

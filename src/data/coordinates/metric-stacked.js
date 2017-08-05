@@ -7,11 +7,7 @@ import Stacks from '../constant/stack-methods';
 const metricStackedScale = (_nestedData, _options)=> {
     let _tickedRange;
     let minY;
-    let maxY = max(_nestedData.map( (d)=> {
-        return max(d.values.map((d)=> {
-            return d.y;
-        }));
-    }));
+    let maxY = max(_nestedData.map( d=> max(d.values.map(d => d.y))));
 
     if (_options.plots.stackMethod === Stacks.Expand ) {
         if (maxY === 1) {

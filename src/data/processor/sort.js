@@ -10,14 +10,14 @@ const sortData = (_data, _options)=> {
 
         switch (_field.type) {
             case Globals.DataType.STRING:
-                _data.sort(function (a, b) {
+                _data.sort( (a, b)=> {
                     return (_options.ordering.direction === 'asc')
                         ? a[_accessor].localeCompare(b[_accessor])
                         : b[_accessor].localeCompare(a[_accessor]);
                 });
                 break;
             default:
-                _data.sort(function (a, b) {
+                _data.sort( (a, b)=> {
                     return (_options.ordering.direction === 'asc')
                         ? a[_accessor] - b[_accessor]
                         : b[_accessor] - a[_accessor];
