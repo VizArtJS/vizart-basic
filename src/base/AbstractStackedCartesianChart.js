@@ -26,8 +26,8 @@ class AbstractStackedCartesianChart extends AbstractCartesianChart {
 
         this._c = (d) => {
             return (has(d, 'key'))
-                ? this._colorScale(d.key)
-                : this._colorScale(this._getSeriesVal(d));
+                ? this._color(d.key)
+                : this._color(this._getSeriesVal(d));
         }
 
     }

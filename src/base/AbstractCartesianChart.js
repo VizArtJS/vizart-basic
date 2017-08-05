@@ -32,12 +32,12 @@ class AbstractCartesianChart extends AbstractChart {
 
             switch (this._options.color.type){
                 case Globals.ColorType.CATEGORICAL:
-                    return this._colorScale(this._getDimensionVal(d));
+                    return this._color(this._getDimensionVal(d));
                 case Globals.ColorType.GRADIENT:
                 case Globals.ColorType.DISTINCT:
-                    return this._colorScale(this._getMetricVal(d));
+                    return this._color(this._getMetricVal(d));
                 default:
-                    return this._colorScale(this._getMetricVal(d));
+                    return this._color(this._getMetricVal(d));
             }
         };
     }

@@ -28,7 +28,7 @@ class AbstractBasicCartesianChart extends AbstractCartesianChart {
         return this._data;
     };
 
-    _provideColorScale() {
+    _provideColor() {
         let _array = this._data.map(this._getMetricVal);
         return makeColorScale(this._options.color, _array);
     }

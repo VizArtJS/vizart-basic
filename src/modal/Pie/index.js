@@ -60,7 +60,7 @@ class Pie extends AbstractBasicCartesianChart {
         this._mergeWithFirstEqualZero = mergeWithFirstEqualZero.bind(this);
 
         //override
-        this._c =(d, i) => { return this._colorScale(this._getMetricVal(d.data)); }
+        this._c =(d, i) => { return this._color(this._getMetricVal(d.data)); }
         this._p = (d)=> {
             let pct = this._getMetricVal(d.data) / this.total;
             return pct < this.minPct && this.consecutiveSmalls

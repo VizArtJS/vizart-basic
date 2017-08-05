@@ -31,7 +31,7 @@ class Corona extends AbstractStackedCartesianChart {
         super(canvasId, _userOptions);
 
         this._c = (d) => {
-            return this._colorScale(this._getSeriesVal(d));
+            return this._color(this._getSeriesVal(d));
         };
 
     }
@@ -376,7 +376,7 @@ class Corona extends AbstractStackedCartesianChart {
                     return baseRadar(d.values);
                 })
                 .style("fill", (d)=> {
-                    return this._colorScale(d.key);
+                    return this._color(d.key);
                 })
                 .style("fill-opacity", this._options.plots.opacityArea)
                 .transition('circle-expand-transition')
@@ -398,7 +398,7 @@ class Corona extends AbstractStackedCartesianChart {
             })
             .style("stroke-width", this._options.plots.strokeWidth + "px")
             .style("stroke", (d)=> {
-                return this._colorScale(d.key);
+                return this._color(d.key);
             })
             .style("fill", "none")
             .transition('circle-expand-transition')
@@ -650,7 +650,7 @@ class Corona extends AbstractStackedCartesianChart {
                 return i * 150
             })
             .style("fill", (d, i)=> {
-                return this._colorScale(d.key);
+                return this._color(d.key);
             });
 
         this._container.selectAll('.radar-stroke')
@@ -658,7 +658,7 @@ class Corona extends AbstractStackedCartesianChart {
             .duration(this._options.animation.duration.update)
             .delay( (d, i)=> { return i * 150 })
             .style("stroke", (d)=> {
-                return this._colorScale(d.key);
+                return this._color(d.key);
             });
 
         this._container.selectAll('.radar-circle')
