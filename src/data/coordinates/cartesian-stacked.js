@@ -9,7 +9,7 @@ import seriesScale from './series';
 import nest from './stacked-layout';
 
 
-const buildStack = function(_data, _options) {
+const buildStack = (_data, _options)=> {
     dimensionScale(_data, _options);
     metricScale(_data, _options);
     seriesScale(_data, _options);
@@ -43,7 +43,7 @@ const buildStack = function(_data, _options) {
     };
 }
 
-let refresh = function(_data, _options) {
+const refresh = (_data, _options)=> {
     let _tabularData = _data.tabularData;
     sortData(_tabularData, _options);
 
@@ -51,7 +51,7 @@ let refresh = function(_data, _options) {
 };
 
 
-let prepare = function(_data, _options) {
+const prepare = (_data, _options)=> {
     let original = cloneDeep(_data);
 
     cleanse(_data, _options);

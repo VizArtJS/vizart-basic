@@ -10,7 +10,7 @@ const metricScale = (_data, _options)=> {
     for (let _metric of _options.data.y) {
         _metric.yAxis = _metric.yAxis || 0;
 
-        let _range = extent(_data,  (d)=> { return d[_metric.accessor];  });
+        let _range = extent(_data, d=> d[_metric.accessor]);
 
         if ( _options.yAxis &&  _options.yAxis.length >= (_metric.yAxis + 1)) {
             let _axisDef = _options.yAxis[_metric.yAxis];

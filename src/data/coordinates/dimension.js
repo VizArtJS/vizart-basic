@@ -44,7 +44,7 @@ const dimensionScale = (_data, _options)=> {
         case Globals.DataType.DATE:
             _dim.values = uniq(map(_data, _dim.accessor));
 
-            let _range = extent(_data, function (d) { return d[_dim.accessor];  });
+            let _range = extent(_data, d=> d[_dim.accessor]);
 
             _dim.min = _range[0];
             _dim.max = _range[1];
@@ -60,7 +60,7 @@ const dimensionScale = (_data, _options)=> {
             // todo number format
             _dim.values = uniq(map(_data, _dim.accessor));
 
-            let _rangeNm = extent(_data, function (d) { return d[_dim.accessor];  });
+            let _rangeNm = extent(_data, d=> d[_dim.accessor]);
 
             _dim.min = _rangeNm[0];
             _dim.max = _rangeNm[1];

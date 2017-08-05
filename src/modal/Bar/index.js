@@ -1,13 +1,13 @@
 import { Globals, mergeOptions } from 'vizart-core';
 
 import { AbstractBasicCartesianChartWithAxes } from '../../base';
-import { refreshCartesian } from '../../data';
+import { processCartesianData } from '../../data';
 import getSortDef from '../../data/helper/get-sort-def';
 import createCartesianOpt from '../../options/createCartesianOpt';
 
 const BarOpt = {
     chart: { type: 'bar_horizontal'}
-}
+};
 
 class Bar extends AbstractBasicCartesianChartWithAxes {
 
@@ -106,7 +106,7 @@ class Bar extends AbstractBasicCartesianChartWithAxes {
             direction: direction
         };
 
-        refreshCartesian(this._data, this._options);
+        processCartesianData(this._data, this._options, false);
         let _field = getSortDef(this._options);
         let _accessor = _field.accessor;
 

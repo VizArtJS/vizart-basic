@@ -4,10 +4,7 @@ import {
 } from 'vizart-core';
 
 import AbstractCartesianChart from './AbstractCartesianChart';
-import {
-    prepareCartesian,
-    refreshCartesian,
-} from '../data';
+import { processCartesianData } from '../data';
 
 class AbstractBasicCartesianChart extends AbstractCartesianChart {
     constructor(canvasId, _userOptions) {
@@ -16,13 +13,12 @@ class AbstractBasicCartesianChart extends AbstractCartesianChart {
 
     update() {
         super.update();
-        refreshCartesian(this._data, this._options);
+        processCartesianData(this._data, this._options, false);
     }
 
     data(_data) {
         if (check(_data) === true) {
-            prepareCartesian(_data, this._options);
-            this._data = _data;
+            this._data = processCartesianData(_data, this._options, true);
         }
 
         return this._data;
