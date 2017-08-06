@@ -87,7 +87,7 @@ class StackedArea extends AbstractStackedCartesianChartWithAxes {
                 return this._curve(d.values)
             })
             .style('stroke-width', this._options.plots.strokeWidth)
-            .style('fill', this.c)
+            .style('fill', this._c)
             .style('fill-opacity', this._options.plots.opacityArea)
             .style('stroke', this._c);
 
