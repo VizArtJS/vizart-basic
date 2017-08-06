@@ -8,6 +8,7 @@ import processCartesianData from './cartesian';
 
 
 const buildStack = (_data, _options)=> {
+    console.log('-----------');
     let _nestedData = nest(_data, _options);
 
     let minY;
@@ -48,6 +49,7 @@ const buildStack = (_data, _options)=> {
 
 const processStackedData = (_data, _options, _cleanse = true)=> {
     let _copy = processCartesianData(_data, _options, _cleanse);
+
     return buildStack(_copy, _options);
 }
 
