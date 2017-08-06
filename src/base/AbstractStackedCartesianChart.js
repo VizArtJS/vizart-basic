@@ -2,7 +2,7 @@ import { check, mergeBase } from 'vizart-core';
 import has from 'lodash-es/has';
 
 import AbstractCartesianChart from './AbstractCartesianChart';
-import { prepareCartesianStacked } from '../data';
+import { processStackedData } from '../data';
 
 class AbstractStackedCartesianChart extends AbstractCartesianChart {
     constructor(canvasId, _userOptions) {
@@ -38,15 +38,12 @@ class AbstractStackedCartesianChart extends AbstractCartesianChart {
 
     update() {
         super.update();
-
-        //todo: refresh essential data only
-        // refreshCartesianStacked(this._data, this._options);
-        this.data(this._data.tabularData);
+        this.data(this._data.original);
     }
 
     data(_data) {
         if (check(_data) === true) {
-            this._data = prepareCartesianStacked(_data, this._options);
+            this._data = processStackedData(_data, this._options, true);
         }
 
         return this._data;

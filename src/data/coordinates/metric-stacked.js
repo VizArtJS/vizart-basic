@@ -1,12 +1,11 @@
-import { scaleLinear } from 'd3-scale';
 import { max, min } from 'd3-array';
 
-import tickRange from './ticks';
+import tickRange from './update-scale/ticks';
 import Stacks from '../constant/stack-methods';
 
-const metricStackedScale = (_nestedData, _options)=> {
+const getStackedMetricScale = (_nestedData, _options)=> {
     let _tickedRange;
-    let minY;
+    let minY = 0;
     let maxY = max(_nestedData.map( d=> max(d.values.map(d => d.y))));
 
     if (_options.plots.stackMethod === Stacks.Expand ) {
@@ -16,24 +15,11 @@ const metricStackedScale = (_nestedData, _options)=> {
             _tickedRange = tickRange([0, maxY], _options.yAxis[0].ticks, _options.yAxis[0].tier);
         }
     } else {
-        let minY = min(_nestedData.map( (d)=> {
-            return min(d.values.map( (d)=> {
-                return d.y;
-            }));
-        }));
+        minY = min(_nestedData.map( d=> min(d.values.map(d=> d.y))));
         _tickedRange = tickRange([minY, maxY], _options.yAxis[0].ticks,_options.yAxis[0].tier);
-    }
-
-    minY = _tickedRange[0];
-    maxY = _tickedRange[1];
-
-    for (let _metric of _options.data.y) {
-        _metric.scale = scaleLinear()
-            .domain([minY, maxY])
-            .range([_options.chart.innerHeight, 0]);
     }
 
     return _tickedRange;
 }
 
-export default metricStackedScale;
+export default getStackedMetricScale;

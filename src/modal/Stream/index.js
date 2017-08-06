@@ -3,7 +3,7 @@ import { min } from 'd3-array';
 import { area, curveCardinal } from 'd3-shape';
 
 import { AbstractStackedCartesianChartWithAxes } from '../../base';
-import { Stacks, prepareCartesianStacked } from '../../data';
+import { Stacks, processStackedData } from '../../data';
 import createCartesianStackedOpt from '../../options/createCartesianStackedOpt';
 
 
@@ -46,7 +46,7 @@ class Stream extends AbstractStackedCartesianChartWithAxes {
 
 
         let series_updated = this._svg.selectAll(".series")
-            .data(this._data.nestedData);
+            .data(this._data.nested);
 
 
         // EXIT
@@ -160,9 +160,9 @@ class Stream extends AbstractStackedCartesianChartWithAxes {
 
     data(_data) {
         if (check(_data) === true) {
-            this._data = prepareCartesianStacked(_data, this._options);
+            this._data = processStackedData(_data, this._options);
 
-            let _min = min(this._data.nestedData.map((d) => {
+            let _min = min(this._data.nested.map((d) => {
                 return min(d.values.map((d) => {
                     return d.y0;
                 }));

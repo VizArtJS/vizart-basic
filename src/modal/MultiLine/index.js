@@ -58,7 +58,7 @@ class MultiLine extends AbstractStackedCartesianChartWithAxes {
 
         interpolateCurve(this._options.plots.curve, [this._curve, this._baseLine]);
 
-        let seriesUpdate = this._svg.selectAll(".series").data(this._data.nestedData);
+        let seriesUpdate = this._svg.selectAll(".series").data(this._data.nested);
 
         seriesUpdate.exit().remove();
 
@@ -130,7 +130,7 @@ class MultiLine extends AbstractStackedCartesianChartWithAxes {
             .transition()
             .duration(this._options.animation.duration.update)
             .delay((d, i) => {
-                return i / this._data.nestedData.length * this._options.animation.duration.update;
+                return i / this._data.nested.length * this._options.animation.duration.update;
             })
             .ease(easeCubicOut)
             .attr("d", (d) => {
@@ -162,7 +162,7 @@ class MultiLine extends AbstractStackedCartesianChartWithAxes {
         let _trans = transition()
             .duration(this._options.animation.duration.update)
             .delay((d, i)=> {
-                return i / this._data.nestedData.length * this._options.animation.duration.update;
+                return i / this._data.nested.length * this._options.animation.duration.update;
             });
 
         this._svg.selectAll('.curve')

@@ -1,12 +1,13 @@
 import { scaleLinear } from 'd3-scale';
 import { extent } from 'd3-array';
-
-import tickRange from './ticks';
 import isUndefined from 'lodash-es/isUndefined';
 import isNull from 'lodash-es/isNull';
 import isNumber from 'lodash-es/isNumber';
 
-const metricScale = (_data, _options)=> {
+import tickRange from './ticks';
+
+
+const updateMetricScale = (_data, _options)=> {
     for (let _metric of _options.data.y) {
         _metric.yAxis = _metric.yAxis || 0;
 
@@ -48,4 +49,4 @@ const metricScale = (_data, _options)=> {
     }
 };
 
-export default metricScale;
+export default updateMetricScale;

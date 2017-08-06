@@ -11,9 +11,9 @@ import { extent } from 'd3-array';
 import uniq from 'lodash-es/uniq';
 import map from 'lodash-es/map';
 
-import { isYSort } from '../helper';
+import { isYSort } from '../../helper/index';
 
-const dimensionScale = (_data, _options)=> {
+const updateDimensionScale = (_data, _options)=> {
     let _dim = _options.data.x;
 
     if (_options.chart.type === 'bar_horizontal'
@@ -83,4 +83,4 @@ const dimensionScale = (_data, _options)=> {
     }
 };
 
-export default dimensionScale;
+export default updateDimensionScale;

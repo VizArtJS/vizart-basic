@@ -1,28 +1,29 @@
-import cloneDeep from 'lodash-es/cloneDeep';
+import { scaleLinear } from 'd3-scale';
 
-import sortData from '../processor/sort';
-import cleanse from '../processor/cleanse';
-import dimensionScale from './dimension';
-import metricScale from './metric';
-import metricStackedScale from './metric-stacked';
-import seriesScale from './series';
 import nest from './stacked-layout';
+import getStackedMetricScale from './metric-stacked';
+
+import processCartesianData from './cartesian';
+
 
 
 const buildStack = (_data, _options)=> {
-    dimensionScale(_data, _options);
-    metricScale(_data, _options);
-    seriesScale(_data, _options);
-
     let _nestedData = nest(_data, _options);
 
     let minY;
     let maxY;
 
     if(_options.plots.stackLayout === true) {
-        let _range = metricStackedScale(_nestedData, _options);
+        let _range = getStackedMetricScale(_nestedData, _options);
         minY = _range[0];
         maxY = _range[1];
+
+        for (let _metric of _options.data.y) {
+            _metric.scale = scaleLinear()
+                .domain([minY, maxY])
+                .range([_options.chart.innerHeight, 0]);
+        }
+
     } else {
         minY = _options.data.y[0].min;
         maxY = _options.data.y[0].max;
@@ -38,32 +39,16 @@ const buildStack = (_data, _options)=> {
     return {
         maxY: maxY,
         minY: minY,
-        tabularData: _data,
-        nestedData: _nestedData
+        original: _data,
+        nested: _nestedData
     };
 }
 
-const refresh = (_data, _options)=> {
-    let _tabularData = _data.tabularData;
-    sortData(_tabularData, _options);
-
-    return buildStack(_tabularData, _options);
-};
 
 
-const prepare = (_data, _options)=> {
-    let original = cloneDeep(_data);
-
-    cleanse(_data, _options);
-    sortData(_data, _options);
-
-    let stacked =  buildStack(_data, _options);
-    stacked.tabularData = original;
-
-    return stacked;
+const processStackedData = (_data, _options, _cleanse = true)=> {
+    let _copy = processCartesianData(_data, _options, _cleanse);
+    return buildStack(_copy, _options);
 }
 
-export {
-    prepare,
-    refresh
-}
+export default processStackedData;

@@ -12,14 +12,14 @@ class AbstractStackedCartesianChartWithAxes extends AbstractStackedCartesianChar
         super.render(_data);
 
         this.axes = new Axis(this._options);
-        this.axes.render(this._svg, this._data.nestedData[0].values);
+        this.axes.render(this._svg, this._data.nested[0].values);
     }
 
     update() {
         super.update();
 
         this.axes = new Axis(this._options);
-        this.axes.update(this._svg, this._data.nestedData[0].values);
+        this.axes.update(this._svg, this._data.nested[0].values);
     }
 }
 

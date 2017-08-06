@@ -4,7 +4,7 @@ import { CoronaOptions } from './Corona-Options';
 
 import createCartesianStackedOpt from '../../options/createCartesianStackedOpt';
 import metricStackedScale from '../../data/coordinates/metric-stacked';
-import metricScale from '../../data/coordinates/metric';
+import metricScale from '../../data/coordinates/update-scale/update-metric-scale';
 import labelPrecision from './Corona-Label';
 
 import { Stacks } from '../../data';
@@ -156,7 +156,7 @@ class Corona extends AbstractStackedCartesianChart {
 
 
 
-        metricScale(this._data.tabularData, this._options);
+        metricScale(this._data.original, this._options);
 
         let minY = this._getMetric().ticksMin;
         let maxY = this._getMetric().ticksMax;
@@ -168,7 +168,7 @@ class Corona extends AbstractStackedCartesianChart {
                 maxY = 1;
                 levels = 5;
             } else {
-                let _range = metricStackedScale(this._data.nestedData, this._options);
+                let _range = metricStackedScale(this._data.nested, this._options);
 
                 minY = _range[0];
                 maxY = _range[1];
@@ -337,7 +337,7 @@ class Corona extends AbstractStackedCartesianChart {
 
         //Create a wrapper for the blobs
         let blobWrapper_updated = this._svg.selectAll(".radar-wrapper")
-            .data(this._data.nestedData);
+            .data(this._data.nested);
 
         // removed
         let blobWrapper_Removed = blobWrapper_updated.exit();
@@ -486,7 +486,7 @@ class Corona extends AbstractStackedCartesianChart {
 
         //Wrapper for the invisible circles on top
         let blobCircleWrapper = this._svg.selectAll(".radar-circle-wrapper")
-            .data(this._data.nestedData);
+            .data(this._data.nested);
 
         // exit
         blobCircleWrapper.exit().remove();

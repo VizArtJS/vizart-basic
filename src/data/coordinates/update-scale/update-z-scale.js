@@ -1,10 +1,13 @@
 import { scaleLinear } from 'd3-scale';
 import { extent } from 'd3-array';
+import isUndefined from 'lodash-es/isUndefined';
+import isNull from 'lodash-es/isNull';
 
-const zScale = (_data, _options)=> {
-    if ( _options.data.z &&  _options.data.z.accessor !== null) {
-
-        // todo number format
+const updateZScale = (_data, _options)=> {
+    if ( !isUndefined(_options.data.z)
+        && !(isNull(_options.data.z))
+        && !isUndefined(_options.data.z.accessor)
+        && !(isNull(_options.data.z.accessor))) {
         let _range = extent(_data,  (d)=> { return d[_options.data.z.accessor];  });
 
         _options.data.z.min = _range[0];
@@ -16,4 +19,4 @@ const zScale = (_data, _options)=> {
     }
 };
 
-export default zScale;
+export default updateZScale;

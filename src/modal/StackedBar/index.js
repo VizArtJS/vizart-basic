@@ -22,7 +22,7 @@ class StackedBar extends AbstractStackedCartesianChartWithAxes {
             return (this._options.plots.stackLayout === true)
                 ? xPos
                 : xPos
-                + this._band() / this._data.nestedData.length
+                + this._band() / this._data.nested.length
                 * this._options.data.s.values.indexOf(this._getSeriesVal(d));
         };
 
@@ -35,7 +35,7 @@ class StackedBar extends AbstractStackedCartesianChartWithAxes {
         this._w = (d, i) => {
             return (this._options.plots.stackLayout === true)
                 ? this._band()
-                : this._band() / this._data.nestedData.length;
+                : this._band() / this._data.nested.length;
         }
 
         this._h = (d) => {
@@ -54,7 +54,7 @@ class StackedBar extends AbstractStackedCartesianChartWithAxes {
         super.update();
 
         let seriesUpdate = this._svg.selectAll(".series")
-            .data(this._data.nestedData);
+            .data(this._data.nested);
 
 
         // EXIT
@@ -165,7 +165,7 @@ class StackedBar extends AbstractStackedCartesianChartWithAxes {
             .transition()
             .duration(this._options.animation.duration.update)
             .delay((d, i)=> {
-                return i / this._options.animation.duration.update * this._data.nestedData.length
+                return i / this._options.animation.duration.update * this._data.nested.length
             })
             .style("fill", this._c);
     };

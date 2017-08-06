@@ -57,7 +57,7 @@ class StackedArea extends AbstractStackedCartesianChartWithAxes {
         interpolateCurve(this._options.plots.curve, [this._curve, this._baseLine]);
 
         let seriesUpdate = this._svg.selectAll(".series")
-            .data(this._data.nestedData);
+            .data(this._data.nested);
 
 
         // EXIT
@@ -81,7 +81,7 @@ class StackedArea extends AbstractStackedCartesianChartWithAxes {
             .transition()
             .duration(this._options.animation.duration.curve)
             .delay((d, i) => {
-                return i / this._data.nestedData.length * this._options.animation.duration.curve
+                return i / this._data.nested.length * this._options.animation.duration.curve
             })
             .attr("d", (d) => {
                 return this._curve(d.values)
@@ -148,7 +148,7 @@ class StackedArea extends AbstractStackedCartesianChartWithAxes {
             .transition('append-series')
             .duration(this._options.animation.duration.curve)
             .delay((d, i) => {
-                return i / this._data.nestedData.length * this._options.animation.duration.curve;
+                return i / this._data.nested.length * this._options.animation.duration.curve;
             })
             .attr("d", (d) => {
                 return this._curve(d.values)
@@ -185,7 +185,7 @@ class StackedArea extends AbstractStackedCartesianChartWithAxes {
         this._svg.selectAll('.curve')
             .transition()
             .duration(this._options.animation.duration.curve)
-            .delay( (d, i)=> { return i / this._data.nestedData.length * this._options.animation.duration.curve; })
+            .delay( (d, i)=> { return i / this._data.nested.length * this._options.animation.duration.curve; })
             .style('stroke', this._c)
             .style('fill', this._c);
 

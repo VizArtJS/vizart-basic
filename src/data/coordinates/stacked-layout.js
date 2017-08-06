@@ -26,26 +26,14 @@ const getSeriesOrdering = (_options)=> {
 
 
 const generateLayout = (_data, _options)=> {
-    let _getDimension = ()=> { return _options.data.x; };
-
-    let _getDimensionVal = function(d) {
-        return d[_getDimension().accessor];
-    };
-
-    let _getMetric = function() {
-        return _options.data.y[0];
-    };
-
-    let _getMetricValue = function(d) {
-        return d[_getMetric().accessor];
-    };
-
+    const _getDimension = ()=> { return _options.data.x; };
+    const _getDimensionVal = d=> d[_getDimension().accessor];
+    const _getMetric = ()=> _options.data.y[0];
+    const _getMetricValue = d=> d[_getMetric().accessor];
 
     let _matrix = [];
 
-    let dimensionGroup = groupBy(_data, function(d) {
-        return _getDimensionVal(d);
-    });
+    let dimensionGroup = groupBy(_data, d=> _getDimensionVal(d));
 
     for (let _dim of _getDimension().values) {
         let _t = {};
