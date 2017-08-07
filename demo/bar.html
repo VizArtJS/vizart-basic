@@ -9,6 +9,7 @@
     <script src="./lib/bootstrap-3.3.7/js/bootstrap.js"></script>
     <script src="http://chancejs.com/chance.min.js"></script>
     <script src="./lib/lodash.min.js"></script>
+    <script src="./lib/d3.js"></script>
     <script src="./vizart-basic.standalone.js" type="text/javascript"></script>
 
     <style>
@@ -249,6 +250,7 @@
         var barChart = new VizArtBasic.Bar('#bar', options);
         barChart.render(fakeData);
 
+
         // live update button is clicked
         $('#update').click(function(){
             var ranIndex = chance.integer({min:0, max:49});
@@ -277,7 +279,7 @@
         });
 
         $('#color4').click(function(){
-            options2.color.scheme = "Cubehelix";
+            options2.color.scheme = d3.interpolateCubehelixDefault;
             barChart.transitionColor(options2.color);
         });
 

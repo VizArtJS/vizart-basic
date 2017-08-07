@@ -7,7 +7,7 @@ const mapY = d => d.values.map(e=> e.y);
 
 /**
  * get max/min of the nestedData
- * 
+ *
  * @param _nested nested data
  * @param _oper min/max
  * @returns {*} max/min of the nestedData

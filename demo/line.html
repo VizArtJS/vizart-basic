@@ -80,6 +80,8 @@
         var chart = new VizArtBasic.Line('#bar', options);
         chart.render(fakeData);
 
+        var options = chart.options();
+
         // live update button is clicked
         $('#update').click(function(){
             var ranIndex = chance.integer({min:0, max:49});
@@ -90,22 +92,22 @@
 
         // change color
         $('#color1').click(function(){
-            options.color.name = "BuGn";
+            options.color.scheme = "BuGn";
             chart.transitionColor(options.color);
         });
 
         $('#color2').click(function(){
-            options.color.name = "Blues";
+            options.color.scheme = "Blues";
             chart.transitionColor(options.color)
         });
 
         $('#color3').click(function(){
-            options.color.name = "Warm";
+            options.color.scheme = "Warm";
             chart.transitionColor(options.color)
         });
 
         $('#color4').click(function(){
-            options.color.name = "Cubehelix";
+            options.color.scheme = "Cubehelix";
             chart.transitionColor(options.color);
         });
 
