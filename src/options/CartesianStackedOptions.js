@@ -1,4 +1,4 @@
-import { Globals, MetroCold5 } from 'vizart-core';
+import { Globals, MetroRain8 } from 'vizart-core';
 
 const CartesianStackedOptions = {
     chart: {
@@ -10,7 +10,7 @@ const CartesianStackedOptions = {
         }
     },
     color: {
-        scheme: MetroCold5,
+        scheme: MetroRain8,
         type: Globals.ColorType.CATEGORICAL
     },
     ordering: {

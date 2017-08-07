@@ -1,7 +1,10 @@
-import { Globals, DefaultSequentialColor } from 'vizart-core';
+import { Globals, MetroRain3 } from 'vizart-core';
 
 const CartesianOptions = {
-    color: DefaultSequentialColor,
+    color: {
+        scheme: MetroRain3,
+        type: Globals.ColorType.GRADIENT
+    },
     chart: {
         margin: {
             left: 60,
