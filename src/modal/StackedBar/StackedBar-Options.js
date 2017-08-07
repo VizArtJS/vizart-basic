@@ -1,5 +1,4 @@
 import { Stacks } from '../../data';
-import { DefaultCategoricalColor } from 'vizart-core';
 
 const GroupedOptions = {
     animation: {
@@ -10,7 +9,6 @@ const GroupedOptions = {
     chart: {
         type: 'bar_grouped'
     },
-    color: DefaultCategoricalColor,
     plots: {
         stackLayout: false,
         stackMethod: Stacks.Zero
@@ -26,7 +24,6 @@ const StackedOptions = {
     chart: {
         type: 'bar_grouped'
     },
-    color: DefaultCategoricalColor,
     plots: {
         stackLayout: true,
         stackMethod: Stacks.Zero
@@ -42,7 +39,6 @@ const ExpandedOptions = {
     chart: {
         type: 'bar_grouped'
     },
-    color: DefaultCategoricalColor,
     plots: {
         stackLayout: true,
         stackMethod: Stacks.Expand
