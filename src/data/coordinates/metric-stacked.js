@@ -19,7 +19,6 @@ const mapNested = (_nested, _oper)=> {
 const getStackedMetricScale = (_nestedData, _options)=> {
     let _tickedRange;
     let minY = 0;
-    console.log(mapNested(_nestedData, max));
     let maxY = mapNested(_nestedData, max);
 
     if (_options.plots.stackMethod === Stacks.Expand ) {

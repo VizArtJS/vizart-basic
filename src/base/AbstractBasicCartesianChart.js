@@ -1,5 +1,5 @@
 import {
-    makeColorScale,
+    genericColor,
     check
 } from 'vizart-core';
 
@@ -26,7 +26,7 @@ class AbstractBasicCartesianChart extends AbstractCartesianChart {
 
     _provideColor() {
         let _array = this._data.map(this._getMetricVal);
-        return makeColorScale(this._options.color, _array);
+        return genericColor(this._options.color, _array);
     }
 }
 

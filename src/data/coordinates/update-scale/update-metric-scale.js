@@ -18,7 +18,7 @@ const updateMetricScale = (_data, _options)=> {
 
             if (!isUndefined(_axisDef.min) && !isNull(_axisDef.min) && isNumber(_axisDef.min)) {
                 if (_axisDef.min >= _range[0]) {
-                    console.log('yAxis[' + _metric.yAxis + '] min value is invalid, it shall be smaller than' + _range[0]);
+                    console.log('yAxis[' + _metric.yAxis + '] min value is invalid, it shall be smaller than ' + _range[0]);
                 } else {
                     _range[0] = _axisDef.min;
                 }
@@ -26,7 +26,7 @@ const updateMetricScale = (_data, _options)=> {
 
             if (!isUndefined(_axisDef.max) && !isNull(_axisDef.max) && isNumber(_axisDef.max)) {
                 if (_axisDef.max <= _range[1]) {
-                    console.log('yAxis[' + _metric.yAxis + '] max value is invalid, it shall be larger than' + _range[1]);
+                    console.log('yAxis[' + _metric.yAxis + '] max value is invalid, it shall be larger than ' + _range[1]);
                 } else {
                     _range[1] = _axisDef.max;
                 }

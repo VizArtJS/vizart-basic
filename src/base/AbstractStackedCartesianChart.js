@@ -1,4 +1,4 @@
-import { check, mergeBase } from 'vizart-core';
+import { check, mergeBase, categoricalColor } from 'vizart-core';
 import has from 'lodash-es/has';
 
 import AbstractCartesianChart from './AbstractCartesianChart';
@@ -48,6 +48,14 @@ class AbstractStackedCartesianChart extends AbstractCartesianChart {
 
         return this._data;
     };
+
+    _provideColor() {
+        let _num = this._data && this._data.nested
+            ? this._data.nested.length
+            : 0;
+
+        return categoricalColor(this._options.color.scheme, _num);
+    }
 
 }
 
