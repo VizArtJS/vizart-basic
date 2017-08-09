@@ -1,4 +1,4 @@
-import { check } from 'vizart-core';
+import { check, Globals } from 'vizart-core';
 import { pie, arc } from 'd3-shape';
 import { format } from 'd3-format';
 import { sum } from 'd3-array';
@@ -16,7 +16,6 @@ import {
 } from './Pie-Angle';
 
 import {
-    getKey,
     mergeWithFirstEqualZero,
     limitSliceValues
 } from './helper';
@@ -55,12 +54,26 @@ class Pie extends AbstractBasicCartesianChart {
 
         this.total = 0;
         this.consecutiveSmalls = false;
-        this._key = getKey.bind(this);
         this._limitSliceValues = limitSliceValues.bind(this);
         this._mergeWithFirstEqualZero = mergeWithFirstEqualZero.bind(this);
 
+        this._key = d=> d.data[this._getDimension().accessor];
         //override
-        this._c =(d, i) => { return this._color(this._getMetricVal(d.data)); }
+        this._c =(d, i) => {
+            if (d.color) {
+                return d.color;
+            }
+
+            switch (this._options.color.type){
+                case Globals.ColorType.CATEGORICAL:
+                    return this._color(this._getDimensionVal(d.data));
+                case Globals.ColorType.GRADIENT:
+                case Globals.ColorType.DISTINCT:
+                    return this._color(this._getMetricVal(d.data));
+                default:
+                    return this._color(this._getMetricVal(d.data));
+            }
+        }
         this._p = (d)=> {
             let pct = this._getMetricVal(d.data) / this.total;
             return pct < this.minPct && this.consecutiveSmalls
@@ -385,6 +398,11 @@ class Pie extends AbstractBasicCartesianChart {
             .replace("{{name}}", this._getMetric().name)
             .replace("{{value}}", this._getMetricVal(d.data))
             .replace("{{borderStroke}}", this._c(d));
+    }
+
+    _provideColor() {
+        // pie's other slice may contain value out of range
+        return super._provideColor().clamp(true);
     }
 }
 

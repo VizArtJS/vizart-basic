@@ -13,7 +13,7 @@ const AreaOpt = {
     },
     plots: {
         areaOpacity: 1,
-        curve: 'cardinal',
+        curve: 'basis',
         strokeWidth: 4,
         nodeRadius: 4,
         drawArea: true,

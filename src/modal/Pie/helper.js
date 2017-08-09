@@ -1,11 +1,6 @@
 import { merge, ascending } from 'd3-array';
 import { set } from 'd3-collection';
 
-
-let getKey = function (d) {
-    return d.data[this._getDimension().accessor];
-};
-
 let mergeWithFirstEqualZero = function(first, second) {
     let secondSet = set();
     second.forEach((d) => {
@@ -97,7 +92,6 @@ let limitSliceValues = function() {
 }
 
 export {
-    getKey,
     mergeWithFirstEqualZero,
     limitSliceValues
 }

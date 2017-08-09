@@ -13,7 +13,7 @@ const StackedOptions = {
         stackLayout: true,
         stackMethod: Stacks.Zero,
         showDots: false,
-        curve: 'cardinal',
+        curve: 'basis',
         strokeWidth: 2,
         opacityArea: 0.7
     }
@@ -32,7 +32,7 @@ const AreaMultiOptions = {
         stackLayout: false,
         stackMethod: Stacks.Zero,
         showDots: false,
-        curve: 'cardinal',
+        curve: 'basis',
         strokeWidth: 2,
         opacityArea: 0.7
     }
@@ -52,7 +52,7 @@ const ExpandedOptions = {
         stackLayout: true,
         stackMethod: Stacks.Expand,
         showDots: false,
-        curve: 'cardinal',
+        curve: 'basis',
         strokeWidth: 2,
         opacityArea: 0.7
     }
