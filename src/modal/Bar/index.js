@@ -5,6 +5,7 @@ import { processCartesianData } from '../../data';
 import getSortDef from '../../data/helper/get-sort-def';
 import createCartesianOpt from '../../options/createCartesianOpt';
 import isUndefined from 'lodash-es/isUndefined';
+import isFunction from 'lodash-es/isFunction';
 
 const BarOpt = {
     chart: { type: 'bar_horizontal'}
