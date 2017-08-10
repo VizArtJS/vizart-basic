@@ -13,31 +13,34 @@ import map from 'lodash-es/map';
 
 import { isYSort } from '../../helper/index';
 
+const isBar = options => options.chart.type === 'bar_horizontal'
+    || options.chart.type === 'bar_grouped'
+    || options.chart.type === 'bar_stacked'
+    || options.chart.type === 'bar_expanded';
+
 const updateDimensionScale = (_data, _options)=> {
     let _dim = _options.data.x;
 
-    if (_options.chart.type === 'bar_horizontal'
-        || _options.chart.type === 'bar_grouped'
-        || _options.chart.type === 'bar_stacked'
-        || _options.chart.type === 'bar_expanded') {
-        _dim.values = uniq(map(_data, _dim.accessor));
-
-        _dim.scale = scaleBand()
-            .domain(_dim.values)
-            .range([0, _options.chart.innerWidth])
-            .paddingInner(.1)
-            .paddingOuter(.6);
-
-        return;
-    }
 
     if (isYSort(_options)) {
-        _dim.values = uniq(map(_data, _dim.accessor));
-        _dim.scale = scalePoint()
-            .domain(_dim.values)
-            .range([0, _options.chart.innerWidth]);
+        if (isBar(_options)) {
+            _dim.values = uniq(map(_data, _dim.accessor));
 
-        return;
+            _dim.scale = scaleBand()
+                .domain(_dim.values)
+                .range([0, _options.chart.innerWidth])
+                .paddingInner(.1)
+                .paddingOuter(.6);
+
+            return;
+        } else {
+            _dim.values = uniq(map(_data, _dim.accessor));
+            _dim.scale = scalePoint()
+                .domain(_dim.values)
+                .range([0, _options.chart.innerWidth]);
+
+            return;
+        }
     }
 
     switch (_dim.type) {
@@ -71,12 +74,25 @@ const updateDimensionScale = (_data, _options)=> {
 
             break;
         case Globals.DataType.STRING:
-            _dim.values = uniq(map(_data, _dim.accessor));
-            _dim.scale = scalePoint()
-                .domain(_dim.values)
-                .range([0, _options.chart.innerWidth]);
+            if (isBar(_options)) {
+                _dim.values = uniq(map(_data, _dim.accessor));
 
-            break;
+                _dim.scale = scaleBand()
+                    .domain(_dim.values)
+                    .range([0, _options.chart.innerWidth])
+                    .paddingInner(.1)
+                    .paddingOuter(.6);
+
+                return;
+            } else {
+                _dim.values = uniq(map(_data, _dim.accessor));
+                _dim.scale = scalePoint()
+                    .domain(_dim.values)
+                    .range([0, _options.chart.innerWidth]);
+
+                break;
+            }
+
 
         default:
             break;

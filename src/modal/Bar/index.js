@@ -4,6 +4,7 @@ import { AbstractBasicCartesianChartWithAxes } from '../../base';
 import { processCartesianData } from '../../data';
 import getSortDef from '../../data/helper/get-sort-def';
 import createCartesianOpt from '../../options/createCartesianOpt';
+import isUndefined from 'lodash-es/isUndefined';
 
 const BarOpt = {
     chart: { type: 'bar_horizontal'}
@@ -15,7 +16,10 @@ class Bar extends AbstractBasicCartesianChartWithAxes {
         super(canvasId, _userOptions);
 
         this._w = ()=>{
-            return this._getDimension().scale.bandwidth();
+            return isUndefined(this._getDimension().scale.bandwidth)
+                    || !isFunction(this._getDimension().scale.bandwidth)
+                ? Math.ceil(this._options.chart.innerWidth / this._data.length)
+                : this._getDimension().scale.bandwidth();
         };
         this._h = (d)=> {
             return this._options.chart.innerHeight - this._y(d);
