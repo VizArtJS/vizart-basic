@@ -13,7 +13,7 @@ class AbstractBasicCartesianChart extends AbstractCartesianChart {
 
     update() {
         super.update();
-        processCartesianData(this._data, this._options, false);
+        this._data = processCartesianData(this._data, this._options, false);
     }
 
     data(_data) {

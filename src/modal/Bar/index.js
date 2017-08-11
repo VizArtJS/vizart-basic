@@ -115,7 +115,7 @@ class Bar extends AbstractBasicCartesianChartWithAxes {
             direction: direction
         };
 
-        processCartesianData(this._data, this._options, false);
+        this._data = processCartesianData(this._data, this._options, false);
         let _field = getSortDef(this._options);
         let _accessor = _field.accessor;
 
