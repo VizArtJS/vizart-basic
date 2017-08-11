@@ -22,25 +22,25 @@ const updateDimensionScale = (_data, _options)=> {
     let _dim = _options.data.x;
 
 
+    if (isBar(_options)) {
+        _dim.values = uniq(map(_data, _dim.accessor));
+
+        _dim.scale = scaleBand()
+            .domain(_dim.values)
+            .range([0, _options.chart.innerWidth])
+            .paddingInner(.1)
+            .paddingOuter(.6);
+
+        return;
+    }
+
     if (isYSort(_options)) {
-        if (isBar(_options)) {
-            _dim.values = uniq(map(_data, _dim.accessor));
+        _dim.values = uniq(map(_data, _dim.accessor));
+        _dim.scale = scalePoint()
+            .domain(_dim.values)
+            .range([0, _options.chart.innerWidth]);
 
-            _dim.scale = scaleBand()
-                .domain(_dim.values)
-                .range([0, _options.chart.innerWidth])
-                .paddingInner(.1)
-                .paddingOuter(.6);
-
-            return;
-        } else {
-            _dim.values = uniq(map(_data, _dim.accessor));
-            _dim.scale = scalePoint()
-                .domain(_dim.values)
-                .range([0, _options.chart.innerWidth]);
-
-            return;
-        }
+        return;
     }
 
     switch (_dim.type) {
@@ -74,25 +74,12 @@ const updateDimensionScale = (_data, _options)=> {
 
             break;
         case Globals.DataType.STRING:
-            if (isBar(_options)) {
-                _dim.values = uniq(map(_data, _dim.accessor));
+            _dim.values = uniq(map(_data, _dim.accessor));
+            _dim.scale = scalePoint()
+                .domain(_dim.values)
+                .range([0, _options.chart.innerWidth]);
 
-                _dim.scale = scaleBand()
-                    .domain(_dim.values)
-                    .range([0, _options.chart.innerWidth])
-                    .paddingInner(.1)
-                    .paddingOuter(.6);
-
-                return;
-            } else {
-                _dim.values = uniq(map(_data, _dim.accessor));
-                _dim.scale = scalePoint()
-                    .domain(_dim.values)
-                    .range([0, _options.chart.innerWidth]);
-
-                break;
-            }
-
+            break;
 
         default:
             break;

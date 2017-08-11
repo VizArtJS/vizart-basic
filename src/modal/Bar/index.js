@@ -17,10 +17,14 @@ class Bar extends AbstractBasicCartesianChartWithAxes {
         super(canvasId, _userOptions);
 
         this._w = ()=>{
-            return isUndefined(this._getDimension().scale.bandwidth)
-                    || !isFunction(this._getDimension().scale.bandwidth)
-                ? Math.ceil(this._options.chart.innerWidth / this._data.length)
-                : this._getDimension().scale.bandwidth();
+            if (isUndefined(this._getDimension().scale.bandwidth)
+                || !isFunction(this._getDimension().scale.bandwidth)) {
+                let evenWidth = Math.ceil(this._options.chart.innerWidth / this._data.length);
+
+                return evenWidth > 1 ? evenWidth - 1 : 0.1
+            } else {
+                return this._getDimension().scale.bandwidth();
+            }
         };
         this._h = (d)=> {
             return this._options.chart.innerHeight - this._y(d);
