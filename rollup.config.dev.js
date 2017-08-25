@@ -9,7 +9,7 @@ import serve from 'rollup-plugin-serve';
 import json from 'rollup-plugin-json';
 
 export default {
-    entry: 'src/index.js',
+    input: 'src/index.js',
     plugins: [
         json({
             exclude: [ 'node_modules' ],
@@ -39,12 +39,12 @@ export default {
         })
     ],
     external: [],
-    targets: [
+    output: [
         {
-            dest: 'dist/vizart-basic.standalone.js',
+            file: 'dist/vizart-basic.standalone.js',
             format: 'umd',
-            moduleName: 'VizArtBasic',
-            sourceMap: true
+            name: 'VizArtBasic',
+            sourcemap: true
         }
     ]
 };
