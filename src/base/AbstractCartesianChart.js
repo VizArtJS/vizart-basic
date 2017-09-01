@@ -12,18 +12,12 @@ class AbstractCartesianChart extends AbstractChart {
     constructor(canvasId, _userOptions) {
         super(canvasId, _userOptions);
 
-        this._getMetric = ()=> {  return this._options.data.y[0]; };
-        this._getDimension = ()=> { return this._options.data.x; };
-        this._getDimensionVal = (d)=> { return d[this._getDimension().accessor]; };
-        this._getMetricVal = (d)=> { return d[this._getMetric().accessor]; };
-
-        this._x = (d)=> {
-            return this._getDimension().scale(this._getDimensionVal(d));
-        };
-
-        this._y = (d)=> {
-            return this._getMetric().scale(this._getMetricVal(d));
-        };
+        this._getMetric = ()=> this._options.data.y[0];
+        this._getDimension = ()=> this._options.data.x;
+        this._getDimensionVal = d=> d[this._getDimension().accessor];
+        this._getMetricVal = d=> d[this._getMetric().accessor];
+        this._x = d=> this._getDimension().scale(this._getDimensionVal(d));
+        this._y = d=> this._getMetric().scale(this._getMetricVal(d));
 
         this._c = (d)=> {
             if (d.color) {

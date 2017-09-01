@@ -9,7 +9,7 @@ import { Globals } from 'vizart-core';
 import cnTimeFormat from './cn-time-format';
 import rotateXTicks from './rotete-ticks';
 
-const isTickDiv = function(_data, _units) {
+const isTickDiv = (_data, _units)=> {
     return (_data.length - 1) % _units == 0;
 }
 
