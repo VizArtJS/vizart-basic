@@ -1,6 +1,6 @@
 {
   "name": "vizart-basic",
-  "version": "0.7.7",
+  "version": "1.0.0",
   "description": "VizArt: Basic Charts",
   "main": "dist/vizart-basic.js",
   "module": "dist/vizart-basic.mjs",
