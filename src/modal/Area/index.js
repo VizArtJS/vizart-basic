@@ -1,11 +1,13 @@
-import { uuid } from 'vizart-core';
 import { easeCubicOut } from 'd3-ease';
 import { area, line } from 'd3-shape';
+import {
+    uuid,
+    linearStops
+} from 'vizart-core';
 
 import { AbstractBasicCartesianChartWithAxes } from '../../base';
 import createCartesianOpt from '../../options/createCartesianOpt';
 import interpolateCurve from '../../util/curve';
-import LinearGradient from './LinearGradient';
 
 const AreaOpt = {
     chart: {
@@ -29,92 +31,120 @@ class Area extends AbstractBasicCartesianChartWithAxes {
         this.nodeLayer;
         this._curve;
         this._baseLine;
-        this.linearGradent = new LinearGradient(this._options.color.scheme);
-        this.nodeColor = () => {
-            return this.linearGradent.top();
-        };
     }
 
     render(_data) {
         super.render(_data);
 
-        this.pathLayer = this._svg.append('g').attr('class', 'series-layer');
-        this.nodeLayer = this._svg.append('g').attr('class', 'node-layer');
+        this.pathLayer = this._detachedContainer.append('g').attr('class', 'series-layer');
+        this.nodeLayer = this._detachedContainer.append('g').attr('class', 'node-layer');
 
         if (this._options.plots.drawArea === true) {
             this._curve = area()
                 .x(this._x)
                 .y0(this._options.chart.innerHeight)
-                .y1(this._y);
+                .y1(this._y)
+                .context(this._frontContext);
 
             this._baseLine = area()
                 .x(this._x)
                 .y0(this._options.chart.innerHeight)
-                .y1(this._options.chart.innerHeight);
+                .y1(this._options.chart.innerHeight)
+                .context(this._frontContext);
+
         } else {
             this._curve = line()
                 .x(this._x)
-                .y(this._y);
+                .y(this._y)
+                .context(this._frontContext);
+
 
             this._baseLine = line()
                 .x(this._x)
-                .y(this._options.chart.innerHeight);
+                .y(this._options.chart.innerHeight)
+                .context(this._frontContext);
+
         }
 
 
         interpolateCurve(this._options.plots.curve, [this._curve, this._baseLine]);
-        this.linearGradent.render(this._svg);
+
+        // if (this._options.plots.drawArea === true) {
+        //     this.pathLayer.append("path")
+        //         .datum(this._data)
+        //         .style('fill', 'url(' + this.linearGradent.id() + ')')
+        //         .style('stroke', 'none')
+        //         .style('fill-opacity', this._options.plots.areaOpacity)
+        //         .style('stroke-width', this._options.plots.strokeWidth + 'px')
+        //         .attr("d", this._baseLine)
+        //         .attr('class', 'path')
+        //         .transition()
+        //         .duration(this._options.animation.duration.update)
+        //         .delay((d, i) => {
+        //             return i / this._data.length * this._options.animation.duration.update;
+        //         })
+        //         .attr("d", this._curve);
+        // } else {
+        //     this.pathLayer.append("path")
+        //         .datum(this._data)
+        //         .style('fill', 'none')
+        //         .style('stroke', 'url(' + this.linearGradent.id() + ')')
+        //         .style('stroke-width', this._options.plots.strokeWidth + 'px')
+        //         .attr("d", this._baseLine)
+        //         .attr('class', 'path')
+        //         .transition()
+        //         .duration(this._options.animation.duration.update)
+        //         .delay((d, i) => {
+        //             return i / this._data.length * this._options.animation.duration.update;
+        //         })
+        //         .ease(easeCubicOut)
+        //         .attr("d", this._curve);
+        // }
 
 
-        if (this._options.plots.drawArea === true) {
-            this.pathLayer.append("path")
-                .datum(this._data)
-                .style('fill', 'url(' + this.linearGradent.id() + ')')
-                .style('stroke', 'none')
-                .style('fill-opacity', this._options.plots.areaOpacity)
-                .style('stroke-width', this._options.plots.strokeWidth + 'px')
-                .attr("d", this._baseLine)
-                .attr('class', 'path')
-                .transition()
-                .duration(this._options.animation.duration.update)
-                .delay((d, i) => {
-                    return i / this._data.length * this._options.animation.duration.update;
-                })
-                .attr("d", this._curve);
-        } else {
-            this.pathLayer.append("path")
-                .datum(this._data)
-                .style('fill', 'none')
-                .style('stroke', 'url(' + this.linearGradent.id() + ')')
-                .style('stroke-width', this._options.plots.strokeWidth + 'px')
-                .attr("d", this._baseLine)
-                .attr('class', 'path')
-                .transition()
-                .duration(this._options.animation.duration.update)
-                .delay((d, i) => {
-                    return i / this._data.length * this._options.animation.duration.update;
-                })
-                .ease(easeCubicOut)
-                .attr("d", this._curve);
+        this._drawLine();
+        this._drawNodes();
+
+
+    }
+
+    _gradientStroke() {
+        let grd = this._frontContext.createLinearGradient(this._frontCanvas.node().width / 2,
+            this._frontCanvas.node().height,
+            this._frontCanvas.node().width / 2,
+            0);
+
+        const stops = linearStops(this._options.color.scheme);
+
+        for (const { offset, color } of stops) {
+            grd.addColorStop(offset, color);
         }
 
+        this._frontContext.strokeStyle = grd;
+    }
 
-        this.nodeLayer.selectAll(".node")
-            .data(this._data)
-            .enter().append("circle")
-            .attr("class", "node")
-            .attr("r", this._options.plots.nodeRadius)
-            .attr("cx", this._x)
-            .attr("cy", this._options.chart.innerHeight)
-            .attr('fill', this.nodeColor)
-            .attr('opacity', 0)
-            .transition()
-            .duration(this._options.animation.duration.update)
-            .attr("cy", this._y)
-            .attr('opacity', this._options.plots.showDots ? 1 : 0);
+    _drawLine() {
+        this._frontContext.beginPath();
+        this._curve(this._data);
+        this._frontContext.lineWidth = this._options.plots.strokeWidth;
+        // add linear gradient, x0, y0 -> x1, y1
+        this._gradientStroke();
 
+        this._frontContext.stroke();
+    }
 
-        this._bindTooltip(this.nodeLayer.selectAll(".node"));
+    _drawNodes() {
+        const stops = linearStops(this._options.color.scheme);
+        const nodeColor = stops[stops.length - 1].color;
+
+        if (this._options.plots.showDots === true) {
+            for (let d of this._data) {
+                this._frontContext.beginPath();
+                this._frontContext.arc(this._x(d), this._y(d), this._options.plots.nodeRadius, 0, 2 * Math.PI, false);
+                this._frontContext.fillStyle = nodeColor;
+                this._frontContext.fill();
+            }
+        }
     }
 
     update(){
@@ -178,19 +208,7 @@ class Area extends AbstractBasicCartesianChartWithAxes {
             .attr('opacity', this._options.plots.showDots ? 1 : 0);
 
 
-        this._bindTooltip(this.nodeLayer.selectAll(".node"));
     }
-
-    transitionColor(colorOptions) {
-        super.transitionColor(colorOptions);
-
-        this.linearGradent.update(this._options.color.scheme, this._data.length);
-        // link node
-        this.nodeLayer.selectAll(".node")
-            .transition()
-            .duration(this._options.animation.duration.remove)
-            .attr('fill', this.nodeColor);
-    };
 
 
     createOptions(_userOpt) {
