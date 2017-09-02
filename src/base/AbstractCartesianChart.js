@@ -34,10 +34,48 @@ class AbstractCartesianChart extends AbstractChart {
                     return this._color(this._getMetricVal(d));
             }
         };
+
+        this._fontCanvasId = 'front-canvas' + uuid();
+        this._frontCanvasId = 'color-canvas-' + uuid();
+        this._frontCanvas;
+        this._hiddenCanvas;
+        this._frontContext;
+        this._hiddenContext;
     }
 
     render(_data) {
         super.render(_data);
+
+        this._frontCanvas = select(this._containerId)
+            .append("canvas")
+            .attr("id", this._fontCanvasId)
+            .style('display', 'block')
+            .style("width", this._options.chart.innerWidth + "px")
+            .style("height", this._options.chart.innerHeight + "px")
+            .style('margin', this._options.chart.margin.top + 'px 0 0 ' + this._options.chart.margin.left + 'px ')
+            .attr('width', this._options.chart.innerWidth * devicePixelRatio)
+            .attr('height', this._options.chart.innerHeight * devicePixelRatio);
+
+        this._hiddenCanvas = select(this._containerId)
+            .append("canvas")
+            .attr("id", this._frontCanvasId)
+            .style('display', 'none')
+            .style("width", this._options.chart.innerWidth + "px")
+            .style("height", this._options.chart.innerHeight + "px")
+            .style('margin', this._options.chart.margin.top + 'px 0 0 ' + this._options.chart.margin.left + 'px ')
+            .attr('width', this._options.chart.innerWidth * devicePixelRatio)
+            .attr('height', this._options.chart.innerHeight * devicePixelRatio);
+
+        this._frontContext = this._frontCanvas.node().getContext('2d');
+        this._frontContext.clearRect(0, 0, this._options.chart.innerWidth, this._options.chart.innerHeight);
+
+        this._hiddenContext = this._hiddenCanvas.node().getContext("2d");
+        this._hiddenContext.clearRect(0, 0, this._options.chart.innerWidth, this._options.chart.innerHeight);
+
+        this._container
+            .style('position', 'absolute')
+            .style('top', 0)
+            .style('left', 0);
 
         this._tooltip = select(this._containerId)
             .append("div")
