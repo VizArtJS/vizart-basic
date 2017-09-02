@@ -1,11 +1,12 @@
-import {easeCubicOut} from 'd3-ease';
-import {area, line} from 'd3-shape';
+import { easeCubicOut } from 'd3-ease';
+import { area, line } from 'd3-shape';
+import { interpolate } from 'd3-interpolate';
 import {
     uuid,
     linearStops
 } from 'vizart-core';
 
-import {AbstractBasicCartesianChartWithAxes} from '../../base';
+import { AbstractBasicCartesianChartWithAxes } from '../../base';
 import createCartesianOpt from '../../options/createCartesianOpt';
 import interpolateCurve from '../../util/curve';
 
@@ -84,17 +85,25 @@ class Area extends AbstractBasicCartesianChartWithAxes {
 
         }
 
-
         interpolateCurve(this._options.plots.curve, [this._curve, this._baseLine]);
 
-        this._drawDetached();
-        this._drawCanvas();
+
+        const initY = new Array(this._data.length).fill(0);
+        const changeX = interpolate(this._data.map(d=> this._x(d)), this._data.map(d=> this._x(d)));
+        const changeY = interpolate(initY, this._data.map(d=> this._y(d)));
+
+        const data = this._data;
+
+        this._drawDetached(data);
+        this._drawCanvas(data);
     }
 
-    _drawDetached() {
+
+
+    _drawDetached(data) {
         if (this._options.plots.drawArea === true) {
             this.pathLayer.append("path")
-                .datum(this._data)
+                .datum(data)
                 .style('stroke', 'none')
                 .style('stroke-width', this._options.plots.strokeWidth + 'px')
                 .attr("d", this._baseLine)
@@ -107,7 +116,7 @@ class Area extends AbstractBasicCartesianChartWithAxes {
                 .attr("d", this._curve);
         } else {
             this.pathLayer.append("path")
-                .datum(this._data)
+                .datum(data)
                 .style('fill', 'none')
                 .attr("d", this._baseLine)
                 .attr('class', 'path')
@@ -121,7 +130,7 @@ class Area extends AbstractBasicCartesianChartWithAxes {
         }
 
         this.nodeLayer.selectAll(".node")
-            .data(this._data)
+            .data(data)
             .enter().append("circle")
             .attr("class", "node")
             .attr("r", this._options.plots.nodeRadius)
@@ -136,14 +145,18 @@ class Area extends AbstractBasicCartesianChartWithAxes {
 
     _animate() {
 
+
+
     }
 
-    _drawCanvas() {
+
+
+    _drawCanvas(data) {
         this._frontContext.clearRect(0, 0, this._options.chart.innerWidth, this._options.chart.innerHeight);
         this._hiddenContext.clearRect(0, 0, this._options.chart.innerWidth, this._options.chart.innerHeight);
 
-        this._drawLine();
-        this._drawNodes();
+        this._drawLine(data);
+        this._drawNodes(data);
     }
 
     _gradientStroke() {
@@ -161,9 +174,9 @@ class Area extends AbstractBasicCartesianChartWithAxes {
         this._frontContext.strokeStyle = grd;
     }
 
-    _drawLine() {
+    _drawLine(data) {
         this._frontContext.beginPath();
-        this._curve(this._data);
+        this._curve(data);
         this._frontContext.lineWidth = this._options.plots.strokeWidth;
         // add linear gradient, x0, y0 -> x1, y1
         this._gradientStroke();
@@ -171,12 +184,12 @@ class Area extends AbstractBasicCartesianChartWithAxes {
         this._frontContext.stroke();
     }
 
-    _drawNodes() {
+    _drawNodes(data) {
         const stops = linearStops(this._options.color.scheme);
         const nodeColor = stops[stops.length - 1].color;
 
         if (this._options.plots.showDots === true) {
-            for (let d of this._data) {
+            for (let d of data) {
                 this._frontContext.beginPath();
                 this._frontContext.arc(this._x(d), this._y(d), this._options.plots.nodeRadius, 0, 2 * Math.PI, false);
                 this._frontContext.fillStyle = nodeColor;
