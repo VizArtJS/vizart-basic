@@ -41,6 +41,7 @@ class AbstractCartesianChart extends AbstractChart {
         this._hiddenCanvas;
         this._frontContext;
         this._hiddenContext;
+        this._detachedContainer;
     }
 
     render(_data) {
@@ -76,6 +77,8 @@ class AbstractCartesianChart extends AbstractChart {
             .style('position', 'absolute')
             .style('top', 0)
             .style('left', 0);
+
+        this._detachedContainer = select(this._containerId).append('vizart-detached');
 
         this._tooltip = select(this._containerId)
             .append("div")

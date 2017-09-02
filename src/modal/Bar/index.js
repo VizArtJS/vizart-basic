@@ -26,12 +26,8 @@ class Bar extends AbstractBasicCartesianChartWithAxes {
                 return this._getDimension().scale.bandwidth();
             }
         };
-        this._h = (d)=> {
-            return this._options.chart.innerHeight - this._y(d);
-        };
-        this._zero = ()=> {
-            return this._getMetric().scale(0);
-        }
+        this._h = d=>  this._options.chart.innerHeight - this._y(d);
+        this._zero = ()=> this._getMetric().scale(0);
     }
 
     createOptions(_userOptions) {
