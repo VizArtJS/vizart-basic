@@ -102,10 +102,13 @@ class Area extends AbstractBasicCartesianChartWithAxes {
         // }
 
 
+        this._draw();
+
+    }
+
+    _draw() {
         this._drawLine();
         this._drawNodes();
-
-
     }
 
     _gradientStroke() {
