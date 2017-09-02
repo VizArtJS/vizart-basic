@@ -47,6 +47,8 @@ class AbstractCartesianChart extends AbstractChart {
     render(_data) {
         super.render(_data);
 
+        let devicePixelRatio = window.devicePixelRatio || 1;
+
         this._frontCanvas = select(this._containerId)
             .append("canvas")
             .attr("id", this._fontCanvasId)
@@ -54,8 +56,8 @@ class AbstractCartesianChart extends AbstractChart {
             .style("width", this._options.chart.innerWidth + "px")
             .style("height", this._options.chart.innerHeight + "px")
             .style('margin', this._options.chart.margin.top + 'px 0 0 ' + this._options.chart.margin.left + 'px ')
-            .attr('width', this._options.chart.innerWidth * devicePixelRatio)
-            .attr('height', this._options.chart.innerHeight * devicePixelRatio);
+            .attr('width', this._options.chart.width * devicePixelRatio)
+            .attr('height', this._options.chart.height * devicePixelRatio);
 
         this._hiddenCanvas = select(this._containerId)
             .append("canvas")
@@ -64,8 +66,8 @@ class AbstractCartesianChart extends AbstractChart {
             .style("width", this._options.chart.innerWidth + "px")
             .style("height", this._options.chart.innerHeight + "px")
             .style('margin', this._options.chart.margin.top + 'px 0 0 ' + this._options.chart.margin.left + 'px ')
-            .attr('width', this._options.chart.innerWidth * devicePixelRatio)
-            .attr('height', this._options.chart.innerHeight * devicePixelRatio);
+            .attr('width', this._options.chart.width * devicePixelRatio)
+            .attr('height', this._options.chart.height * devicePixelRatio);
 
         this._frontContext = this._frontCanvas.node().getContext('2d');
         this._frontContext.clearRect(0, 0, this._options.chart.innerWidth, this._options.chart.innerHeight);
@@ -73,6 +75,8 @@ class AbstractCartesianChart extends AbstractChart {
         this._hiddenContext = this._hiddenCanvas.node().getContext("2d");
         this._hiddenContext.clearRect(0, 0, this._options.chart.innerWidth, this._options.chart.innerHeight);
 
+        this._frontContext.scale(devicePixelRatio, devicePixelRatio);
+        this._hiddenContext.scale(devicePixelRatio, devicePixelRatio);
         this._container
             .style('position', 'absolute')
             .style('top', 0)
