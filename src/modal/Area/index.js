@@ -1,11 +1,11 @@
-import { easeCubicOut } from 'd3-ease';
-import { area, line } from 'd3-shape';
+import {easeCubicOut} from 'd3-ease';
+import {area, line} from 'd3-shape';
 import {
     uuid,
     linearStops
 } from 'vizart-core';
 
-import { AbstractBasicCartesianChartWithAxes } from '../../base';
+import {AbstractBasicCartesianChartWithAxes} from '../../base';
 import createCartesianOpt from '../../options/createCartesianOpt';
 import interpolateCurve from '../../util/curve';
 
@@ -21,7 +21,25 @@ const AreaOpt = {
         drawArea: true,
         showDots: true
     },
-};
+}
+
+/**
+ *  Generates the next color in the sequence, going from 0,0,0 to 255,255,255.
+ */
+let nextCol = 1;
+const genColor = () => {
+    let ret = [];
+    // via http://stackoverflow.com/a/15804183
+    if (nextCol < 16777215) {
+        ret.push(nextCol & 0xff); // R
+        ret.push((nextCol & 0xff00) >> 8); // G
+        ret.push((nextCol & 0xff0000) >> 16); // B
+
+        nextCol += 100; // This is exagerated for this example and would ordinarily be 1.
+    }
+    return "rgb(" + ret.join(',') + ")";
+}
+
 
 class Area extends AbstractBasicCartesianChartWithAxes {
     constructor(canvasId, _userOptions) {
@@ -69,44 +87,61 @@ class Area extends AbstractBasicCartesianChartWithAxes {
 
         interpolateCurve(this._options.plots.curve, [this._curve, this._baseLine]);
 
-        // if (this._options.plots.drawArea === true) {
-        //     this.pathLayer.append("path")
-        //         .datum(this._data)
-        //         .style('fill', 'url(' + this.linearGradent.id() + ')')
-        //         .style('stroke', 'none')
-        //         .style('fill-opacity', this._options.plots.areaOpacity)
-        //         .style('stroke-width', this._options.plots.strokeWidth + 'px')
-        //         .attr("d", this._baseLine)
-        //         .attr('class', 'path')
-        //         .transition()
-        //         .duration(this._options.animation.duration.update)
-        //         .delay((d, i) => {
-        //             return i / this._data.length * this._options.animation.duration.update;
-        //         })
-        //         .attr("d", this._curve);
-        // } else {
-        //     this.pathLayer.append("path")
-        //         .datum(this._data)
-        //         .style('fill', 'none')
-        //         .style('stroke', 'url(' + this.linearGradent.id() + ')')
-        //         .style('stroke-width', this._options.plots.strokeWidth + 'px')
-        //         .attr("d", this._baseLine)
-        //         .attr('class', 'path')
-        //         .transition()
-        //         .duration(this._options.animation.duration.update)
-        //         .delay((d, i) => {
-        //             return i / this._data.length * this._options.animation.duration.update;
-        //         })
-        //         .ease(easeCubicOut)
-        //         .attr("d", this._curve);
-        // }
+        this._drawDetached();
+        this._drawCanvas();
+    }
 
+    _drawDetached() {
+        if (this._options.plots.drawArea === true) {
+            this.pathLayer.append("path")
+                .datum(this._data)
+                .style('stroke', 'none')
+                .style('stroke-width', this._options.plots.strokeWidth + 'px')
+                .attr("d", this._baseLine)
+                .attr('class', 'path')
+                .transition()
+                .duration(this._options.animation.duration.update)
+                .delay((d, i) => {
+                    return i / this._data.length * this._options.animation.duration.update;
+                })
+                .attr("d", this._curve);
+        } else {
+            this.pathLayer.append("path")
+                .datum(this._data)
+                .style('fill', 'none')
+                .attr("d", this._baseLine)
+                .attr('class', 'path')
+                .transition()
+                .duration(this._options.animation.duration.update)
+                .delay((d, i) => {
+                    return i / this._data.length * this._options.animation.duration.update;
+                })
+                .ease(easeCubicOut)
+                .attr("d", this._curve);
+        }
 
-        this._draw();
+        this.nodeLayer.selectAll(".node")
+            .data(this._data)
+            .enter().append("circle")
+            .attr("class", "node")
+            .attr("r", this._options.plots.nodeRadius)
+            .attr("cx", this._x)
+            .attr("cy", this._options.chart.innerHeight)
+            .attr('fill', this.nodeColor)
+            .attr('opacity', 0)
+            .transition()
+            .duration(this._options.animation.duration.update)
+            .attr("cy", this._y);
+    }
+
+    _animate() {
 
     }
 
-    _draw() {
+    _drawCanvas() {
+        this._frontContext.clearRect(0, 0, this._options.chart.innerWidth, this._options.chart.innerHeight);
+        this._hiddenContext.clearRect(0, 0, this._options.chart.innerWidth, this._options.chart.innerHeight);
+
         this._drawLine();
         this._drawNodes();
     }
@@ -119,7 +154,7 @@ class Area extends AbstractBasicCartesianChartWithAxes {
 
         const stops = linearStops(this._options.color.scheme);
 
-        for (const { offset, color } of stops) {
+        for (const {offset, color} of stops) {
             grd.addColorStop(offset, color);
         }
 
@@ -150,7 +185,7 @@ class Area extends AbstractBasicCartesianChartWithAxes {
         }
     }
 
-    update(){
+    update() {
         super.update();
 
         interpolateCurve(this._options.plots.curve, [this._curve, this._baseLine]);
@@ -159,7 +194,9 @@ class Area extends AbstractBasicCartesianChartWithAxes {
         this.pathLayer.select('.path')
             .transition("ease-shape-and-node")
             .duration(this._options.animation.duration.remove)
-            .delay( (d, i)=> { return i / this._data.length *this._options.animation.duration.remove; })
+            .delay((d, i) => {
+                return i / this._data.length * this._options.animation.duration.remove;
+            })
             .attr("d", this._baseLine);
 
         this.nodeLayer.selectAll(".node")
@@ -174,7 +211,9 @@ class Area extends AbstractBasicCartesianChartWithAxes {
             .attr("d", this._baseLine)
             .transition("arise-transition")
             .duration(this._options.animation.duration.update)
-            .delay((d, i)=> { return i / this._data.length * this._options.animation.duration.update; })
+            .delay((d, i) => {
+                return i / this._data.length * this._options.animation.duration.update;
+            })
             .style('stroke-width', this._options.plots.strokeWidth + 'px')
             .attr("d", this._curve);
 
@@ -191,7 +230,9 @@ class Area extends AbstractBasicCartesianChartWithAxes {
             .attr("cx", this._x)
             .transition("update-transition")
             .duration(this._options.animation.duration.remove)
-            .delay((d, i)=> { return i / this._data.length * this._options.animation.duration.remove })
+            .delay((d, i) => {
+                return i / this._data.length * this._options.animation.duration.remove
+            })
             .attr('opacity', this._options.plots.showDots ? 1 : 0)
             .attr("r", this._options.plots.nodeRadius)
             .attr("cy", this._y);
@@ -206,7 +247,9 @@ class Area extends AbstractBasicCartesianChartWithAxes {
             .attr('opacity', this._options.plots.showDots ? 0.2 : 0)
             .transition("update-transition")
             .duration(this._options.animation.duration.update)
-            .delay((d, i)=> { return i / this._data.length * this._options.animation.duration.update  })
+            .delay((d, i) => {
+                return i / this._data.length * this._options.animation.duration.update
+            })
             .attr("cy", this._y)
             .attr('opacity', this._options.plots.showDots ? 1 : 0);
 
