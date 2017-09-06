@@ -402,7 +402,9 @@ class Pie extends AbstractBasicCartesianChart {
 
     _provideColor() {
         // pie's other slice may contain value out of range
-        return super._provideColor().clamp(true);
+        return this._data.length > 1
+            ? super._provideColor().clamp(true)
+            : super._provideColor();
     }
 }
 
