@@ -1,6 +1,7 @@
 import { easeCubicOut } from 'd3-ease';
 import { area, line } from 'd3-shape';
-import { interpolate } from 'd3-interpolate';
+import { interpolateArray } from 'd3-interpolate';
+import { timer } from 'd3-timer';
 import {
     uuid,
     linearStops
@@ -41,6 +42,25 @@ const genColor = () => {
     return "rgb(" + ret.join(',') + ")";
 }
 
+/**
+ * a particle contains x, y, r, c, alpha
+ *
+ * @param context
+ * @param particles
+ */
+const drawNode = (context, particles)=> {
+    context.clearRect(0, 0, context.width, context.height);
+    context.beginPath();
+
+    for (const p of particles) {
+        context.arc(p.x, p.y, p.r, 0, 2 * Math.PI, false);
+        context.fillStye = p.c;
+        context.globalAlpha = p.alpha;
+        context.fill();
+    }
+
+    context.closePath();
+}
 
 class Area extends AbstractBasicCartesianChartWithAxes {
     constructor(canvasId, _userOptions) {
@@ -144,7 +164,42 @@ class Area extends AbstractBasicCartesianChartWithAxes {
     }
 
     _animate() {
+        const Duration = this._options.animation.duration.update;
+        const stops = linearStops(this._options.color.scheme);
+        const nodeColor = stops[stops.length - 1].color;
 
+        const initialState = this._data.map(d=>{
+            return {
+                x: this._x(d),
+                y: 0,
+                r: this._options.plots.nodeRadius,
+                c: nodeColor,
+                alpha: 0
+            }
+        });
+
+        const finalState = this._data.map(d=>{
+            return {
+                x: this._x(d),
+                y: this._y(d),
+                r: this._options.plots.nodeRadius,
+                c: nodeColor,
+                alpha: 1
+            }
+        });
+
+        const interpolateParticles = interpolateArray(initialState, finalState);
+
+        let that = this;
+        timer( (timeSinceStart)=> {
+            let t = Math.min(timeSinceStart/Duration, 1);
+
+            drawNode(that._frontContext, interpolateParticles(t));
+
+            if (t === 1) {
+                return true;
+            }
+        });
 
 
     }
