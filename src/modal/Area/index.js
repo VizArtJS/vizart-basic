@@ -139,7 +139,7 @@ class Area extends AbstractBasicCartesianChartWithAxes {
             : this._data.map(d=>{
                 return {
                     x: this._x(d),
-                    y: 0,
+                    y: this._frontCanvas.node().height,
                     r: this._options.plots.nodeRadius,
                     c: nodeColor,
                     alpha: 0
