@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="./lib/bootstrap-3.3.7/css/bootstrap.css">
     <script src="./lib/jquery-1.12.4.min.js"></script>
     <script src="./lib/bootstrap-3.3.7/js/bootstrap.js"></script>
-    <script src="http://chancejs.com/chance.min.js"></script>
     <script src="./vizart-basic.standalone.js" type="text/javascript"></script>
     <style>
         html,
@@ -51,7 +50,7 @@
     $(document).ready(function () {
         var options = {
             data: {
-                x:  { name: 'name', type: 'string', accessor: 'mx'},
+                x:  { name: 'name', type: 'number', accessor: 'mx'},
                 y: [
                     { name: 'performance', type: 'number', accessor: 'my'}
                 ],
@@ -71,24 +70,26 @@
 
         var fakeData = [];
 
+        var num = 1;
+
         for (var i = 0; i < 3000; i++) {
             fakeData.push({
-                mx: chance.name(),
-                my: chance.floating({min: 100, max: 600})
+                mx: num++,
+                my: Math.random() * 1000
             })
         }
 
         var area = new VizArtBasic.Area('#bar', options);
         area.render(fakeData);
 
-        // live update button is clicked
-        $('#update').click(function(){
-            var ranIndex = chance.integer({min:0, max:49});
-            fakeData[ranIndex].my = chance.floating({min: 0, max: 0.00035})
-
-            area.data(fakeData);
-            area.update();
-        });
+//        // live update button is clicked
+//        $('#update').click(function(){
+//            var ranIndex = chance.integer({min:0, max:49});
+//            fakeData[ranIndex].my = chance.floating({min: 0, max: 0.00035})
+//
+//            area.data(fakeData);
+//            area.update();
+//        });
 
         var options2 = area.options();
 

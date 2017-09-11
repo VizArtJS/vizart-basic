@@ -1,6 +1,12 @@
 import { easeCubicOut } from 'd3-ease';
-import { area, line } from 'd3-shape';
-import { interpolateArray } from 'd3-interpolate';
+import {
+    area,
+    line
+} from 'd3-shape';
+import {
+    interpolate,
+    interpolateArray
+} from 'd3-interpolate';
 import { timer } from 'd3-timer';
 import {
     uuid,
@@ -22,14 +28,14 @@ const AreaOpt = {
         nodeRadius: 4,
         drawArea: true,
         showDots: true
-    },
+    }
 }
 
 /**
  *  Generates the next color in the sequence, going from 0,0,0 to 255,255,255.
  */
 let nextCol = 1;
-const genColor = () => {
+const genColor = ()=> {
     let ret = [];
     // via http://stackoverflow.com/a/15804183
     if (nextCol < 16777215) {
@@ -60,6 +66,28 @@ const drawNode = (context, particles)=> {
     }
 
     context.closePath();
+}
+
+/**
+ * add linear gradient, x0, y0 -> x1, y1
+ *
+ * @param context
+ * @param scheme
+ */
+const gradientStroke = (context, scheme)=> {
+    let grd = context.createLinearGradient(
+        context.width / 2,
+        context.height,
+        context.width / 2,
+        0);
+
+    const stops = linearStops(scheme);
+
+    for (const {offset, color} of stops) {
+        grd.addColorStop(offset, color);
+    }
+
+    context.strokeStyle = grd;
 }
 
 class Area extends AbstractBasicCartesianChartWithAxes {
