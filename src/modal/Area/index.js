@@ -92,11 +92,17 @@ const draw = (context, particles, width, height, opt)=> {
         context.fill();
     }
 
-    const curve = area()
-        .x(d=>d.x)
-        .y0(opt.chart.innerHeight)
-        .y1(d=>d.y)
-        .context(context);
+    const curve = (plots.drawArea === true)
+        ? area()
+            .x(d=>d.x)
+            .y0(opt.chart.innerHeight)
+            .y1(d=>d.y)
+            .context(context)
+        : line()
+            .x(d=>d.x)
+            .y(d=>d.y)
+            .context(context);
+    
     context.beginPath();
     curve(particles);
     context.lineWidth = opt.plots.strokeWidth;
