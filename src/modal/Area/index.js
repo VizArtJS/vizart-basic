@@ -28,20 +28,32 @@ const AreaOpt = {
 }
 
 /**
+ * Generates the next color in the sequence, going from 0,0,0 to 255,255,255.
+ * via http://stackoverflow.com/a/15804183
+ *
+ * @param dataIndex
+ * @returns {string}
+ */
+const genColorByIndex = dataIndex=> {
+    let ret = [];
+    if (dataIndex < 16777215) {
+        ret.push(dataIndex & 0xff); // R
+        ret.push((dataIndex & 0xff00) >> 8); // G
+        ret.push((dataIndex & 0xff0000) >> 16); // B
+    }
+    return "rgb(" + ret.join(',') + ")";
+}
+
+/**
  *  Generates the next color in the sequence, going from 0,0,0 to 255,255,255.
+ *      // via http://stackoverflow.com/a/15804183
+
  */
 let nextCol = 1;
 const genColor = ()=> {
-    let ret = [];
-    // via http://stackoverflow.com/a/15804183
-    if (nextCol < 16777215) {
-        ret.push(nextCol & 0xff); // R
-        ret.push((nextCol & 0xff00) >> 8); // G
-        ret.push((nextCol & 0xff0000) >> 16); // B
-
-        nextCol += 100; // This is exagerated for this example and would ordinarily be 1.
-    }
-    return "rgb(" + ret.join(',') + ")";
+    const color = genColorByIndex(nextCol);
+    nextCol++;
+    return color;
 }
 
 
@@ -80,7 +92,7 @@ const gradientStroke = (context, width, height, opt)=> {
  * @param particles, particle colors may be defined in rgb string and thus cannot be recognized by
  * canvas. This is caused by d3's interpolation.
  */
-const draw = (context, particles, width, height, opt)=> {
+const draw = (context, particles, width, height, opt, hidden = false)=> {
     context.clearRect(0, 0, width, height);
 
     for (const p of particles) {
@@ -180,7 +192,7 @@ class Area extends AbstractBasicCartesianChartWithAxes {
                 interpolateParticles(t),
                 that._hiddenCanvas.node().width,
                 that._hiddenCanvas.node().height,
-                that._options);
+                that._options, true);
 
             if (t === 1) {
                 batchRendering.stop();
