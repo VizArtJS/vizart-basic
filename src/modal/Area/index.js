@@ -49,15 +49,40 @@ const genColor = ()=> {
 }
 
 /**
+ * add linear gradient, x0, y0 -> x1, y1
+ *
+ * @param context
+ * @param scheme
+ */
+const gradientStroke = (context, width, height, opt)=> {
+    let grd = context.createLinearGradient(
+        width / 2,
+        height,
+        width / 2,
+        0);
+
+    const stops = linearStops(opt.color.scheme);
+
+    for (const {offset, color} of stops) {
+        grd.addColorStop(offset, color);
+    }
+
+    context.strokeStyle = grd;
+}
+
+
+/**
  * a particle contains x, y, r, c, alpha
  *
  * @param context
  * @param particles, particle colors may be defined in rgb string and thus cannot be recognized by
  * canvas. This is caused by d3's interpolation.
  */
-const drawNode = (context, particles, width, height)=> {
+const draw = (context, particles, width, height, opt)=> {
     context.clearRect(0, 0, width, height);
+
     for (const p of particles) {
+        // node
         context.beginPath();
 
         context.arc(p.x, p.y, p.r, 0, 2 * Math.PI, false);
@@ -66,29 +91,21 @@ const drawNode = (context, particles, width, height)=> {
         context.globalAlpha = p.alpha;
         context.fill();
     }
+
+    const curve = area()
+        .x(d=>d.x)
+        .y0(opt.chart.innerHeight)
+        .y1(d=>d.y)
+        .context(context);
+    context.beginPath();
+    curve(particles);
+    context.lineWidth = opt.plots.strokeWidth;
+    // add linear gradient, x0, y0 -> x1, y1
+    gradientStroke(context, width, height, opt);
+
+    context.stroke();
 }
 
-/**
- * add linear gradient, x0, y0 -> x1, y1
- *
- * @param context
- * @param scheme
- */
-const gradientStroke = (context, scheme)=> {
-    let grd = context.createLinearGradient(
-        context.width / 2,
-        context.height,
-        context.width / 2,
-        0);
-
-    const stops = linearStops(scheme);
-
-    for (const {offset, color} of stops) {
-        grd.addColorStop(offset, color);
-    }
-
-    context.strokeStyle = grd;
-}
 
 class Area extends AbstractBasicCartesianChartWithAxes {
     constructor(canvasId, _userOptions) {
@@ -261,57 +278,12 @@ class Area extends AbstractBasicCartesianChartWithAxes {
         this._frontContext.clearRect(0, 0, this._options.chart.innerWidth, this._options.chart.innerHeight);
         this._hiddenContext.clearRect(0, 0, this._options.chart.innerWidth, this._options.chart.innerHeight);
 
-        // this._drawLine(data);
-        // this._drawNodes(data);
         this._animate();
-    }
-
-
-    _drawLine(data) {
-        this._frontContext.beginPath();
-        this._curve(data);
-        this._frontContext.lineWidth = this._options.plots.strokeWidth;
-        // add linear gradient, x0, y0 -> x1, y1
-        this._gradientStroke();
-
-        this._frontContext.stroke();
-    }
-
-    _drawNodes(data) {
-        const stops = linearStops(this._options.color.scheme);
-        const nodeColor = stops[stops.length - 1].color;
-        console.log(nodeColor);
-        if (this._options.plots.showDots === true) {
-
-            for (let d of data) {
-                this._frontContext.beginPath();
-                this._frontContext.arc(this._x(d), this._y(d), this._options.plots.nodeRadius, 0, 2 * Math.PI, false);
-                this._frontContext.fillStyle = nodeColor;
-                this._frontContext.fill();
-
-            }
-
-        }
     }
 
     createOptions(_userOpt) {
         return createCartesianOpt(AreaOpt, _userOpt);
     };
-
-    _gradientStroke() {
-        let grd = this._frontContext.createLinearGradient(this._frontCanvas.node().width / 2,
-            this._frontCanvas.node().height,
-            this._frontCanvas.node().width / 2,
-            0);
-
-        const stops = linearStops(this._options.color.scheme);
-
-        for (const {offset, color} of stops) {
-            grd.addColorStop(offset, color);
-        }
-
-        this._frontContext.strokeStyle = grd;
-    }
 
 
     _animate() {
@@ -319,7 +291,6 @@ class Area extends AbstractBasicCartesianChartWithAxes {
         const stops = linearStops(this._options.color.scheme);
         const nodeColor = stops[stops.length - 1].color;
 
-        console.log(nodeColor);
         const initialState = this._data.map(d=>{
             return {
                 x: this._x(d),
@@ -346,10 +317,14 @@ class Area extends AbstractBasicCartesianChartWithAxes {
         timer( (timeSinceStart)=> {
             let t = Math.min(timeSinceStart/Duration, 1);
 
-            drawNode(that._frontContext,
+            draw(that._frontContext,
                 interpolateParticles(t),
                 that._frontCanvas.node().width,
-                that._frontCanvas.node().height);
+                that._frontCanvas.node().height,
+                that._options,
+                that._curve,
+                that._data);
+
 
             if (t === 1) {
                 return true;
