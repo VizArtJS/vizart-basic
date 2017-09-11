@@ -78,9 +78,9 @@ class AbstractCartesianChart extends AbstractChart {
         this._frontContext.scale(devicePixelRatio, devicePixelRatio);
         this._hiddenContext.scale(devicePixelRatio, devicePixelRatio);
         this._container
-            .style('position', 'absolute')
-            .style('top', 0)
-            .style('left', 0);
+            .style('position', 'absolute');
+            // .style('top', 0)
+            // .style('left', 0);
 
         this._detachedContainer = select(this._containerId).append('vizart-detached');
 
