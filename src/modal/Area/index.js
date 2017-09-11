@@ -1,19 +1,13 @@
-import { easeCubicOut } from 'd3-ease';
 import {
     area,
     line
 } from 'd3-shape';
-import {
-    interpolate,
-    interpolateArray
-} from 'd3-interpolate';
+import { interpolateArray } from 'd3-interpolate';
 import { timer } from 'd3-timer';
 import {
     uuid,
     linearStops
 } from 'vizart-core';
-
-import isNull from 'lodash-es/isNull';
 
 import { AbstractBasicCartesianChartWithAxes } from '../../base';
 import createCartesianOpt from '../../options/createCartesianOpt';
@@ -123,9 +117,6 @@ const draw = (context, particles, width, height, opt)=> {
 class Area extends AbstractBasicCartesianChartWithAxes {
     constructor(canvasId, _userOptions) {
         super(canvasId, _userOptions);
-
-        this.oldData = null;
-        this.newData = null;
     }
 
 
