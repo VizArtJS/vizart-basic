@@ -146,8 +146,21 @@ class Area extends AbstractBasicCartesianChartWithAxes {
         this._drawCanvas(data);
     }
 
+    update() {
+        super.update();
 
+        interpolateCurve(this._options.plots.curve, [this._curve, this._baseLine]);
 
+        this._updateDetached();
+        this._updateCanvas();
+    }
+
+    /**
+     * detached node manipulation. all detached svg objects are under <vizart> namespace
+     *
+     * @param data
+     * @private
+     */
     _drawDetached(data) {
         if (this._options.plots.drawArea === true) {
             this.pathLayer.append("path")
@@ -191,102 +204,7 @@ class Area extends AbstractBasicCartesianChartWithAxes {
             .attr("cy", this._y);
     }
 
-    _animate() {
-        const Duration = this._options.animation.duration.update;
-        const stops = linearStops(this._options.color.scheme);
-        const nodeColor = stops[stops.length - 1].color;
-
-        const initialState = this._data.map(d=>{
-            return {
-                x: this._x(d),
-                y: 0,
-                r: this._options.plots.nodeRadius,
-                c: nodeColor,
-                alpha: 0
-            }
-        });
-
-        const finalState = this._data.map(d=>{
-            return {
-                x: this._x(d),
-                y: this._y(d),
-                r: this._options.plots.nodeRadius,
-                c: nodeColor,
-                alpha: 1
-            }
-        });
-
-        const interpolateParticles = interpolateArray(initialState, finalState);
-
-        let that = this;
-        timer( (timeSinceStart)=> {
-            let t = Math.min(timeSinceStart/Duration, 1);
-
-            drawNode(that._frontContext, interpolateParticles(t));
-
-            if (t === 1) {
-                return true;
-            }
-        });
-
-
-    }
-
-
-
-    _drawCanvas(data) {
-        this._frontContext.clearRect(0, 0, this._options.chart.innerWidth, this._options.chart.innerHeight);
-        this._hiddenContext.clearRect(0, 0, this._options.chart.innerWidth, this._options.chart.innerHeight);
-
-        this._drawLine(data);
-        this._drawNodes(data);
-    }
-
-    _gradientStroke() {
-        let grd = this._frontContext.createLinearGradient(this._frontCanvas.node().width / 2,
-            this._frontCanvas.node().height,
-            this._frontCanvas.node().width / 2,
-            0);
-
-        const stops = linearStops(this._options.color.scheme);
-
-        for (const {offset, color} of stops) {
-            grd.addColorStop(offset, color);
-        }
-
-        this._frontContext.strokeStyle = grd;
-    }
-
-    _drawLine(data) {
-        this._frontContext.beginPath();
-        this._curve(data);
-        this._frontContext.lineWidth = this._options.plots.strokeWidth;
-        // add linear gradient, x0, y0 -> x1, y1
-        this._gradientStroke();
-
-        this._frontContext.stroke();
-    }
-
-    _drawNodes(data) {
-        const stops = linearStops(this._options.color.scheme);
-        const nodeColor = stops[stops.length - 1].color;
-
-        if (this._options.plots.showDots === true) {
-            for (let d of data) {
-                this._frontContext.beginPath();
-                this._frontContext.arc(this._x(d), this._y(d), this._options.plots.nodeRadius, 0, 2 * Math.PI, false);
-                this._frontContext.fillStyle = nodeColor;
-                this._frontContext.fill();
-            }
-        }
-    }
-
-    update() {
-        super.update();
-
-        interpolateCurve(this._options.plots.curve, [this._curve, this._baseLine]);
-        this.linearGradent.update(this._options.color.scheme, this._data.length);
-
+    _updateDetached(data) {
         this.pathLayer.select('.path')
             .transition("ease-shape-and-node")
             .duration(this._options.animation.duration.remove)
@@ -348,14 +266,109 @@ class Area extends AbstractBasicCartesianChartWithAxes {
             })
             .attr("cy", this._y)
             .attr('opacity', this._options.plots.showDots ? 1 : 0);
+    }
 
+    /**
+     * canvas manipulation
+     *
+     * @param data
+     * @private
+     */
+    _drawCanvas(data) {
+        this._frontContext.clearRect(0, 0, this._options.chart.innerWidth, this._options.chart.innerHeight);
+        this._hiddenContext.clearRect(0, 0, this._options.chart.innerWidth, this._options.chart.innerHeight);
+
+        this._drawLine(data);
+        this._drawNodes(data);
+        // this._animate();
+    }
+
+    _updateCanvas(data) {
 
     }
 
+    _drawLine(data) {
+        this._frontContext.beginPath();
+        this._curve(data);
+        this._frontContext.lineWidth = this._options.plots.strokeWidth;
+        // add linear gradient, x0, y0 -> x1, y1
+        this._gradientStroke();
+
+        this._frontContext.stroke();
+    }
+
+    _drawNodes(data) {
+        const stops = linearStops(this._options.color.scheme);
+        const nodeColor = stops[stops.length - 1].color;
+
+        if (this._options.plots.showDots === true) {
+            for (let d of data) {
+                this._frontContext.beginPath();
+                this._frontContext.arc(this._x(d), this._y(d), this._options.plots.nodeRadius, 0, 2 * Math.PI, false);
+                this._frontContext.fillStyle = nodeColor;
+                this._frontContext.fill();
+            }
+        }
+    }
 
     createOptions(_userOpt) {
         return createCartesianOpt(AreaOpt, _userOpt);
     };
+
+    _gradientStroke() {
+        let grd = this._frontContext.createLinearGradient(this._frontCanvas.node().width / 2,
+            this._frontCanvas.node().height,
+            this._frontCanvas.node().width / 2,
+            0);
+
+        const stops = linearStops(this._options.color.scheme);
+
+        for (const {offset, color} of stops) {
+            grd.addColorStop(offset, color);
+        }
+
+        this._frontContext.strokeStyle = grd;
+    }
+
+
+    _animate() {
+        const Duration = this._options.animation.duration.update;
+        const stops = linearStops(this._options.color.scheme);
+        const nodeColor = stops[stops.length - 1].color;
+
+        const initialState = this._data.map(d=>{
+            return {
+                x: this._x(d),
+                y: 0,
+                r: this._options.plots.nodeRadius,
+                c: nodeColor,
+                alpha: 0
+            }
+        });
+
+        const finalState = this._data.map(d=>{
+            return {
+                x: this._x(d),
+                y: this._y(d),
+                r: this._options.plots.nodeRadius,
+                c: nodeColor,
+                alpha: 1
+            }
+        });
+
+        const interpolateParticles = interpolateArray(initialState, finalState);
+
+        let that = this;
+        timer( (timeSinceStart)=> {
+            let t = Math.min(timeSinceStart/Duration, 1);
+
+            drawNode(that._frontContext, interpolateParticles(t));
+
+            if (t === 1) {
+                return true;
+            }
+        });
+    }
 
 }
 
