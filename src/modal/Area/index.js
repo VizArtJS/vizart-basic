@@ -92,7 +92,7 @@ const draw = (context, particles, width, height, opt)=> {
         context.fill();
     }
 
-    const curve = (plots.drawArea === true)
+    const curve = (opt.plots.drawArea === true)
         ? area()
             .x(d=>d.x)
             .y0(opt.chart.innerHeight)
@@ -102,11 +102,11 @@ const draw = (context, particles, width, height, opt)=> {
             .x(d=>d.x)
             .y(d=>d.y)
             .context(context);
-    
+    interpolateCurve(opt.plots.curve, [curve]);
+
     context.beginPath();
     curve(particles);
     context.lineWidth = opt.plots.strokeWidth;
-    // add linear gradient, x0, y0 -> x1, y1
     gradientStroke(context, width, height, opt);
 
     context.stroke();
@@ -280,10 +280,7 @@ class Area extends AbstractBasicCartesianChartWithAxes {
      * @param data
      * @private
      */
-    _drawCanvas(data) {
-        this._frontContext.clearRect(0, 0, this._options.chart.innerWidth, this._options.chart.innerHeight);
-        this._hiddenContext.clearRect(0, 0, this._options.chart.innerWidth, this._options.chart.innerHeight);
-
+    _drawCanvas() {
         this._animate();
     }
 
