@@ -206,24 +206,7 @@ class Area extends AbstractBasicCartesianChartWithAxes {
 
     _updateDetached(data) {
         this.pathLayer.select('.path')
-            .transition("ease-shape-and-node")
-            .duration(this._options.animation.duration.remove)
-            .delay((d, i) => {
-                return i / this._data.length * this._options.animation.duration.remove;
-            })
-            .attr("d", this._baseLine);
-
-        this.nodeLayer.selectAll(".node")
-            .transition("ease-shape-and-node")
-            .duration(this._options.animation.duration.remove)
-            .attr('opacity', 0.2)
-            .attr("cy", this._options.chart.innerHeight);
-
-
-        this.pathLayer.select('.path')
             .datum(this._data)
-            .attr("d", this._baseLine)
-            .transition("arise-transition")
             .duration(this._options.animation.duration.update)
             .delay((d, i) => {
                 return i / this._data.length * this._options.animation.duration.update;
