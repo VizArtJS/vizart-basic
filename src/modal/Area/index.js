@@ -48,6 +48,12 @@ const genColor = ()=> {
     return "rgb(" + ret.join(',') + ")";
 }
 
+
+const nodeColor = opt=> {
+    const stops = linearStops(opt.color.scheme);
+    return stops[stops.length - 1].color;
+}
+
 /**
  * add linear gradient, x0, y0 -> x1, y1
  *
@@ -82,13 +88,12 @@ const draw = (context, particles, width, height, opt)=> {
     context.clearRect(0, 0, width, height);
 
     for (const p of particles) {
-        // node
         context.beginPath();
+        context.fillStyle = nodeColor(opt);
+        context.globalAlpha = p.alpha;
 
         context.arc(p.x, p.y, p.r, 0, 2 * Math.PI, false);
-        context.fillStye = p.c;
 
-        context.globalAlpha = p.alpha;
         context.fill();
     }
 
