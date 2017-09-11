@@ -13,6 +13,8 @@ import {
     linearStops
 } from 'vizart-core';
 
+import isNull from 'lodash-es/isNull';
+
 import { AbstractBasicCartesianChartWithAxes } from '../../base';
 import createCartesianOpt from '../../options/createCartesianOpt';
 import interpolateCurve from '../../util/curve';
@@ -121,7 +123,11 @@ const draw = (context, particles, width, height, opt)=> {
 class Area extends AbstractBasicCartesianChartWithAxes {
     constructor(canvasId, _userOptions) {
         super(canvasId, _userOptions);
+
+        this.oldData = null;
+        this.newData = null;
     }
+
 
     render(_data) {
         super.render(_data);
@@ -144,14 +150,16 @@ class Area extends AbstractBasicCartesianChartWithAxes {
         const stops = linearStops(this._options.color.scheme);
         const nodeColor = stops[stops.length - 1].color;
 
-        const initialState = this._data.map(d=>{
-            return {
-                x: this._x(d),
-                y: 0,
-                r: this._options.plots.nodeRadius,
-                c: nodeColor,
-                alpha: 0
-            }
+        const initialState = this.previousState
+            ? this.previousState
+            : this._data.map(d=>{
+                return {
+                    x: this._x(d),
+                    y: 0,
+                    r: this._options.plots.nodeRadius,
+                    c: nodeColor,
+                    alpha: 0
+                }
         });
 
         const finalState = this._data.map(d=>{
@@ -163,6 +171,9 @@ class Area extends AbstractBasicCartesianChartWithAxes {
                 alpha: 1
             }
         });
+
+        // cache finalState as the initial state of next animation call
+        this.previousState = finalState;
 
         const interpolateParticles = interpolateArray(initialState, finalState);
 
