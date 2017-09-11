@@ -152,7 +152,7 @@ class Area extends AbstractBasicCartesianChartWithAxes {
         interpolateCurve(this._options.plots.curve, [this._curve, this._baseLine]);
 
         this._updateDetached();
-        this._updateCanvas();
+        this._drawCanvas();
     }
 
     /**
@@ -266,9 +266,6 @@ class Area extends AbstractBasicCartesianChartWithAxes {
         // this._animate();
     }
 
-    _updateCanvas(data) {
-
-    }
 
     _drawLine(data) {
         this._frontContext.beginPath();
