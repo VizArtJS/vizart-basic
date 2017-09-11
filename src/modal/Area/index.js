@@ -317,7 +317,7 @@ class Area extends AbstractBasicCartesianChartWithAxes {
         const interpolateParticles = interpolateArray(initialState, finalState);
 
         let that = this;
-        timer( (timeSinceStart)=> {
+        const batchRendering = timer( (timeSinceStart)=> {
             let t = Math.min(timeSinceStart/Duration, 1);
 
             draw(that._frontContext,
@@ -330,7 +330,7 @@ class Area extends AbstractBasicCartesianChartWithAxes {
 
 
             if (t === 1) {
-                return true;
+                batchRendering.stop();
             }
         });
     }
