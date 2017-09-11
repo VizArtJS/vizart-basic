@@ -87,9 +87,7 @@ const draw = (context, particles, width, height, opt)=> {
         context.beginPath();
         context.fillStyle = nodeColor(opt);
         context.globalAlpha = p.alpha;
-
         context.arc(p.x, p.y, p.r, 0, 2 * Math.PI, false);
-
         context.fill();
     }
 
@@ -130,11 +128,6 @@ class Area extends AbstractBasicCartesianChartWithAxes {
         super.update();
         this._animate();
     }
-
-    createOptions(_userOpt) {
-        return createCartesianOpt(AreaOpt, _userOpt);
-    };
-
 
     _animate() {
         const Duration = this._options.animation.duration.update;
@@ -202,6 +195,9 @@ class Area extends AbstractBasicCartesianChartWithAxes {
         this.update();
     }
 
+    createOptions(_userOpt) {
+        return createCartesianOpt(AreaOpt, _userOpt);
+    };
 }
 
 
