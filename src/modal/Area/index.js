@@ -1,6 +1,6 @@
 import {
     area,
-    line
+    line,
 } from 'd3-shape';
 import { interpolateArray } from 'd3-interpolate';
 import { timer } from 'd3-timer';
@@ -111,6 +111,10 @@ const draw = (context, particles, width, height, opt)=> {
     context.stroke();
 }
 
+const applyVoronoi = (context)=> {
+    //tbd
+}
+
 
 class Area extends AbstractBasicCartesianChartWithAxes {
     constructor(canvasId, _userOptions) {
@@ -169,13 +173,18 @@ class Area extends AbstractBasicCartesianChartWithAxes {
                 interpolateParticles(t),
                 that._frontCanvas.node().width,
                 that._frontCanvas.node().height,
-                that._options,
-                that._curve,
-                that._data);
+                that._options);
 
+            // draw hidden in parallel;
+            draw(that._hiddenContext,
+                interpolateParticles(t),
+                that._hiddenCanvas.node().width,
+                that._hiddenCanvas.node().height,
+                that._options);
 
             if (t === 1) {
                 batchRendering.stop();
+                applyVoronoi();
             }
         });
     }
