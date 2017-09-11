@@ -191,6 +191,15 @@ class Area extends AbstractBasicCartesianChartWithAxes {
         this.update();
     }
 
+    sort(accessor, direction) {
+        this._options.ordering = {
+            accessor: accessor,
+            direction: direction
+        };
+
+        this.update();
+    }
+
 }
 
 
