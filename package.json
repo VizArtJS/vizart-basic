@@ -36,6 +36,7 @@
     "d3-time-format": "^2.0.5",
     "d3-timer": "^1.0.6",
     "d3-transition": "^1.1.0",
+    "d3-voronoi": "^1.1.2",
     "lodash-es": "^4.17.4"
   },
   "devDependencies": {

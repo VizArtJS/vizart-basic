@@ -56,7 +56,6 @@ const genColor = ()=> {
     return color;
 }
 
-
 const nodeColor = opt=> {
     const stops = linearStops(opt.color.scheme);
     return stops[stops.length - 1].color;
@@ -95,9 +94,9 @@ const gradientStroke = (context, width, height, opt)=> {
 const draw = (context, particles, width, height, opt, hidden = false)=> {
     context.clearRect(0, 0, width, height);
 
-    for (const p of particles) {
+    for (const [i, p] of particles.entries()) {
         context.beginPath();
-        context.fillStyle = nodeColor(opt);
+        context.fillStyle = hidden === true? genColorByIndex(i) : nodeColor(opt);
         context.globalAlpha = p.alpha;
         context.arc(p.x, p.y, p.r, 0, 2 * Math.PI, false);
         context.fill();
@@ -187,16 +186,16 @@ class Area extends AbstractBasicCartesianChartWithAxes {
                 that._frontCanvas.node().height,
                 that._options);
 
-            // draw hidden in parallel;
-            draw(that._hiddenContext,
-                interpolateParticles(t),
-                that._hiddenCanvas.node().width,
-                that._hiddenCanvas.node().height,
-                that._options, true);
-
             if (t === 1) {
                 batchRendering.stop();
                 applyVoronoi();
+
+                // draw hidden in parallel;
+                draw(that._hiddenContext,
+                    interpolateParticles(t),
+                    that._hiddenCanvas.node().width,
+                    that._hiddenCanvas.node().height,
+                    that._options, true);
             }
         });
     }
