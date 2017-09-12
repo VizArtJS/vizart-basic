@@ -4,6 +4,7 @@ import {
 } from 'd3-shape';
 import { interpolateArray } from 'd3-interpolate';
 import { timer } from 'd3-timer';
+import { voronoi } from 'd3-voronoi';
 import {
     uuid,
     linearStops
@@ -25,6 +26,17 @@ const AreaOpt = {
         drawArea: true,
         showDots: true
     }
+}
+
+
+const drawCell = (context, cell)=> {
+    if (!cell) return false;
+    context.moveTo(cell[0][0], cell[0][1]);
+    for (let j = 1, m = cell.length; j < m; ++j) {
+        context.lineTo(cell[j][0], cell[j][1]);
+    }
+    context.closePath();
+    return true;
 }
 
 /**
@@ -122,8 +134,26 @@ const draw = (context, particles, width, height, opt, hidden = false)=> {
     context.stroke();
 }
 
-const applyVoronoi = (context)=> {
-    //tbd
+const applyVoronoi = (context, width, height, opt, finalState)=> {
+    const _voronoi = voronoi()
+        .x(d=> d.x)
+        .y(d=> d.y)
+        .extent([[-opt.chart.margin.left, -opt.chartmargin.top],
+            [width + opt.chart.margin.right, height + opt.chart.margin.bottom]]);
+
+    const diagram = _voronoi(finalState);
+    const links = diagram.links();
+    const polygons = diagram.polygons();
+
+    context.beginPath();
+    drawCell(polygons[0]);
+    context.fillStyle = "#f00";
+    context.fill();
+
+    context.beginPath();
+    for (let i = 0, n = polygons.length; i < n; ++i) drawCell(polygons[i]);
+    context.strokeStyle = "#000";
+    context.stroke();
 }
 
 
@@ -131,7 +161,6 @@ class Area extends AbstractBasicCartesianChartWithAxes {
     constructor(canvasId, _userOptions) {
         super(canvasId, _userOptions);
     }
-
 
     render(_data) {
         super.render(_data);
@@ -188,7 +217,11 @@ class Area extends AbstractBasicCartesianChartWithAxes {
 
             if (t === 1) {
                 batchRendering.stop();
-                applyVoronoi();
+                applyVoronoi(that._hiddenContext,
+                    interpolateParticles(t),
+                    that._hiddenCanvas.node().width,
+                    that._hiddenCanvas.node().height,
+                    that._options, finalState);
 
                 // draw hidden in parallel;
                 draw(that._hiddenContext,
