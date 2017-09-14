@@ -5,7 +5,7 @@ import {
 import { interpolateArray } from 'd3-interpolate';
 import { timer } from 'd3-timer';
 import { voronoi } from 'd3-voronoi';
-import { quadtree } from 'd3-quadtree';
+import { mouse } from 'd3-selection';
 import {
     uuid,
     linearStops
@@ -14,6 +14,7 @@ import {
 import { AbstractBasicCartesianChartWithAxes } from '../../base';
 import createCartesianOpt from '../../options/createCartesianOpt';
 import interpolateCurve from '../../util/curve';
+import applyQuadtree from './quadtree/apply';
 
 const AreaOpt = {
     chart: {
@@ -138,13 +139,13 @@ const draw = (context, particles, width, height, opt, hidden = false)=> {
 }
 
 const applyVoronoi = (context, width, height, opt, finalState)=> {
-    const _voronoi = voronoi()
+    const voronoiDiagram = voronoi()
         .x(d=> d.x)
         .y(d=> d.y)
         .extent([[-1, -1],
             [opt.chart.width + 1, opt.chart.height + 1]]);
 
-    const diagram = _voronoi(finalState);
+    const diagram = voronoiDiagram(finalState);
     const links = diagram.links();
     const polygons = diagram.polygons();
 
@@ -156,71 +157,15 @@ const applyVoronoi = (context, width, height, opt, finalState)=> {
     }
     context.stroke();
     context.closePath();
+
+    return voronoiDiagram;
 }
 
-/**
- * Find the nodes within the specified rectangle.
- *
- * @param quadtree
- * @param x0
- * @param y0
- * @param x3
- * @param y3
- */
-const search =(quadtree, x0, y0, x3, y3)=> {
-    quadtree.visit(function(node, x1, y1, x2, y2) {
-        if (!node.length) {
-            do {
-                var d = node.data;
-                d.scanned = true;
-                d.selected = (d[0] >= x0) && (d[0] < x3) && (d[1] >= y0) && (d[1] < y3);
-            } while (node = node.next);
-        }
-        return x1 >= x3 || y1 >= y3 || x2 < x0 || y2 < y0;
-    });
-}
+
 
 const euclideanDistance =(x1, y1, x2, y2)=> {
     return Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
 }
-
-/**
- * Collapse the quadtree into an array of rectangles.
- *
- * @param quadtree
- * @returns {Array}
- */
-const flattenQuadtree =(quadtree)=> {
-    let nodes = [];
-    quadtree.visit((node, x0, y0, x1, y1)=> {
-        node.x0 = x0, node.y0 = y0;
-        node.x1 = x1, node.y1 = y1;
-        nodes.push(node);
-    });
-    return nodes;
-}
-
-const applyQuadtree = (context, width, height, opt, finalState)=> {
-    const quadData = quadtree()
-        .x(d=> d.x)
-        .y(d=> d.y)
-        .extent([[-1, -1],
-            [opt.chart.width + 1, opt.chart.height + 1]])
-        .addAll(finalState);
-
-    const rects = flattenQuadtree(quadData);
-
-    context.beginPath();
-    context.lineWidth = 1;
-    context.strokeStyle = "#ff5730";
-    for (let r of rects) {
-        context.strokeRect(r.x0, r.y0, r.x1 - r.x0, r.y1 - r.y0);
-    }
-
-    context.stroke();
-    context.closePath();
-}
-
 
 
 class Area extends AbstractBasicCartesianChartWithAxes {
@@ -230,7 +175,6 @@ class Area extends AbstractBasicCartesianChartWithAxes {
 
     render(_data) {
         super.render(_data);
-        console.log(this._data);
         // this._getMetric().scale.range([this._frontCanvas.node().height, 0]);
         // this._getDimension().scale.range([0, this._frontCanvas.node().width]);
         this._animate();
@@ -287,15 +231,46 @@ class Area extends AbstractBasicCartesianChartWithAxes {
 
             if (t === 1) {
                 batchRendering.stop();
-                applyVoronoi(that._frontContext,
+                that._voronoi = applyVoronoi(that._frontContext,
                     that._hiddenCanvas.node().width,
                     that._hiddenCanvas.node().height,
                     that._options, finalState);
 
-                applyQuadtree(that._frontContext,
+                that._quadtree = applyQuadtree(that._frontContext,
                     that._hiddenCanvas.node().width,
                     that._hiddenCanvas.node().height,
                     that._options, finalState);
+
+                /**
+                 * callback for when the mouse moves across the overlay
+                 */
+                function mouseMoveHandler() {
+                    console.log('------')
+                    // get the current mouse position
+                    const [mx, my] = mouse(this);
+                    const QuadtreeRadius = 20;
+                    // use the new diagram.find() function to find the Voronoi site
+                    // closest to the mouse, limited by max distance voronoiRadius
+                    const closest = that._quadtree.find(mx, my, QuadtreeRadius);
+
+                    that._tooltip.style("left", closest[0] + "px")
+                        .style("top", closest[1] + "px")
+                        .html( that._getTooltipHTML(d));
+
+                    that._tooltip.style("opacity", 1)
+                }
+
+                function mouseOutHandler() {
+                    that._tooltip.style("opacity", 0)
+                }
+
+                console.log(that._frontCanvas)
+
+                that._frontCanvas.on('mousemove', mouseMoveHandler);
+                that._frontCanvas.on('mouseout', mouseOutHandler);
+                that._frontCanvas.on('click', function(){
+                    console.log('--')
+                });
 
                 // draw hidden in parallel;
                 draw(that._hiddenContext,
