@@ -138,21 +138,18 @@ const applyVoronoi = (context, width, height, opt, finalState)=> {
     const _voronoi = voronoi()
         .x(d=> d.x)
         .y(d=> d.y)
-        .extent([[-opt.chart.margin.left, -opt.chartmargin.top],
-            [width + opt.chart.margin.right, height + opt.chart.margin.bottom]]);
+        .extent([[-1, -1],
+            [opt.chart.width, opt.chart.height]]);
 
     const diagram = _voronoi(finalState);
     const links = diagram.links();
     const polygons = diagram.polygons();
 
     context.beginPath();
-    drawCell(polygons[0]);
-    context.fillStyle = "#f00";
-    context.fill();
-
-    context.beginPath();
-    for (let i = 0, n = polygons.length; i < n; ++i) drawCell(polygons[i]);
-    context.strokeStyle = "#000";
+    context.strokeStyle = "#f00";
+    for (let p of polygons) {
+        drawCell(context, p);
+    }
     context.stroke();
 }
 
@@ -164,7 +161,8 @@ class Area extends AbstractBasicCartesianChartWithAxes {
 
     render(_data) {
         super.render(_data);
-
+        this._getMetric().scale.range([this._frontCanvas.node().height, 0]);
+        this._getDimension().scale.range([0, this._frontCanvas.node().width]);
         this._animate();
     }
 
@@ -217,8 +215,7 @@ class Area extends AbstractBasicCartesianChartWithAxes {
 
             if (t === 1) {
                 batchRendering.stop();
-                applyVoronoi(that._hiddenContext,
-                    interpolateParticles(t),
+                applyVoronoi(that._frontContext,
                     that._hiddenCanvas.node().width,
                     that._hiddenCanvas.node().height,
                     that._options, finalState);

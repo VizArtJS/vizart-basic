@@ -49,6 +49,8 @@ class AbstractCartesianChart extends AbstractChart {
 
         let devicePixelRatio = window.devicePixelRatio || 1;
 
+        select(this._containerId).style('position', 'absolute');
+
         this._frontCanvas = select(this._containerId)
             .append("canvas")
             .attr("id", this._fontCanvasId)
@@ -78,9 +80,9 @@ class AbstractCartesianChart extends AbstractChart {
         this._frontContext.scale(devicePixelRatio, devicePixelRatio);
         this._hiddenContext.scale(devicePixelRatio, devicePixelRatio);
         this._container
-            .style('position', 'absolute');
-            // .style('top', 0)
-            // .style('left', 0);
+            .style('position', 'absolute')
+            .style('top', 0)
+            .style('left', 0);
 
         this._detachedContainer = select(this._containerId).append('vizart-detached');
 
