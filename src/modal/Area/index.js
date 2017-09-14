@@ -33,35 +33,22 @@ const AreaOpt = {
 }
 
 
-
 const nodeColor = opt=> {
     const stops = linearStops(opt.color.scheme);
     return stops[stops.length - 1].color;
 }
 
-
-
-
-/**
- * a particle contains x, y, r, c, alpha
- *
- * @param context
- * @param particles, particle colors may be defined in rgb string and thus cannot be recognized by
- * canvas. This is caused by d3's interpolation.
- */
-const draw = (context, particles, width, height, opt, hidden = false)=> {
-    context.clearRect(0, 0, width, height);
-
-    if (opt.plots.showDots === true) {
-        for (const [i, p] of particles.entries()) {
-            context.beginPath();
-            context.fillStyle = hidden === true? genColorByIndex(i) : nodeColor(opt);
-            context.globalAlpha = p.alpha;
-            context.arc(p.x, p.y, p.r, 0, 2 * Math.PI, false);
-            context.fill();
-        }
+const drawPoints = (context, particles, width, height, opt, hidden)=> {
+    for (const [i, p] of particles.entries()) {
+        context.beginPath();
+        context.fillStyle = hidden === true? genColorByIndex(i) : nodeColor(opt);
+        context.globalAlpha = p.alpha;
+        context.arc(p.x, p.y, p.r, 0, 2 * Math.PI, false);
+        context.fill();
     }
+}
 
+const drawLine = (context, particles, width, height, opt)=> {
     const curve = (opt.plots.drawArea === true)
         ? area()
             .x(d=>d.x)
@@ -80,6 +67,27 @@ const draw = (context, particles, width, height, opt, hidden = false)=> {
     gradientStroke(context, width, height, opt);
 
     context.stroke();
+}
+
+/**
+ * a particle contains x, y, r, c, alpha
+ *
+ * @param context
+ * @param particles, particle colors may be defined in rgb string and thus cannot be recognized by
+ * canvas. This is caused by d3's interpolation.
+ */
+const draw = (context, particles, width, height, opt, hidden = false)=> {
+    context.clearRect(0, 0, width, height);
+
+    if (hidden === true) {
+        drawPoints(context, particles, width, height, opt, true);
+    } else {
+        if (opt.plots.showDots === true) {
+            drawPoints(context, particles, width, height, opt, false);
+        }
+
+        drawLine(context, particles, width, height, opt)
+    }
 }
 
 
