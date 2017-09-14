@@ -21,7 +21,7 @@ const AreaOpt = {
     },
     plots: {
         areaOpacity: 1,
-        curve: 'basis',
+        curve: 'linear',
         strokeWidth: 4,
         nodeRadius: 4,
         drawArea: true,
@@ -107,12 +107,14 @@ const gradientStroke = (context, width, height, opt)=> {
 const draw = (context, particles, width, height, opt, hidden = false)=> {
     context.clearRect(0, 0, width, height);
 
-    for (const [i, p] of particles.entries()) {
-        context.beginPath();
-        context.fillStyle = hidden === true? genColorByIndex(i) : nodeColor(opt);
-        context.globalAlpha = p.alpha;
-        context.arc(p.x, p.y, p.r, 0, 2 * Math.PI, false);
-        context.fill();
+    if (opt.plots.showDots === true) {
+        for (const [i, p] of particles.entries()) {
+            context.beginPath();
+            context.fillStyle = hidden === true? genColorByIndex(i) : nodeColor(opt);
+            context.globalAlpha = p.alpha;
+            context.arc(p.x, p.y, p.r, 0, 2 * Math.PI, false);
+            context.fill();
+        }
     }
 
     const curve = (opt.plots.drawArea === true)
@@ -228,8 +230,9 @@ class Area extends AbstractBasicCartesianChartWithAxes {
 
     render(_data) {
         super.render(_data);
-        this._getMetric().scale.range([this._frontCanvas.node().height, 0]);
-        this._getDimension().scale.range([0, this._frontCanvas.node().width]);
+        console.log(this._data);
+        // this._getMetric().scale.range([this._frontCanvas.node().height, 0]);
+        // this._getDimension().scale.range([0, this._frontCanvas.node().width]);
         this._animate();
     }
 
