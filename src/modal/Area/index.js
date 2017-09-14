@@ -217,7 +217,6 @@ const applyQuadtree = (context, width, height, opt, finalState)=> {
 
     context.stroke();
     context.closePath();
-
 }
 
 
@@ -236,6 +235,8 @@ class Area extends AbstractBasicCartesianChartWithAxes {
 
     update() {
         super.update();
+        this._getMetric().scale.range([this._frontCanvas.node().height, 0]);
+        this._getDimension().scale.range([0, this._frontCanvas.node().width]);
         this._animate();
     }
 
