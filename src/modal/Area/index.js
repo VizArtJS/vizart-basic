@@ -4,7 +4,6 @@ import {
 } from 'd3-shape';
 import { interpolateArray } from 'd3-interpolate';
 import { timer } from 'd3-timer';
-import { voronoi } from 'd3-voronoi';
 import { mouse } from 'd3-selection';
 import {
     uuid,
@@ -15,6 +14,7 @@ import { AbstractBasicCartesianChartWithAxes } from '../../base';
 import createCartesianOpt from '../../options/createCartesianOpt';
 import interpolateCurve from '../../util/curve';
 import applyQuadtree from './quadtree/apply';
+import applyVoronoi from './voronoi';
 
 const AreaOpt = {
     chart: {
@@ -31,15 +31,6 @@ const AreaOpt = {
 }
 
 
-const drawCell = (context, cell)=> {
-    if (!cell) return false;
-    context.moveTo(cell[0][0], cell[0][1]);
-    for (let j = 1, m = cell.length; j < m; ++j) {
-        context.lineTo(cell[j][0], cell[j][1]);
-    }
-    context.closePath();
-    return true;
-}
 
 /**
  * Generates the next color in the sequence, going from 0,0,0 to 255,255,255.
@@ -136,29 +127,6 @@ const draw = (context, particles, width, height, opt, hidden = false)=> {
     gradientStroke(context, width, height, opt);
 
     context.stroke();
-}
-
-const applyVoronoi = (context, width, height, opt, finalState)=> {
-    const voronoiDiagram = voronoi()
-        .x(d=> d.x)
-        .y(d=> d.y)
-        .extent([[-1, -1],
-            [opt.chart.width + 1, opt.chart.height + 1]]);
-
-    const diagram = voronoiDiagram(finalState);
-    const links = diagram.links();
-    const polygons = diagram.polygons();
-
-    context.beginPath();
-    context.lineWidth = 1;
-    context.strokeStyle = "#1f97e7";
-    for (let p of polygons) {
-        drawCell(context, p);
-    }
-    context.stroke();
-    context.closePath();
-
-    return voronoiDiagram;
 }
 
 
