@@ -15,6 +15,7 @@ import createCartesianOpt from '../../options/createCartesianOpt';
 import interpolateCurve from '../../util/curve';
 import applyQuadtree from './quadtree/apply';
 import applyVoronoi from './voronoi';
+import gradientStroke from './gradient-stroke';
 
 const AreaOpt = {
     chart: {
@@ -29,7 +30,6 @@ const AreaOpt = {
         showDots: true
     }
 }
-
 
 
 /**
@@ -66,27 +66,7 @@ const nodeColor = opt=> {
     return stops[stops.length - 1].color;
 }
 
-/**
- * add linear gradient, x0, y0 -> x1, y1
- *
- * @param context
- * @param scheme
- */
-const gradientStroke = (context, width, height, opt)=> {
-    let grd = context.createLinearGradient(
-        width / 2,
-        height,
-        width / 2,
-        0);
 
-    const stops = linearStops(opt.color.scheme);
-
-    for (const {offset, color} of stops) {
-        grd.addColorStop(offset, color);
-    }
-
-    context.strokeStyle = grd;
-}
 
 
 /**
