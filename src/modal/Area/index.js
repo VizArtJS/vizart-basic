@@ -186,10 +186,10 @@ class Area extends AbstractBasicCartesianChartWithAxes {
                 function mouseMoveHandler() {
                     // get the current mouse position
                     const [mx, my] = mouse(this);
-                    const QuadtreeRadius = 20;
+                    const QuadtreeRadius = 100;
                     // use the new diagram.find() function to find the Voronoi site
                     // closest to the mouse, limited by max distance voronoiRadius
-                    const closest = that._quadtree.find(mx, my, QuadtreeRadius);
+                    const closest = that._voronoi.find(mx, my, QuadtreeRadius);
 
                     if (closest ) {
                         that._tooltip.style("left", closest[0] + "px")

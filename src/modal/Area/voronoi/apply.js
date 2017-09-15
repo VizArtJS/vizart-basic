@@ -21,7 +21,7 @@ const applyVoronoi = (context, opt, finalState)=> {
     context.stroke();
     context.closePath();
 
-    return voronoiDiagram;
+    return diagram;
 }
 
 export default applyVoronoi

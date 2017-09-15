@@ -94,7 +94,9 @@ class AbstractCartesianChart extends AbstractChart {
         this._container
             .style('position', 'absolute')
             .style('top', 0)
-            .style('left', 0);
+            .style('left', 0)
+            .style('pointer-events', 'none');
+
         this._tooltip = select(this._containerId)
             .append("div")
             .attr('id', 'tooltip-' + uuid())
