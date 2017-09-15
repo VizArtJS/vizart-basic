@@ -25,14 +25,14 @@ const AreaOpt = {
         type: 'area_horizontal'
     },
     plots: {
-        areaOpacity: 0.1,
+        areaOpacity: 0.3,
         curve: 'basis',
-        strokeWidth: 4,
+        strokeWidth: 2,
         nodeRadius: 4,
         drawArea: true,
         showDots: true
     }
-}
+};
 
 
 const nodeColor = opt=> {
@@ -119,16 +119,11 @@ class Area extends AbstractBasicCartesianChartWithAxes {
 
     render(_data) {
         super.render(_data);
-        // this._getMetric().scale.range([this._frontCanvas.node().height, 0]);
-        // console.log(this._getMetric().scale.range());
-        this._getDimension().scale.range([0, this._frontCanvas.node().width]);
         this._animate();
     }
 
     update() {
         super.update();
-        // this._getMetric().scale.range([this._frontCanvas.node().height, 0]);
-        this._getDimension().scale.range([0, this._frontCanvas.node().width]);
         this._animate();
     }
 
@@ -218,8 +213,8 @@ class Area extends AbstractBasicCartesianChartWithAxes {
                     interpolateParticles(t),
                     that._options, true);
 
-                that._revealQuadtree();
-                that._revealVoronoi();
+                // that._revealQuadtree();
+                // that._revealVoronoi();
             }
         });
     }
