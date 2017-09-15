@@ -213,8 +213,7 @@ class Area extends AbstractBasicCartesianChartWithAxes {
                     interpolateParticles(t),
                     that._options, true);
 
-                // that._revealQuadtree();
-                // that._revealVoronoi();
+                that._listeners.call('rendered');
             }
         });
     }
