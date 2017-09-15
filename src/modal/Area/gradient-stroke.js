@@ -6,14 +6,14 @@ import { linearStops } from 'vizart-core';
  * @param context
  * @param scheme
  */
-const linearGradient = (context, width, height, opt)=> {
+const linearGradient = (context, width, height, scheme)=> {
     let grd = context.createLinearGradient(
         width / 2,
         height,
         width / 2,
         0);
 
-    const stops = linearStops(opt.color.scheme);
+    const stops = linearStops(scheme);
 
     for (const {offset, color} of stops) {
         grd.addColorStop(offset, color);

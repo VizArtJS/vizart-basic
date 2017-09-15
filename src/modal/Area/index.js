@@ -59,7 +59,7 @@ const drawLine = (context, particles, width, height, opt)=> {
     context.beginPath();
     curve(particles);
     context.lineWidth = opt.plots.strokeWidth;
-    const gradientStyle = linearGradient(context, width, height, opt);
+    const gradientStyle = linearGradient(context, width, height, opt.color.scheme);
     context.strokeStyle = gradientStyle;
 
     context.stroke();
@@ -77,7 +77,7 @@ const drawArea = (context, particles, width, height, opt)=> {
     context.beginPath();
     curve(particles);
     context.lineWidth = opt.plots.strokeWidth;
-    const gradientStyle = linearGradient(context, width, height, opt);
+    const gradientStyle = linearGradient(context, width, height, opt.color.scheme);
     context.fillStyle = gradientStyle;
     context.globalAlpha = opt.plots.areaOpacity;
     context.strokeStyle = nodeColor(opt);
