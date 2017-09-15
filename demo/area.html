@@ -55,11 +55,12 @@
 //        stats.showPanel( 1 ); // 0: fps, 1: ms, 2: mb, 3+: custom
 //        document.body.appendChild( stats.dom );
 
+        var metricAccessor = 'high';
         var options = {
             data: {
                 x:  { name: 'date', type: 'date', accessor: 'date', format: '%m/%d/%Y'},
                 y: [
-                    { name: 'high', type: 'number', accessor: 'high'}
+                    { name: metricAccessor, type: 'number', accessor: metricAccessor}
                 ],
             },
 
@@ -76,6 +77,10 @@
                 direction: 'asc'
             },
             plots: {
+                areaOpacity: 0.5,
+                curve: 'basis',
+                strokeWidth: 2,
+                nodeRadius: 4,
                 drawArea: true,
                 showDots: false
             }
@@ -83,8 +88,9 @@
 
         var area = new VizArtBasic.Area('#bar', options);
 
-
+        var data;
         d3.csv('assets/nasdaq1985-2012.csv', function(err, res){
+            data = res;
             area.render(res);
         });
 
@@ -92,11 +98,11 @@
         // live update button is clicked
         $('#update').click(function(){
             for (var i = 0; i < 300; i++) {
-                var ranIndex = chance.integer({min:0, max:49});
-                fakeData[ranIndex].my = chance.integer({min: 0, max: 4000})
+                var ranIndex = chance.integer({min:0, max:6500});
+                data[ranIndex][metricAccessor] = chance.integer({min: 3000, max: 4000})
             }
 
-            area.data(fakeData);
+            area.data(data);
             area.update();
         });
 
@@ -124,16 +130,16 @@
         });
 
         $('#a1').click(function(){
-            area.sort('mx', 'asc');
+            area.sort('date', 'asc');
         })
         $('#a2').click(function(){
-            area.sort('mx', 'desc');
+            area.sort('date', 'desc');
         });
         $('#a3').click(function(){
-            area.sort('my', 'asc');
+            area.sort(metricAccessor, 'asc');
         });
         $('#a4').click(function(){
-            area.sort('my', 'desc');
+            area.sort(metricAccessor, 'desc');
         });
 
     });
