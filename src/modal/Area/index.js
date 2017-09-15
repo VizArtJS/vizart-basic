@@ -10,15 +10,15 @@ import {
     linearStops
 } from 'vizart-core';
 
-import { AbstractBasicCartesianChartWithAxes } from '../../base';
+import AbstractCanvasChart from '../../canvas/AbstractCanvasChart';
 import createCartesianOpt from '../../options/createCartesianOpt';
 import interpolateCurve from '../../util/curve';
-import applyQuadtree from './quadtree/apply';
-import drawQuadtree from './quadtree/draw';
-import applyVoronoi from './voronoi/apply';
-import drawVoronoi from './voronoi/draw';
-import linearGradient from './gradient-stroke';
-import genColorByIndex from './generate-color';
+import applyQuadtree from '../../canvas/quadtree/apply';
+
+
+import applyVoronoi from '../../canvas/voronoi/apply';
+import linearGradient from '../../canvas/gradient-stroke';
+import genColorByIndex from '../../canvas/generate-color';
 
 const AreaOpt = {
     chart: {
@@ -112,19 +112,9 @@ const draw = (context, particles, opt, hidden = false)=> {
     }
 }
 
-class Area extends AbstractBasicCartesianChartWithAxes {
+class Area extends AbstractCanvasChart {
     constructor(canvasId, _userOptions) {
         super(canvasId, _userOptions);
-    }
-
-    render(_data) {
-        super.render(_data);
-        this._animate();
-    }
-
-    update() {
-        super.update();
-        this._animate();
     }
 
     _animate() {
@@ -217,32 +207,9 @@ class Area extends AbstractBasicCartesianChartWithAxes {
         });
     }
 
-    transitionColor(color) {
-        this._options.color = color;
-
-        this.update();
-    }
-
-    sort(accessor, direction) {
-        this._options.ordering = {
-            accessor: accessor,
-            direction: direction
-        };
-
-        this.update();
-    }
-
     createOptions(_userOpt) {
         return createCartesianOpt(AreaOpt, _userOpt);
     };
-
-    _revealVoronoi(color = "#ff5730") {
-        drawVoronoi(this._frontContext, this._voronoi, color)
-    }
-
-    _revealQuadtree(color = '#1f97e7'){
-        drawQuadtree(this._frontContext, this._quadtree, color)
-    }
 }
 
 
