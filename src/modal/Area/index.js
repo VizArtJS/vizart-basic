@@ -15,7 +15,6 @@ import createCartesianOpt from '../../options/createCartesianOpt';
 import interpolateCurve from '../../util/curve';
 import applyQuadtree from '../../canvas/quadtree/apply';
 
-
 import applyVoronoi from '../../canvas/voronoi/apply';
 import linearGradient from '../../canvas/gradient-stroke';
 import genColorByIndex from '../../canvas/generate-color';

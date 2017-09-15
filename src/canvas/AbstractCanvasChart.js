@@ -1,9 +1,4 @@
-import {
-    AbstractChart,
-    mergeBase,
-    Globals,
-    uuid
-} from 'vizart-core';
+import { uuid } from 'vizart-core';
 import { select, mouse } from 'd3-selection';
 
 import AbstractBasicCartesianChartWithAxes from '../base/AbstractBasicCartesianChartWithAxes';
