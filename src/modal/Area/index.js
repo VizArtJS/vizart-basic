@@ -14,7 +14,9 @@ import { AbstractBasicCartesianChartWithAxes } from '../../base';
 import createCartesianOpt from '../../options/createCartesianOpt';
 import interpolateCurve from '../../util/curve';
 import applyQuadtree from './quadtree/apply';
+import drawQuadtree from './quadtree/draw';
 import applyVoronoi from './voronoi/apply';
+import drawVoronoi from './voronoi/draw';
 import linearGradient from './gradient-stroke';
 import genColorByIndex from './generate-color';
 import TooltipTpl from './tooltip-tpl';
@@ -212,6 +214,9 @@ class Area extends AbstractBasicCartesianChartWithAxes {
                 draw(that._hiddenContext,
                     interpolateParticles(t),
                     that._options, true);
+
+                that._revealQuadtree();
+                that._revealVoronoi();
             }
         });
     }
@@ -242,6 +247,14 @@ class Area extends AbstractBasicCartesianChartWithAxes {
     createOptions(_userOpt) {
         return createCartesianOpt(AreaOpt, _userOpt);
     };
+
+    _revealVoronoi(color = "#ff5730") {
+        drawVoronoi(this._frontContext, this._voronoi, color)
+    }
+
+    _revealQuadtree(color = '#1f97e7'){
+        drawQuadtree(this._frontContext, this._quadtree, color)
+    }
 }
 
 

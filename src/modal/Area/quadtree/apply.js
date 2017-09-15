@@ -1,27 +1,12 @@
 import { quadtree } from 'd3-quadtree';
-import flattenQuadtree from './flattern';
 
 const applyQuadtree = (context, opt, finalState)=> {
-    const diagram = quadtree()
+    return quadtree()
         .x(d=> d.x)
         .y(d=> d.y)
         .extent([[-1, -1],
-            [context.canvas.clientWidth + 1, context.canvas.clientHeight + 1]])
+            [context.canvas.width + 1, context.canvas.height + 1]])
         .addAll(finalState);
-
-    const rects = flattenQuadtree(diagram);
-
-    context.beginPath();
-    context.lineWidth = 1;
-    context.strokeStyle = "#ff5730";
-    for (let r of rects) {
-        context.strokeRect(r.x0, r.y0, r.x1 - r.x0, r.y1 - r.y0);
-    }
-
-    context.stroke();
-    context.closePath();
-
-    return diagram;
 }
 
 export default applyQuadtree;
