@@ -51,7 +51,7 @@ class AbstractCartesianChart extends AbstractChart {
         select(this._containerId).style('position', 'absolute');
 
         this._detachedContainer = select(this._containerId).append('vizart-detached');
-        
+
         const devicePixelRatio = window.devicePixelRatio || 1;
 
         this._hiddenCanvas = select(this._containerId)

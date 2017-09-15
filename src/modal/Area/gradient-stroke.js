@@ -1,4 +1,5 @@
 import { linearStops } from 'vizart-core';
+import { hsl } from 'd3-color';
 
 /**
  * add linear gradient, x0, y0 -> x1, y1
@@ -7,7 +8,7 @@ import { linearStops } from 'vizart-core';
  * @param scheme color scheme
  * @param opacity fill opacity
  */
-const linearGradient = (context, scheme, opacity)=> {
+const linearGradient = (context, scheme, opacity = 1)=> {
     let grd = context.createLinearGradient(
         context.canvas.clientWidth / 2,
         context.canvas.clientHeight,
@@ -17,7 +18,14 @@ const linearGradient = (context, scheme, opacity)=> {
     const stops = linearStops(scheme);
 
     for (const {offset, color} of stops) {
-        grd.addColorStop(offset, color);
+        if (opacity < 1) {
+            const hslColor = hsl(color);
+            hslColor.opacity = opacity;
+            grd.addColorStop(offset, hslColor);
+        } else {
+            grd.addColorStop(offset, color);
+        }
+
     }
 
     return grd;

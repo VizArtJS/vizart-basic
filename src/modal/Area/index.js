@@ -24,7 +24,7 @@ const AreaOpt = {
         type: 'area_horizontal'
     },
     plots: {
-        areaOpacity: 0.7,
+        areaOpacity: 0.1,
         curve: 'basis',
         strokeWidth: 4,
         nodeRadius: 4,
@@ -59,7 +59,7 @@ const drawLine = (context, particles, opt)=> {
     context.beginPath();
     curve(particles);
     context.lineWidth = opt.plots.strokeWidth;
-    const gradientStyle = linearGradient(context, opt.color.scheme);
+    const gradientStyle = linearGradient(context, opt.color.scheme, 1);
     context.strokeStyle = gradientStyle;
 
     context.stroke();
@@ -77,9 +77,8 @@ const drawArea = (context, particles, opt)=> {
     context.beginPath();
     curve(particles);
     context.lineWidth = opt.plots.strokeWidth;
-    const gradientStyle = linearGradient(context, opt.color.scheme);
+    const gradientStyle = linearGradient(context, opt.color.scheme, opt.plots.areaOpacity);
     context.fillStyle = gradientStyle;
-    context.globalAlpha = opt.plots.areaOpacity;
     context.strokeStyle = nodeColor(opt);
     context.stroke();
 
