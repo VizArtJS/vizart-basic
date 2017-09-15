@@ -61,8 +61,8 @@ class AbstractCartesianChart extends AbstractChart {
             .style("width", this._options.chart.innerWidth + "px")
             .style("height", this._options.chart.innerHeight + "px")
             .style('margin', this._options.chart.margin.top + 'px 0 0 ' + this._options.chart.margin.left + 'px ')
-            .attr('width', this._options.chart.width * devicePixelRatio)
-            .attr('height', this._options.chart.height * devicePixelRatio);
+            .attr('width', this._options.chart.innerWidth * devicePixelRatio)
+            .attr('height', this._options.chart.innerHeight * devicePixelRatio);
 
         this._frontCanvas = select(this._containerId)
             .append("canvas")
@@ -71,8 +71,8 @@ class AbstractCartesianChart extends AbstractChart {
             .style("width", this._options.chart.innerWidth + "px")
             .style("height", this._options.chart.innerHeight + "px")
             .style('margin', this._options.chart.margin.top + 'px 0 0 ' + this._options.chart.margin.left + 'px ')
-            .attr('width', this._options.chart.width * devicePixelRatio)
-            .attr('height', this._options.chart.height * devicePixelRatio);
+            .attr('width', this._options.chart.innerWidth * devicePixelRatio)
+            .attr('height', this._options.chart.innerHeight * devicePixelRatio);
 
 
 
