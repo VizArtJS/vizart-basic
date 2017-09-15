@@ -19,7 +19,6 @@ import applyVoronoi from './voronoi/apply';
 import drawVoronoi from './voronoi/draw';
 import linearGradient from './gradient-stroke';
 import genColorByIndex from './generate-color';
-import TooltipTpl from './tooltip-tpl';
 
 const AreaOpt = {
     chart: {
@@ -146,7 +145,8 @@ class Area extends AbstractBasicCartesianChartWithAxes {
                     y: this._frontCanvas.node().height,
                     r: this._options.plots.nodeRadius,
                     c: nodeColor,
-                    alpha: 0
+                    alpha: 0,
+                    data: d
                 }
         });
 
@@ -156,7 +156,8 @@ class Area extends AbstractBasicCartesianChartWithAxes {
                 y: this._y(d),
                 r: this._options.plots.nodeRadius,
                 c: nodeColor,
-                alpha: 1
+                alpha: 1,
+                data: d
             }
         });
 
@@ -193,12 +194,14 @@ class Area extends AbstractBasicCartesianChartWithAxes {
                     // closest to the mouse, limited by max distance voronoiRadius
                     const closest = that._voronoi.find(mx, my, QuadtreeRadius);
 
-                    if (closest ) {
+                    if (closest) {
                         that._tooltip.style("left", closest[0] + "px")
                             .style("top", closest[1] + "px")
-                            .html( that._getTooltipHTML(closest.data));
+                            .html( that._getTooltipHTML(closest.data.data));
 
                         that._tooltip.style("opacity", 1)
+                    } else {
+                        that._tooltip.style("opacity", 0)
                     }
                 }
 
@@ -234,14 +237,6 @@ class Area extends AbstractBasicCartesianChartWithAxes {
         };
 
         this.update();
-    }
-
-    _getTooltipHTML(d) {
-        return TooltipTpl
-            .replace("{{header}}", d.x)
-            .replace("{{name}}", this._getMetric().name)
-            .replace("{{value}}", d.y)
-            .replace("{{borderStroke}}", this._color(d.y));
     }
 
     createOptions(_userOpt) {
