@@ -204,7 +204,6 @@ class Area extends AbstractBasicCartesianChartWithAxes {
                     that._tooltip.style("opacity", 0)
                 }
 
-
                 that._frontCanvas.on('mousemove', mouseMoveHandler);
                 that._frontCanvas.on('mouseout', mouseOutHandler);
 
