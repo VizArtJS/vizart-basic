@@ -1,12 +1,12 @@
 import { voronoi } from 'd3-voronoi';
 import drawCell from './draw-cell';
 
-const applyVoronoi = (context, width, height, opt, finalState)=> {
+const applyVoronoi = (context, opt, finalState)=> {
     const voronoiDiagram = voronoi()
         .x(d=> d.x)
         .y(d=> d.y)
         .extent([[-1, -1],
-            [opt.chart.width + 1, opt.chart.height + 1]]);
+            [context.canvas.clientWidth + 1, context.canvas.clientHeight + 1]]);
 
     const diagram = voronoiDiagram(finalState);
     const links = diagram.links();

@@ -1,12 +1,12 @@
 import { quadtree } from 'd3-quadtree';
 import flattenQuadtree from './flattern';
 
-const applyQuadtree = (context, width, height, opt, finalState)=> {
+const applyQuadtree = (context, opt, finalState)=> {
     const quadData = quadtree()
         .x(d=> d.x)
         .y(d=> d.y)
         .extent([[-1, -1],
-            [opt.chart.width + 1, opt.chart.height + 1]])
+            [context.canvas.clientWidth + 1, context.canvas.clientHeight + 1]])
         .addAll(finalState);
 
     const rects = flattenQuadtree(quadData);

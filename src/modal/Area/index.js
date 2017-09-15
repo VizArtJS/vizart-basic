@@ -39,7 +39,7 @@ const nodeColor = opt=> {
     return stops[stops.length - 1].color;
 }
 
-const drawPoints = (context, particles, width, height, opt, hidden)=> {
+const drawPoints = (context, particles, opt, hidden)=> {
     for (const [i, p] of particles.entries()) {
         context.beginPath();
         context.fillStyle = hidden === true? genColorByIndex(i) : nodeColor(opt);
@@ -49,7 +49,7 @@ const drawPoints = (context, particles, width, height, opt, hidden)=> {
     }
 }
 
-const drawLine = (context, particles, width, height, opt)=> {
+const drawLine = (context, particles, opt)=> {
     const curve = line()
             .x(d=>d.x)
             .y(d=>d.y)
@@ -59,17 +59,17 @@ const drawLine = (context, particles, width, height, opt)=> {
     context.beginPath();
     curve(particles);
     context.lineWidth = opt.plots.strokeWidth;
-    const gradientStyle = linearGradient(context, width, height, opt.color.scheme);
+    const gradientStyle = linearGradient(context, opt.color.scheme);
     context.strokeStyle = gradientStyle;
 
     context.stroke();
     context.closePath();
 }
 
-const drawArea = (context, particles, width, height, opt)=> {
+const drawArea = (context, particles, opt)=> {
     const curve = area()
         .x(d=>d.x)
-        .y0(height)
+        .y0(context.canvas.height)
         .y1(d=>d.y)
         .context(context);
 
@@ -77,7 +77,7 @@ const drawArea = (context, particles, width, height, opt)=> {
     context.beginPath();
     curve(particles);
     context.lineWidth = opt.plots.strokeWidth;
-    const gradientStyle = linearGradient(context, width, height, opt.color.scheme);
+    const gradientStyle = linearGradient(context, opt.color.scheme);
     context.fillStyle = gradientStyle;
     context.globalAlpha = opt.plots.areaOpacity;
     context.strokeStyle = nodeColor(opt);
@@ -94,20 +94,20 @@ const drawArea = (context, particles, width, height, opt)=> {
  * @param particles, particle colors may be defined in rgb string and thus cannot be recognized by
  * canvas. This is caused by d3's interpolation.
  */
-const draw = (context, particles, width, height, opt, hidden = false)=> {
-    context.clearRect(0, 0, width, height);
+const draw = (context, particles, opt, hidden = false)=> {
+    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
     if (hidden === true) {
-        drawPoints(context, particles, width, height, opt, true);
+        drawPoints(context, particles, opt, true);
     } else {
         if (opt.plots.showDots === true) {
-            drawPoints(context, particles, width, height, opt, false);
+            drawPoints(context, particles, opt, false);
         }
 
         if (opt.plots.drawArea === true) {
-            drawArea(context, particles, width, height, opt);
+            drawArea(context, particles, opt);
         } else {
-            drawLine(context, particles, width, height, opt);
+            drawLine(context, particles, opt);
         }
     }
 }
@@ -170,21 +170,15 @@ class Area extends AbstractBasicCartesianChartWithAxes {
 
             draw(that._frontContext,
                 interpolateParticles(t),
-                that._frontCanvas.node().width,
-                that._frontCanvas.node().height,
                 that._options);
 
             if (t === 1) {
                 batchRendering.stop();
 
                 that._voronoi = applyVoronoi(that._frontContext,
-                    that._hiddenCanvas.node().width,
-                    that._hiddenCanvas.node().height,
                     that._options, finalState);
 
                 that._quadtree = applyQuadtree(that._frontContext,
-                    that._hiddenCanvas.node().width,
-                    that._hiddenCanvas.node().height,
                     that._options, finalState);
 
                 /**
@@ -218,8 +212,6 @@ class Area extends AbstractBasicCartesianChartWithAxes {
                 // draw hidden in parallel;
                 draw(that._hiddenContext,
                     interpolateParticles(t),
-                    that._hiddenCanvas.node().width,
-                    that._hiddenCanvas.node().height,
                     that._options, true);
             }
         });
