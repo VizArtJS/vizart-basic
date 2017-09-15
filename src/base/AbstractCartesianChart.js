@@ -47,19 +47,12 @@ class AbstractCartesianChart extends AbstractChart {
     render(_data) {
         super.render(_data);
 
-        let devicePixelRatio = window.devicePixelRatio || 1;
 
         select(this._containerId).style('position', 'absolute');
 
-        this._frontCanvas = select(this._containerId)
-            .append("canvas")
-            .attr("id", this._fontCanvasId)
-            .style('display', 'block')
-            .style("width", this._options.chart.innerWidth + "px")
-            .style("height", this._options.chart.innerHeight + "px")
-            .style('margin', this._options.chart.margin.top + 'px 0 0 ' + this._options.chart.margin.left + 'px ')
-            .attr('width', this._options.chart.width * devicePixelRatio)
-            .attr('height', this._options.chart.height * devicePixelRatio);
+        this._detachedContainer = select(this._containerId).append('vizart-detached');
+        
+        const devicePixelRatio = window.devicePixelRatio || 1;
 
         this._hiddenCanvas = select(this._containerId)
             .append("canvas")
@@ -71,21 +64,37 @@ class AbstractCartesianChart extends AbstractChart {
             .attr('width', this._options.chart.width * devicePixelRatio)
             .attr('height', this._options.chart.height * devicePixelRatio);
 
-        this._frontContext = this._frontCanvas.node().getContext('2d');
-        this._frontContext.clearRect(0, 0, this._options.chart.innerWidth, this._options.chart.innerHeight);
+        this._frontCanvas = select(this._containerId)
+            .append("canvas")
+            .attr("id", this._fontCanvasId)
+            .style('display', 'block')
+            .style("width", this._options.chart.innerWidth + "px")
+            .style("height", this._options.chart.innerHeight + "px")
+            .style('margin', this._options.chart.margin.top + 'px 0 0 ' + this._options.chart.margin.left + 'px ')
+            .attr('width', this._options.chart.width * devicePixelRatio)
+            .attr('height', this._options.chart.height * devicePixelRatio);
+
+
 
         this._hiddenContext = this._hiddenCanvas.node().getContext("2d");
-        this._hiddenContext.clearRect(0, 0, this._options.chart.innerWidth, this._options.chart.innerHeight);
+        this._frontContext = this._frontCanvas.node().getContext('2d');
 
-        this._frontContext.scale(devicePixelRatio, devicePixelRatio);
-        this._hiddenContext.scale(devicePixelRatio, devicePixelRatio);
+
+        const backingStoreRatio = this._frontContext.webkitBackingStorePixelRatio
+            || this._frontContext.mozBackingStorePixelRatio
+            || this._frontContext.msBackingStorePixelRatio
+            || this._frontContext.oBackingStorePixelRatio
+            || this._frontContext.backingStorePixelRatio
+            || 1;
+
+        const ratio = devicePixelRatio / backingStoreRatio;
+        this._frontContext.scale(ratio, ratio);
+        this._hiddenContext.scale(ratio, ratio);
+
         this._container
             .style('position', 'absolute')
             .style('top', 0)
             .style('left', 0);
-
-        this._detachedContainer = select(this._containerId).append('vizart-detached');
-
         this._tooltip = select(this._containerId)
             .append("div")
             .attr('id', 'tooltip-' + uuid())
