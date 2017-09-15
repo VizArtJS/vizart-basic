@@ -6,7 +6,7 @@ import { linearStops } from 'vizart-core';
  * @param context
  * @param scheme
  */
-const gradientStroke = (context, width, height, opt)=> {
+const linearGradient = (context, width, height, opt)=> {
     let grd = context.createLinearGradient(
         width / 2,
         height,
@@ -19,7 +19,7 @@ const gradientStroke = (context, width, height, opt)=> {
         grd.addColorStop(offset, color);
     }
 
-    context.strokeStyle = grd;
+    return grd;
 }
 
-export default gradientStroke;
+export default linearGradient;

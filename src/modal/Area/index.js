@@ -14,17 +14,18 @@ import { AbstractBasicCartesianChartWithAxes } from '../../base';
 import createCartesianOpt from '../../options/createCartesianOpt';
 import interpolateCurve from '../../util/curve';
 import applyQuadtree from './quadtree/apply';
-import applyVoronoi from './voronoi';
-import gradientStroke from './gradient-stroke';
+import applyVoronoi from './voronoi/apply';
+import linearGradient from './gradient-stroke';
 import genColorByIndex from './generate-color';
+import TooltipTpl from './tooltip-tpl';
 
 const AreaOpt = {
     chart: {
         type: 'area_horizontal'
     },
     plots: {
-        areaOpacity: 1,
-        curve: 'linear',
+        areaOpacity: 0.7,
+        curve: 'basis',
         strokeWidth: 4,
         nodeRadius: 4,
         drawArea: true,
@@ -49,13 +50,7 @@ const drawPoints = (context, particles, width, height, opt, hidden)=> {
 }
 
 const drawLine = (context, particles, width, height, opt)=> {
-    const curve = (opt.plots.drawArea === true)
-        ? area()
-            .x(d=>d.x)
-            .y0(opt.chart.innerHeight)
-            .y1(d=>d.y)
-            .context(context)
-        : line()
+    const curve = line()
             .x(d=>d.x)
             .y(d=>d.y)
             .context(context);
@@ -64,9 +59,32 @@ const drawLine = (context, particles, width, height, opt)=> {
     context.beginPath();
     curve(particles);
     context.lineWidth = opt.plots.strokeWidth;
-    gradientStroke(context, width, height, opt);
+    const gradientStyle = linearGradient(context, width, height, opt);
+    context.strokeStyle = gradientStyle;
 
     context.stroke();
+    context.closePath();
+}
+
+const drawArea = (context, particles, width, height, opt)=> {
+    const curve = area()
+        .x(d=>d.x)
+        .y0(height)
+        .y1(d=>d.y)
+        .context(context);
+
+    interpolateCurve(opt.plots.curve, [curve]);
+    context.beginPath();
+    curve(particles);
+    context.lineWidth = opt.plots.strokeWidth;
+    const gradientStyle = linearGradient(context, width, height, opt);
+    context.fillStyle = gradientStyle;
+    context.globalAlpha = opt.plots.areaOpacity;
+    context.strokeStyle = nodeColor(opt);
+    context.stroke();
+
+    context.fill();
+    context.closePath();
 }
 
 /**
@@ -86,7 +104,11 @@ const draw = (context, particles, width, height, opt, hidden = false)=> {
             drawPoints(context, particles, width, height, opt, false);
         }
 
-        drawLine(context, particles, width, height, opt)
+        if (opt.plots.drawArea === true) {
+            drawArea(context, particles, width, height, opt);
+        } else {
+            drawLine(context, particles, width, height, opt);
+        }
     }
 }
 
@@ -98,13 +120,14 @@ class Area extends AbstractBasicCartesianChartWithAxes {
     render(_data) {
         super.render(_data);
         // this._getMetric().scale.range([this._frontCanvas.node().height, 0]);
-        // this._getDimension().scale.range([0, this._frontCanvas.node().width]);
+        // console.log(this._getMetric().scale.range());
+        this._getDimension().scale.range([0, this._frontCanvas.node().width]);
         this._animate();
     }
 
     update() {
         super.update();
-        this._getMetric().scale.range([this._frontCanvas.node().height, 0]);
+        // this._getMetric().scale.range([this._frontCanvas.node().height, 0]);
         this._getDimension().scale.range([0, this._frontCanvas.node().width]);
         this._animate();
     }
@@ -153,6 +176,7 @@ class Area extends AbstractBasicCartesianChartWithAxes {
 
             if (t === 1) {
                 batchRendering.stop();
+
                 that._voronoi = applyVoronoi(that._frontContext,
                     that._hiddenCanvas.node().width,
                     that._hiddenCanvas.node().height,
@@ -167,7 +191,6 @@ class Area extends AbstractBasicCartesianChartWithAxes {
                  * callback for when the mouse moves across the overlay
                  */
                 function mouseMoveHandler() {
-                    console.log('------')
                     // get the current mouse position
                     const [mx, my] = mouse(this);
                     const QuadtreeRadius = 20;
@@ -175,24 +198,22 @@ class Area extends AbstractBasicCartesianChartWithAxes {
                     // closest to the mouse, limited by max distance voronoiRadius
                     const closest = that._quadtree.find(mx, my, QuadtreeRadius);
 
-                    that._tooltip.style("left", closest[0] + "px")
-                        .style("top", closest[1] + "px")
-                        .html( that._getTooltipHTML(d));
+                    if (closest ) {
+                        that._tooltip.style("left", closest[0] + "px")
+                            .style("top", closest[1] + "px")
+                            .html( that._getTooltipHTML(closest.data));
 
-                    that._tooltip.style("opacity", 1)
+                        that._tooltip.style("opacity", 1)
+                    }
                 }
 
                 function mouseOutHandler() {
                     that._tooltip.style("opacity", 0)
                 }
 
-                console.log(that._frontCanvas)
 
                 that._frontCanvas.on('mousemove', mouseMoveHandler);
                 that._frontCanvas.on('mouseout', mouseOutHandler);
-                that._frontCanvas.on('click', function(){
-                    console.log('--')
-                });
 
                 // draw hidden in parallel;
                 draw(that._hiddenContext,
@@ -217,6 +238,14 @@ class Area extends AbstractBasicCartesianChartWithAxes {
         };
 
         this.update();
+    }
+
+    _getTooltipHTML(d) {
+        return TooltipTpl
+            .replace("{{header}}", d.x)
+            .replace("{{name}}", this._getMetric().name)
+            .replace("{{value}}", d.y)
+            .replace("{{borderStroke}}", this._color(d.y));
     }
 
     createOptions(_userOpt) {

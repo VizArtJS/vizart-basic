@@ -76,7 +76,7 @@
                 direction: 'asc'
             },
             plots: {
-                drawArea: false,
+                drawArea: true,
                 showDots: false
             }
         };
@@ -95,8 +95,6 @@
                 var ranIndex = chance.integer({min:0, max:49});
                 fakeData[ranIndex].my = chance.integer({min: 0, max: 4000})
             }
-
-            console.log(fakeData);
 
             area.data(fakeData);
             area.update();
