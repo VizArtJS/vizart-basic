@@ -8,7 +8,7 @@ import updateOptionScales from './update-scale';
  * @param _data is immutable
  * @param _options _options
  */
-const processCartesianData = (_data, _options, _cleanse = false)=> {
+const processCartesianData = (_data, _options, _cleanse = true)=> {
     const _copy = cloneDeep(_data);
     // a cleansed copy of data.
     let _cleansed = (_cleanse === true)

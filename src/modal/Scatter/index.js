@@ -2,12 +2,14 @@ import { interpolateArray } from 'd3-interpolate';
 import { timer } from 'd3-timer';
 import { mouse } from 'd3-selection';
 import { easeCubic } from 'd3-ease';
+import isNull from 'lodash-es/isNull';
 
 import { Globals } from 'vizart-core';
 import AbstractCanvasChart from '../../canvas/AbstractCanvasChart';
 import applyQuadtree from '../../canvas/quadtree/apply';
 import applyVoronoi from '../../canvas/voronoi/apply';
 import createCartesianOpt from '../../options/createCartesianOpt';
+import updateRadiusScale from './update-radius-scale';
 
 
 const ScatterOptions = {
@@ -15,24 +17,18 @@ const ScatterOptions = {
         type: 'scatter',
     },
     plots: {
-        blur: false,
         opacity: 1,
-        bubble: {
-            min: 6,
-            max: 20,
-            default: 8
-        }
     },
 
-    zAxis: {
-        allowDecimals: false,
+    r: {
         scale: null,
-        max: 100,
-        min: 0,
+        max: 20,
+        min: 6,
+        default: 8
     },
 
     data: {
-        z: {
+        r: {
             accessor: null,
             type:  Globals.DataType.NUMBER,
             formatter:  null,
@@ -56,29 +52,12 @@ class Scatter extends AbstractCanvasChart {
     constructor(canvasId, _userOptions) {
         super(canvasId, _userOptions);
 
-        this._getRadius = ()=> {
-            return this._options.data.z;
-        };
-
-        this._getRadiusValue = (d)=> {
-            return (this._getRadius() && this._getRadius().accessor)
-                ? d[this._getRadius().accessor]
-                : null;
-        };
-
-        this._r = (d)=> {
-            return (this._getRadius() && this._getRadius().accessor)
-                ? this._getRadius().scale(this._getRadiusValue(d))
-                : this._options.plots.bubble.default;
-        }
-
-
-        this._refreshZScale = ()=> {
-            if (this._getRadius() && this._getRadius().accessor) {
-                this._getRadius().scale.range(
-                    [this._options.plots.bubble.min, this._options.plots.bubble.max]
-                )
-            }
+        this._getRadius = ()=> this._options.data.r;
+        this._getRadiusValue = d=> d[this._getRadius().accessor];
+        this._r = d => {
+            return isNull(this._getRadius().scale)
+                ? this._options.r.default
+                : this._getRadius().scale(this._getRadiusValue(d));
         }
 
     }
@@ -172,6 +151,14 @@ class Scatter extends AbstractCanvasChart {
         });
     }
 
+    data(data) {
+        if (data) {
+            super.data(data);
+            updateRadiusScale(this._options, data);
+        }
+
+        return this._data;
+    }
 
     createOptions(_userOpt) {
         return createCartesianOpt(ScatterOptions, _userOpt);
