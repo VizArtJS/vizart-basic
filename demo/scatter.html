@@ -45,7 +45,7 @@
         <li id="a4"><a href="#">metric desc</a></li>
     </ul>
 </div>
-<div id="bar" style="width: 100%; height: 800px"></div>
+<div id="bar" style="width: 100%; height: 700px; top: 120px;"></div>
 
 <script>
     $(document).ready(function () {
@@ -61,12 +61,14 @@
 
             chart: {
                 margin: {
+                    left: 80,
+                    right: 40,
+                    top: 20,
                     bottom:120
                 },
             },
-            ordering: {
-                name: 'dissem_dt',
-                direction: 'asc'
+            plots: {
+                opacity: 0.4
             }
         };
 

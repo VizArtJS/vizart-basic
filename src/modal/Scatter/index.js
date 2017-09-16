@@ -106,7 +106,7 @@ class Scatter extends AbstractCanvasChart {
                 y: this._y(d),
                 r: this._r(d),
                 c: this._c(d),
-                alpha: 1,
+                alpha: this._options.plots.opacity,
                 data: d
             }
         });
