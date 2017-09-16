@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="./lib/bootstrap-3.3.7/css/bootstrap.css">
     <script src="./lib/jquery-1.12.4.min.js"></script>
     <script src="./lib/bootstrap-3.3.7/js/bootstrap.js"></script>
-    <script src="http://chancejs.com/chance.min.js"></script>
+    <script src="./lib/d3.js"></script>
     <script src="./vizart-basic.standalone.js" type="text/javascript"></script>
     <style>
         html,
@@ -52,10 +52,10 @@
         var options = {
             data: {
                 x:
-                    { name: 'name', type: 'string', accessor: 'mx'}
+                    { name: 'dissem_dt', type: 'date', accessor: 'dissem_dt', format: '%d/%m/%y'}
                 ,
                 y: [
-                    { name: 'performance', type: 'number', accessor: 'my'}
+                    { name: 'exp_amo', type: 'number', accessor: 'exp_amo'}
                 ],
             },
 
@@ -65,66 +65,66 @@
                 },
             },
             ordering: {
-                name: 'mx',
+                name: 'dissem_dt',
                 direction: 'asc'
             }
         };
 
-        var fakeData = [];
 
-        for (var i = 0; i < 100; i++) {
-            fakeData.push({
-                mx: chance.name(),
-                my: chance.integer({min: -80, max: 100})
-            })
-        }
+        var scatter = new VizArtBasic.Scatter('#bar', options);
+//        scatter.on('rendered', function(){
+//            scatter._revealVoronoi();
+//            scatter._revealQuadtree();
+//        });
 
-        var barChart = new VizArtBasic.Scatter('#bar', options);
-        console.log(barChart.options());
-        barChart.render(fakeData);
+        d3.csv('assets/scatter_expenditure.csv', function(err, res){
+            console.log(res[0])
+            scatter.render(res);
+        });
+
 
         // live update button is clicked
         $('#update').click(function(){
             var ranIndex = chance.integer({min:0, max:49});
             fakeData[ranIndex].my = chance.floating({min: 0, max: 0.00035})
 
-            barChart.update(fakeData);
+            scatter.update(fakeData);
         });
 
-        var options2 = barChart.options();
+        var options2 = scatter.options();
 
         // change color
         $('#color1').click(function(){
             options2.color.scheme = "BuGn";
-            barChart.transitionColor(options2.color);
+            scatter.transitionColor(options2.color);
         });
 
         $('#color2').click(function(){
             options2.color.scheme = "Blues";
-            barChart.transitionColor(options2.color)
+            scatter.transitionColor(options2.color)
         });
 
         $('#color3').click(function(){
             options2.color.scheme = "Warm";
-            barChart.transitionColor(options2.color)
+            scatter.transitionColor(options2.color)
         });
 
         $('#color4').click(function(){
             options2.color.scheme = "Cubehelix";
-            barChart.transitionColor(options2.color);
+            scatter.transitionColor(options2.color);
         });
 
         $('#a1').click(function(){
-            barChart.sort('mx', 'asc');
+            scatter.sort('mx', 'asc');
         })
         $('#a2').click(function(){
-            barChart.sort('mx', 'desc');
+            scatter.sort('mx', 'desc');
         });
         $('#a3').click(function(){
-            barChart.sort('my', 'asc');
+            scatter.sort('my', 'asc');
         });
         $('#a4').click(function(){
-            barChart.sort('my', 'desc');
+            scatter.sort('my', 'desc');
         });
 
     });

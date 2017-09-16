@@ -1,7 +1,14 @@
+import { interpolateArray } from 'd3-interpolate';
+import { timer } from 'd3-timer';
+import { mouse } from 'd3-selection';
+import { easeCubic } from 'd3-ease';
+
 import { Globals } from 'vizart-core';
-import { AbstractBasicCartesianChartWithAxes } from '../../base';
+import AbstractCanvasChart from '../../canvas/AbstractCanvasChart';
+import applyQuadtree from '../../canvas/quadtree/apply';
+import applyVoronoi from '../../canvas/voronoi/apply';
 import createCartesianOpt from '../../options/createCartesianOpt';
-import './Scatter.css';
+
 
 const ScatterOptions = {
     chart: {
@@ -33,11 +40,21 @@ const ScatterOptions = {
     }
 };
 
-class Scatter extends AbstractBasicCartesianChartWithAxes {
+const drawPoints = (context, particles, opt)=> {
+    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+
+    for (const [i, p] of particles.entries()) {
+        context.beginPath();
+        context.fillStyle = p.c;
+        context.globalAlpha = p.alpha;
+        context.arc(p.x, p.y, p.r, 0, 2 * Math.PI, false);
+        context.fill();
+    }
+}
+
+class Scatter extends AbstractCanvasChart {
     constructor(canvasId, _userOptions) {
         super(canvasId, _userOptions);
-
-        this.dotGroup;
 
         this._getRadius = ()=> {
             return this._options.data.z;
@@ -49,7 +66,7 @@ class Scatter extends AbstractBasicCartesianChartWithAxes {
                 : null;
         };
 
-        this._z = (d)=> {
+        this._r = (d)=> {
             return (this._getRadius() && this._getRadius().accessor)
                 ? this._getRadius().scale(this._getRadiusValue(d))
                 : this._options.plots.bubble.default;
@@ -66,69 +83,94 @@ class Scatter extends AbstractBasicCartesianChartWithAxes {
 
     }
 
-    render (_data) {
-        super.render(_data);
-        this.dotGroup = this._svg.append('g').attr('class', 'dot-group');
+    _animate() {
+        const Duration = this._options.animation.duration.update;
 
-        this.update();
-    };
+        const initialState = this.previousState
+            ? this.previousState
+            : this._data.map(d=>{
 
-    update() {
-        super.update();
-        this._refreshZScale();
+                return {
+                    x: this._x(d),
+                    y: this._frontCanvas.node().height,
+                    r: this._r(d),
+                    c: this._c(d),
+                    alpha: 0,
+                    data: d
+                }
+            });
 
-        let circles = this.dotGroup.selectAll('.scatter-dot')
-            .data(this._data);
+        const finalState = this._data.map(d=>{
+            return {
+                x: this._x(d),
+                y: this._y(d),
+                r: this._r(d),
+                c: this._c(d),
+                alpha: 1,
+                data: d
+            }
+        });
 
-        circles.exit()
-            .transition("ease-transition")
-            .duration(this._options.animation.duration.remove )
-            .attr('opacity', 0)
-            .attr('r', 1)
-            .attr('cy', (this._options.chart.innerHeight + this._options.chart.margin.top - 20))
-            .remove();
+        // cache finalState as the initial state of next animation call
+        this.previousState = finalState;
 
+        const interpolateParticles = interpolateArray(initialState, finalState);
 
-        circles
-            .attr('data-dimension', this.voronoiSelector)
-            .transition("update-transition")
-            .duration((d, i)=> { return this._options.animation.duration.add / this._data.length * i; })
-            .delay((d, i)=>{ return i / this._data.length * this._options.animation.duration.update;})
-            .attr('cx', this._x)
-            .attr('cy',this. _y)
-            .attr('r', this._z)
+        let that = this;
+        const batchRendering = timer( (elapsed)=> {
+            const t = Math.min(1, easeCubic(elapsed / Duration));
 
-            .style('opacity', this._options.plots.opacity)
-            .attr('fill', this._c);
+            drawPoints(that._frontContext,
+                interpolateParticles(t),
+                that._options);
 
+            if (t === 1) {
+                batchRendering.stop();
 
-        circles.enter().append('circle')
-            .attr('cx', this._x)
-            .attr('cy', (this._options.chart.innerHeight + this._options.chart.margin.top - 20))
-            .attr('r', this._z)
-            .attr('class', 'scatter-dot')
-            .attr('data-dimension', this.voronoiSelector)
-            .attr('fill', this._c)
-            .style('opacity',0)
-            .transition("append-circle-transition")
-            .duration((d, i)=> { return this._options.animation.duration.add / this._data.length * i; })
-            .delay((d, i)=> { return i / this._data.length * this._options.animation.duration.add;})
-            .style('opacity', this._options.plots.opacity)
-            .attr('cy', this._y);
+                that._voronoi = applyVoronoi(that._frontContext,
+                    that._options, finalState);
 
-        this._bindTooltip(this.dotGroup.selectAll('.scatter-dot'))
+                that._quadtree = applyQuadtree(that._frontContext,
+                    that._options, finalState);
 
+                /**
+                 * callback for when the mouse moves across the overlay
+                 */
+                function mouseMoveHandler() {
+                    // get the current mouse position
+                    const [mx, my] = mouse(this);
+                    const QuadtreeRadius = 100;
+                    // use the new diagram.find() function to find the Voronoi site
+                    // closest to the mouse, limited by max distance voronoiRadius
+                    const closest = that._voronoi.find(mx, my, QuadtreeRadius);
+
+                    if (closest) {
+                        that._tooltip.style("left", closest[0] + "px")
+                            .style("top", closest[1] + "px")
+                            .html( that._getTooltipHTML(closest.data.data));
+
+                        that._tooltip.style("opacity", 1)
+                    } else {
+                        that._tooltip.style("opacity", 0)
+                    }
+                }
+
+                function mouseOutHandler() {
+                    that._tooltip.style("opacity", 0)
+                }
+
+                that._frontCanvas.on('mousemove', mouseMoveHandler);
+                that._frontCanvas.on('mouseout', mouseOutHandler);
+
+                // draw hidden in parallel;
+                // drawPoints(that._hiddenContext,
+                //     interpolateParticles(t),
+                //     that._options, true);
+
+                that._listeners.call('rendered');
+            }
+        });
     }
-
-    transitionColor(colorOptions) {
-        super.transitionColor(colorOptions);
-
-        this.dotGroup.selectAll('.scatter-dot')
-            .transition()
-            .duration(this._options.animation.duration.update)
-            .delay((d, i)=> { return i / this._data.length * this._options.animation.duration.update;})
-            .attr('fill', this._c);
-    };
 
 
     createOptions(_userOpt) {
