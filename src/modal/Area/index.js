@@ -5,6 +5,7 @@ import {
 import { interpolateArray } from 'd3-interpolate';
 import { timer } from 'd3-timer';
 import { mouse } from 'd3-selection';
+import { easeCubic } from 'd3-ease';
 import {
     uuid,
     linearStops
@@ -151,8 +152,8 @@ class Area extends AbstractCanvasChart {
         const interpolateParticles = interpolateArray(initialState, finalState);
 
         let that = this;
-        const batchRendering = timer( (timeSinceStart)=> {
-            let t = Math.min(timeSinceStart/Duration, 1);
+        const batchRendering = timer( (elapsed)=> {
+            const t = Math.min(1, easeCubic(elapsed / Duration));
 
             draw(that._frontContext,
                 interpolateParticles(t),
