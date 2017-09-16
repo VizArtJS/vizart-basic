@@ -15,7 +15,6 @@ const updateRadiusScale = (opt, data)=> {
             opt.data.r.min = range[0];
             opt.data.r.max = range[1];
 
-            console.log('--------');
             opt.data.r.scale = scaleLinear()
                 .domain([opt.data.r.min, opt.data.r.max])
                 .range([radiusDef.min, radiusDef.max]);

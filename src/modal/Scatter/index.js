@@ -124,13 +124,19 @@ class Scatter extends AbstractCanvasChart {
                     const closest = that._voronoi.find(mx, my, QuadtreeRadius);
 
                     if (closest) {
-                        that._tooltip.style("left", closest[0] + "px")
-                            .style("top", closest[1] + "px")
-                            .html( that._getTooltipHTML(closest.data.data));
+                        that._tooltip
+                            .html( that._getTooltipHTML(closest.data.data))
+                            .transition()
+                            .duration(that._options.animation.tooltip)
+                            .style("opacity", 1)
+                            .style("left", closest[0] + "px")
+                            .style("top", closest[1] + "px");
 
-                        that._tooltip.style("opacity", 1)
                     } else {
-                        that._tooltip.style("opacity", 0)
+                        that._tooltip
+                            .transition()
+                            .duration(that._options.animation.tooltip)
+                            .style("opacity", 0)
                     }
                 }
 
