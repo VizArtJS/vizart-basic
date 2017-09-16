@@ -19,21 +19,21 @@
 </head>
 <body>
 
-<div id="update" class="btn btn-info" style="position: fixed;top: 10px; left: 70px">Update</div>
+<div id="update" class="btn btn-info" style="position: fixed;top: 10px; left: 70px;  z-index: 99">Update</div>
 <div class="dropdown" style="position: fixed; top: 10px; left: 160px;">
     <button  class="btn btn-info dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
         Color
         <span class="caret"></span>
     </button>
     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-        <li id="color1"><a href="#">BuGn</a></li>
-        <li id="color2"><a href="#">Blues</a></li>
+        <li id="color1"><a href="#">Dawn</a></li>
+        <li id="color2"><a href="#">Cold</a></li>
         <li id="color3"><a href="#">Warm</a></li>
         <li id="color4"><a href="#">Cubehelix</a></li>
     </ul>
 </div>
 
-<div class="dropdown2" style="position: fixed; top: 10px; left: 250px;">
+<div class="dropdown2" style="position: fixed; top: 10px; left: 250px;  z-index: 99">
     <button  class="btn btn-info dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
         Sort
         <span class="caret"></span>
@@ -70,7 +70,7 @@
                 },
             },
             plots: {
-                opacity: 0.4
+                opacity: 0.7
             }
         };
 
@@ -80,33 +80,31 @@
 //            scatter._revealVoronoi();
 //            scatter._revealQuadtree();
 //        });
-
+        var data;
         d3.csv('assets/scatter_expenditure.csv', function(err, res){
             for (var i = 0; i < res.length; i++) {
                 res[i].exp_amo = +res[i].exp_amo;
             }
+            data = res;
             scatter.render(res);
         });
 
-
-        // live update button is clicked
-        $('#update').click(function(){
-            var ranIndex = chance.integer({min:0, max:49});
-            fakeData[ranIndex].my = chance.floating({min: 0, max: 0.00035})
-
-            scatter.update(fakeData);
-        });
 
         var options2 = scatter.options();
 
         // change color
         $('#color1').click(function(){
-            options2.color.scheme = "BuGn";
+            options2.color.scheme = [
+                '#ffe100',
+                '#ffbf00',
+                '#ff5730',
+                '#eb3ba6'
+            ];
             scatter.transitionColor(options2.color);
         });
 
         $('#color2').click(function(){
-            options2.color.scheme = "Blues";
+            options2.color.scheme = "Cold";
             scatter.transitionColor(options2.color)
         });
 
@@ -121,16 +119,16 @@
         });
 
         $('#a1').click(function(){
-            scatter.sort('mx', 'asc');
+            scatter.sort('dissem_dt', 'asc');
         })
         $('#a2').click(function(){
-            scatter.sort('mx', 'desc');
+            scatter.sort('dissem_dt', 'desc');
         });
         $('#a3').click(function(){
-            scatter.sort('my', 'asc');
+            scatter.sort('exp_amo', 'asc');
         });
         $('#a4').click(function(){
-            scatter.sort('my', 'desc');
+            scatter.sort('exp_amo', 'desc');
         });
 
     });
