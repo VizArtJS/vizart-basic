@@ -100,7 +100,7 @@
 
 
             for (var i = 0; i < data.length; i++) {
-                data[i].total = +data[i].total;
+                data[i].Total = +data[i].Total;
             }
 
 
@@ -112,15 +112,13 @@
 
         // change color
         $('#color1').click(function(){
-            options2.color = {
-                type: 'distinct',
-                scheme: [
-                    '#ffe100',
-                    '#ffbf00',
-                    '#ff5730'
-                ],
-                distinction: [0, 0.16, 0.77, 1]
-            };
+            options2.color.scheme = [
+                '#ffe100',
+                '#ffbf00',
+                '#ff5730',
+                '#eb3ba6'
+            ];
+
             barChart.transitionColor(options2.color);
         });
 
