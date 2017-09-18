@@ -28,8 +28,8 @@ const CartesianOptions = {
         labelAngle: 0,
 
         title: {
-            text: '',
-            style: ''
+            text: null,
+            style: null
         }
     },
 
@@ -42,8 +42,8 @@ const CartesianOptions = {
             ticks: 0,
             tier: 6,
             title: {
-                text: '',
-                style: ''
+                text: null,
+                style: null
             }
         }
     ],

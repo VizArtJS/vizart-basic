@@ -15,11 +15,47 @@
             height: 100%;
         }
 
+        .full-height {
+            height: 100%;
+        }
+
+        .y.axis .domain,
+        .x.axis .domain {
+            stroke: rgba(255, 255, 255, 0.41);
+        }
+
+        .y.axis text,
+        .y.axis line,
+        .x-axis-title,
+        .y-axis-title,
+        .x.axis text,
+        .x.axis line {
+            color:rgba(255, 255, 255, 0.41);;
+            fill: rgba(255, 255, 255, 0.41);;
+            stroke: rgba(255, 255, 255, 0.41);
+        }
+
+        .ocean {
+            background-image: url(assets/vz-skin-galaxy_2.jpg);
+            background-repeat: no-repeat;
+            background-size: cover;
+            border-radius: 5px;
+
+            width: 90%;
+            left: 5%;
+            top: 60px;
+            margin: 0px auto;
+            height: calc(100% - 120px);
+            padding-top: 0px;
+            border-radius: 6px;
+            box-shadow: 0 12px 15px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+        }
+
     </style>
 </head>
 <body>
 
-<div id="update" class="btn btn-info" style="position: fixed;top: 10px; left: 70px;  z-index: 99">Update</div>
+<div id="update" class="btn btn-info" style="position: fixed;top: 10px; left: 70px;  z-index: 99">Hexbin</div>
 <div class="dropdown" style="position: fixed; top: 10px; left: 160px;">
     <button  class="btn btn-info dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
         Color
@@ -45,14 +81,16 @@
         <li id="a4"><a href="#">metric desc</a></li>
     </ul>
 </div>
-<div id="bar" style="width: 100%; height: 700px; top: 120px;"></div>
+<div id="bar" class="ocean">
+
+</div>
 
 <script>
     $(document).ready(function () {
         var options = {
             data: {
                 x:
-                    { name: 'dissem_dt', type: 'date', accessor: 'dissem_dt', format: '%d/%m/%y'}
+                    { name: 'exp_dat', type: 'date', accessor: 'exp_dat', format: '%d/%m/%y'}
                 ,
                 y: [
                     { name: 'exp_amo', type: 'number', accessor: 'exp_amo'}
@@ -60,6 +98,23 @@
                 r:  { name: 'exp_amo', type: 'number', accessor: 'exp_amo'}
 
             },
+
+            xAxis: {
+                title: {
+                    text: 'Expire Date'
+                }
+            },
+
+            yAxis:[
+                {
+                    ticks: 0,
+                    tier: 6,
+                    title: {
+                        text: 'Expire Amount',
+                        style: null
+                    }
+                }
+            ],
 
             r: {
                 scale: null,
@@ -70,10 +125,10 @@
 
             chart: {
                 margin: {
-                    left: 80,
+                    left: 100,
                     right: 40,
                     top: 20,
-                    bottom:120
+                    bottom: 90
                 },
             },
             plots: {
@@ -98,6 +153,10 @@
 
 
         var options2 = scatter.options();
+
+        $('#update').click(function(){
+            scatter.hexbinLayout();
+        });
 
         // change color
         $('#color1').click(function(){

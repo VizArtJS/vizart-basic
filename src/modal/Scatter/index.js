@@ -10,7 +10,7 @@ import applyQuadtree from '../../canvas/quadtree/apply';
 import applyVoronoi from '../../canvas/voronoi/apply';
 import createCartesianOpt from '../../options/createCartesianOpt';
 import updateRadiusScale from './update-radius-scale';
-
+import hexbinLayout from './hexbin-layout';
 
 const ScatterOptions = {
     chart: {
@@ -46,6 +46,28 @@ const drawPoints = (context, particles, opt)=> {
         context.arc(p.x, p.y, p.r, 0, 2 * Math.PI, false);
         context.fill();
     }
+}
+
+const drawHexbin = (context, particles, opt)=> {
+    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+
+    const hexLayout = hexbinLayout()
+        .x(d=>d.x)
+        .y(d=>d.y)
+        .size([context.canvas.width, context.canvas.height])
+        .radius(20);
+    hexLayout.context(context);
+    const hexagons = hexLayout(particles);
+
+    for (const h of hexagons) {
+        context.save();
+        context.fillStyle = 'red';
+        context.translate(h.x, h.y);
+        hexLayout.hexagon(20);
+        context.fill();
+        context.restore();
+    }
+
 }
 
 class Scatter extends AbstractCanvasChart {
@@ -164,6 +186,10 @@ class Scatter extends AbstractCanvasChart {
         }
 
         return this._data;
+    }
+
+    hexbinLayout() {
+        drawHexbin(this._frontContext, this.previousState, this._options);
     }
 
     createOptions(_userOpt) {

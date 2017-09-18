@@ -1,4 +1,4 @@
-import { scaleLinear } from 'd3-scale';
+import { scaleLinear, scaleLog } from 'd3-scale';
 import { extent } from 'd3-array';
 import isFunction from 'lodash-es/isFunction';
 import { check } from 'vizart-core';

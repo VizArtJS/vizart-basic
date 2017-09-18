@@ -3,26 +3,26 @@ import 'd3-transition';
 import { format } from 'd3-format'
 import isString from 'lodash-es/isString';
 import isNumber from 'lodash-es/isNumber';
+import isNull from 'lodash-es/isNull';
 
 import { Globals } from 'vizart-core';
 
 import cnTimeFormat from './cn-time-format';
 import rotateXTicks from './rotete-ticks';
 
-const isTickDiv = (_data, _units)=> {
-    return (_data.length - 1) % _units == 0;
+const isTickDiv = (data, units)=> (data.length - 1) % units === 0;
+
+const showTitle = (svg, opt)=> {
+
 }
 
 class Axis {
     constructor(_options) {
         this._options = _options;
 
-        this._getMetric = ()=> { return this._options.data.y[0]; };
-        this._getDimension = ()=> { return this._options.data.x; };
-        this._getDimensionVal = (d)=> {
-            return d[this._getDimension().accessor];
-        };
-
+        this._getMetric = ()=> this._options.data.y[0];
+        this._getDimension = ()=> this._options.data.x;
+        this._getDimensionVal = (d)=> d[this._getDimension().accessor];
 
         this._xAxis;
         this._yAxis;
@@ -99,6 +99,29 @@ class Axis {
         _svg.append("g")
             .attr("class", "y axis")
             .call(this._yAxis);
+
+        if (this._options.yAxis.length > 0 &&
+            this._options.yAxis[0].title.text != null) {
+            _svg.append("text")
+                .attr('class', 'y-axis-title')
+                .attr("transform", "rotate(-90)")
+                .attr("y", 0 - this._options.chart.margin.left + 10)
+                .attr("x",0 - (this._options.chart.innerHeight / 2))
+                .attr("dy", "1em")
+                .style("text-anchor", "middle")
+                .text(this._options.yAxis[0].title.text);
+        }
+
+        if (this._options.xAxis.title.text != null) {
+            _svg.append("text")
+                .attr('class', 'x-axis-title')
+                .attr("transform",
+                    "translate(" + ((this._options.chart.innerWidth)/2) + " ," +
+                    (this._options.chart.innerHeight + this._options.chart.margin.top + 30) + ")")
+                .style("text-anchor", "middle")
+                .text(this._options.xAxis.title.text);
+        }
+
 
         rotateXTicks(_svg, this._options.xAxis.labelAngle, false);
     }
