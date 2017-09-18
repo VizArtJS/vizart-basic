@@ -15,10 +15,6 @@
             height: 100%;
         }
 
-        .full-height {
-            height: 100%;
-        }
-
         .y.axis .domain,
         .x.axis .domain {
             stroke: rgba(255, 255, 255, 0.41);
@@ -34,10 +30,7 @@
             stroke: rgba(255, 255, 255, 0.41);
         }
 
-        .ocean {
-            background-image: url(assets/vz-skin-galaxy_2.jpg);
-            background-repeat: no-repeat;
-            background-size: cover;
+        .chart-container {
             border-radius: 5px;
 
             width: 90%;
@@ -48,6 +41,13 @@
             padding-top: 0px;
             border-radius: 6px;
             box-shadow: 0 12px 15px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+        }
+
+        .ocean {
+            background-image: url(assets/vz-skin-galaxy_2.jpg);
+            background-repeat: no-repeat;
+            background-size: cover;
+
         }
 
     </style>
@@ -80,7 +80,7 @@
         <li id="a4"><a href="#">metric desc</a></li>
     </ul>
 </div>
-<div id="bar" class="ocean">
+<div id="bar" class="ocean chart-container">
 
 </div>
 

@@ -70,6 +70,7 @@ const drawHexbin = (context, particles, opt)=> {
 
 }
 
+
 class Scatter extends AbstractCanvasChart {
     constructor(canvasId, _userOptions) {
         super(canvasId, _userOptions);
@@ -178,6 +179,7 @@ class Scatter extends AbstractCanvasChart {
             }
         });
     }
+
 
     data(data) {
         if (data) {

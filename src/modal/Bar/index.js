@@ -1,17 +1,37 @@
-import { Globals, mergeOptions } from 'vizart-core';
+import { interpolateArray } from 'd3-interpolate';
+import { timer } from 'd3-timer';
+import { mouse } from 'd3-selection';
+import { easeCubic } from 'd3-ease';
 
-import { AbstractBasicCartesianChartWithAxes } from '../../base';
-import { processCartesianData } from '../../data';
-import getSortDef from '../../data/helper/get-sort-def';
-import createCartesianOpt from '../../options/createCartesianOpt';
+import {
+    Globals,
+    mergeOptions
+} from 'vizart-core';
 import isUndefined from 'lodash-es/isUndefined';
+import isNull from 'lodash-es/isNull';
 import isFunction from 'lodash-es/isFunction';
+
+import AbstractCanvasChart from '../../canvas/AbstractCanvasChart';
+import createCartesianOpt from '../../options/createCartesianOpt';
 
 const BarOpt = {
     chart: { type: 'bar_horizontal'}
 };
 
-class Bar extends AbstractBasicCartesianChartWithAxes {
+
+const drawRects = (context, particles, opt)=> {
+    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+
+    for (const [i, p] of particles.entries()) {
+        context.beginPath();
+        context.fillStyle = p.c;
+        context.globalAlpha = p.alpha;
+        context.rect(p.x, p.y, p.w, p.h);
+        context.fill();
+    }
+}
+
+class Bar extends AbstractCanvasChart {
 
     constructor(canvasId, _userOptions) {
         super(canvasId, _userOptions);
@@ -30,141 +50,81 @@ class Bar extends AbstractBasicCartesianChartWithAxes {
         this._zero = ()=> this._getMetric().scale(0);
     }
 
+    _animate() {
+        const Duration = this._options.animation.duration.update;
+
+        const initialState = this.previousState
+            ? this.previousState
+            : this._data.map(d=>{
+
+                return {
+                    x: this._x(d),
+                    y: this._frontCanvas.node().height,
+                    w: this._w(d),
+                    h: this._h(d),
+                    c: this._c(d),
+                    alpha: 0,
+                    data: d
+                }
+            });
+
+        const finalState = this._data.map(d=>{
+            return {
+                x: this._x(d),
+                y: this._y(d),
+                w: this._w(d),
+                h: this._h(d),
+                c: this._c(d),
+                alpha: this._options.plots.opacity,
+                data: d
+            }
+        });
+
+        // cache finalState as the initial state of next animation call
+        this.previousState = finalState;
+
+        const interpolateStates = interpolateArray(initialState, finalState);
+
+        let that = this;
+        const batchRendering = timer( (elapsed)=> {
+            const t = Math.min(1, easeCubic(elapsed / Duration));
+
+            drawRects(that._frontContext,
+                interpolateStates(t),
+                that._options);
+
+            if (t === 1) {
+                batchRendering.stop();
+
+
+                /**
+                 * callback for when the mouse moves across the overlay
+                 */
+                function mouseMoveHandler() {
+                }
+
+                function mouseOutHandler() {
+                    that._tooltip.style("opacity", 0)
+                }
+
+                that._frontCanvas.on('mousemove', mouseMoveHandler);
+                that._frontCanvas.on('mouseout', mouseOutHandler);
+
+
+                that._listeners.call('rendered');
+            }
+        });
+    }
+
     createOptions(_userOptions) {
         return createCartesianOpt(BarOpt, _userOptions);
     }
-
-    render(_data) {
-        super.render(_data);
-        this._svg.append("g").attr("class", "x axis zero")
-            .attr("transform", "translate(0," + this._zero() + ")")
-            .attr('opacity', 0)
-            .attr('stroke-opacity', 0)
-            .call(this.axes._xAxis);
-
-        this.update();
-    }
-
-    update() {
-        super.update();
-
-        let _hasNegative = super._hasNegativeValue();
-
-        this._svg.select("x axis zero")
-            .attr("transform", "translate(0," + this._zero() + ")")
-            .attr('stroke-opacity', _hasNegative ? 1 : 0);
-
-        let bars = this._svg.selectAll('.bar').data(this._data);
-        let dataJoin = bars.enter();
-        let dataRemove = bars.exit();
-
-        dataRemove
-            .transition("exit-rect-transition")
-            .duration(this._options.animation.duration.remove)
-            .attr("y", _hasNegative ? this._y(0) : this._options.chart.innerHeight)
-            .attr("height", 0)
-            .remove();
-
-        bars
-            .transition("update-rect-transition")
-            .duration(this._options.animation.duration.update)
-            .delay((d, i) => {
-                return i / this._data.length * this._options.animation.duration.update;
-            })
-            .attr('fill', this._c)
-            .attr("x", this._x)
-            .attr('width', this._w)
-            .attr("y", (d)=> { return this._getMetricVal(d) > 0 ? this._y(d) : this._zero(); })
-            .attr("height", (d)=> {
-                return _hasNegative
-                    ? Math.abs( this._y(d) - this._zero() )
-                    : this._h(d);
-            });
-
-
-        dataJoin.append("rect")
-            .attr('class', 'bar')
-            .attr('fill', this._c)
-            .attr('opacity', 1)
-            .attr("x", this._x)
-            .attr('width', this._w)
-            .attr("y", _hasNegative ? this._zero(0) : this._options.chart.innerHeight)
-            .attr("height", 0)
-            .transition("add-rect-transition")
-            .duration(this._options.animation.duration.add)
-            .delay((d, i) => {
-                return i / this._data.length * this._options.animation.duration.add;
-            })
-            .attr("y", (d)=> { return this._getMetricVal(d) > 0 ? this._y(d) : this._zero(); })
-            .attr("height", (d)=> {
-                return _hasNegative
-                    ? Math.abs( this._y(d) - this._zero() )
-                    : this._h(d);
-            });
-
-        this._bindTooltip(this._svg.selectAll('.bar'));
-    };
-
-    sort(field, direction) {
-        this._options.ordering = {
-            accessor: field,
-            direction: direction
-        };
-
-        this._data = processCartesianData(this._data, this._options, false);
-        let _field = getSortDef(this._options);
-        let _accessor = _field.accessor;
-
-        switch (_field.type) {
-            case Globals.DataType.STRING:
-                this._svg.selectAll('.bar')
-                    .sort((a, b) => {
-                        return (direction === 'asc')
-                            ? a[_accessor].localeCompare(b[_accessor])
-                            : b[_accessor].localeCompare(a[_accessor]);
-                    });
-                break;
-            default:
-                this._svg.selectAll('.bar')
-                    .sort((a, b) => {
-                        return (direction === 'asc')
-                            ? a[_accessor] - b[_accessor]
-                            : b[_accessor] - a[_accessor];
-                    });
-
-                break;
-        }
-
-        let transition = this._svg.transition().duration(this._options.animation.duration.update);
-        let _delay = (d, i) => {
-            return i / this._data.length * this._options.animation.duration.update;
-        };
-
-        transition.selectAll(".bar")
-            .delay(_delay)
-            .attr("x", this._x);
-
-        this.axes.update(this._svg, this._data);
-    };
-
-
-    transitionColor(colorOptions) {
-        super.transitionColor(colorOptions);
-
-        this._svg.selectAll('.bar')
-            .transition()
-            .duration(this._options.animation.duration.color)
-            .delay((d, i) => {
-                return i / this._data.length * this._options.animation.duration.color;
-            })
-            .attr('fill', this._c);
-    };
 
     _isBar() {
         return true;
     }
 
-};
+}
 
 
 export default Bar
