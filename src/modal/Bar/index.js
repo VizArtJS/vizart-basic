@@ -45,12 +45,13 @@ const drawRects =  (context, selection, opt)=> {
         context.textAlign = "bottom";
         context.textBaseline = 'middle';
 
-        context.shadowColor = 'rgba(255,255,255,0.4)';
-        context.shadowBlur = 30;
+        context.strokeStyle = 'rgba(255,255,255, 0.7)';
+        context.lineWidth = 4;
+        context.strokeText(node.attr('title'), 5, node.attr('width') / 2);
 
         context.fillStyle = 'black';
-
         context.fillText(node.attr('title'), 5, node.attr('width') / 2);
+
         context.restore();
     });
 }
