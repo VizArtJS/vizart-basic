@@ -21,6 +21,10 @@ const BarOpt = {
     chart: { type: 'bar_horizontal'}
 };
 
+const withinRect = (d, x, y)=> {
+    return this.x <= x && x <= this.x + this.width
+        && this.y <= y && y <= this.y + this.height;
+}
 
 
 const drawRects =  (context, selection, opt)=> {
@@ -73,14 +77,19 @@ class Bar extends AbstractCanvasChart {
     _animate() {
         this.drawDetachedBars();
 
-        timer((elapsed)=> {
-            drawRects(this._frontContext, this._detachedContainer.selectAll('.bar'), this._options)
-        });
+        // timer((elapsed)=> {
+        //     drawRects(this._frontContext, this._detachedContainer.selectAll('.bar'), this._options)
+        // });
     }
 
 
     drawDetachedBars() {
         const _hasNegative = super._hasNegativeValue();
+
+        const drawCanvasInTransition = ()=> {
+            return t=> {
+                drawRects(this._frontContext, this._detachedContainer.selectAll('.bar'), this._options);
+            }};
 
         let bars = this._detachedContainer.selectAll('.bar').data(this._data);
         let dataJoin = bars.enter();
@@ -93,7 +102,9 @@ class Bar extends AbstractCanvasChart {
                     .transition()
                     .attr("y", _hasNegative ? this._y(0) : this._options.chart.innerHeight)
                     .attr("height", 0)
-                    .remove();
+                    .tween("remove.rects", drawCanvasInTransition);
+
+                dataRemove.remove();
             });
 
         const updateTransition = exitTransition.transition()
@@ -109,7 +120,8 @@ class Bar extends AbstractCanvasChart {
                     .attr("y", d=> this._getMetricVal(d) > 0 ? this._y(d) : this._zero())
                     .attr("height", d=> _hasNegative
                         ? Math.abs( this._y(d) - this._zero() )
-                        : this._h(d));
+                        : this._h(d))
+                    .tween("update.rects", drawCanvasInTransition);
             });
 
         const enterTransition = updateTransition.transition()
@@ -131,7 +143,8 @@ class Bar extends AbstractCanvasChart {
                     .attr("height", d=> _hasNegative
                         ? Math.abs( this._y(d) - this._zero() )
                         : this._h(d))
-                    .attr('title', this._getDimensionVal);
+                    .attr('title', this._getDimensionVal)
+                    .tween("append.rects", drawCanvasInTransition);
             });
 
         enterTransition.on('end', ()=> {
