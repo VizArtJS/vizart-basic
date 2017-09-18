@@ -34,14 +34,14 @@
 <body>
 
 <div id="update" class="btn btn-info" style="position: fixed;top: 10px; left: 70px; z-index: 99">Update</div>
-<div class="dropdown" style="position: fixed; top: 10px; left: 160px;">
+<div class="dropdown" style="position: fixed; top: 10px; left: 160px;z-index: 99">
     <button  class="btn btn-info dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
         Color
         <span class="caret"></span>
     </button>
     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-        <li id="color1"><a href="#">BuGn</a></li>
-        <li id="color2"><a href="#">Blues</a></li>
+        <li id="color1"><a href="#">Dawn Distinct</a></li>
+        <li id="color2"><a href="#">Cold</a></li>
         <li id="color3"><a href="#">Warm</a></li>
         <li id="color4"><a href="#">Cubehelix</a></li>
         <li id="set1"><a href="#">color 2</a></li>
@@ -87,15 +87,6 @@
                 ticks: 160,
                 labelAngle: 30,
             }
-//            color: {
-//                type: 'distinct',
-//                scheme: [
-//                    '#ffe100',
-//                    '#ffbf00',
-//                    '#ff5730'
-//                ],
-//                distinction: [0, 0.16, 0.77, 1]
-//            }
         };
 
 
@@ -121,12 +112,20 @@
 
         // change color
         $('#color1').click(function(){
-            options2.color.scheme = "BuGn";
+            options2.color = {
+                type: 'distinct',
+                scheme: [
+                    '#ffe100',
+                    '#ffbf00',
+                    '#ff5730'
+                ],
+                distinction: [0, 0.16, 0.77, 1]
+            };
             barChart.transitionColor(options2.color);
         });
 
         $('#color2').click(function(){
-            options2.color.scheme = "Blues";
+            options2.color.scheme = "Cold";
             barChart.transitionColor(options2.color)
         });
 
@@ -189,16 +188,16 @@
         });
 
         $('#a1').click(function(){
-            barChart.sort('mx', 'asc');
+            barChart.sort('Director', 'asc');
         })
         $('#a2').click(function(){
-            barChart.sort('mx', 'desc');
+            barChart.sort('Director', 'desc');
         });
         $('#a3').click(function(){
-            barChart.sort('my', 'asc');
+            barChart.sort('Total', 'asc');
         });
         $('#a4').click(function(){
-            barChart.sort('my', 'desc');
+            barChart.sort('Total', 'desc');
         });
 
     });
