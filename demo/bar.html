@@ -96,7 +96,7 @@
         d3.csv('assets/movies.csv', function(err, res){
             var data = _.uniqWith(res, function(a, b) {
                 return a.Director === b.Director;
-            }).splice(0, 40);
+            }).splice(0, 10);
 
 
             for (var i = 0; i < data.length; i++) {

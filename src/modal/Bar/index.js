@@ -26,35 +26,53 @@ const withinRect = (d, x, y)=> {
         && this.y <= y && y <= this.y + this.height;
 }
 
+const drawVerticalLabel = (context, node, opt)=> {
+    context.save();
+
+    context.translate(node.attr('x'), opt.chart.innerHeight);
+    context.rotate(-Math.PI/2);
+    context.textAlign = "bottom";
+    context.textBaseline = 'middle';
+
+    context.strokeStyle = 'rgba(255,255,255, 0.7)';
+    context.lineWidth = 4;
+    context.strokeText(node.attr('dimension'), 5, node.attr('width') / 2);
+
+    context.fillStyle = 'black';
+    context.fillText(node.attr('dimension'), 5, node.attr('width') / 2);
+
+    context.restore();
+}
+
+const drawMetricOntTop = (context, node, opt)=> {
+    context.save();
+
+    context.translate(node.attr('x'), node.attr('y'));
+    // context.textAlign = "center";
+    // context.textBaseline = 'middle';
+
+    context.fillStyle = 'black';
+    context.fillText(node.attr('metric'), 0, -10, node.attr('width'));
+
+    context.restore();
+}
 
 const drawRects =  (context, selection, opt)=> {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
     selection.each(function(d){
         const node = select(this);
-        context.save();
         context.beginPath();
         context.fillStyle = node.attr('fill');
         context.globalAlpha = node.attr('opacity');
         context.rect(node.attr('x'), node.attr('y'), node.attr('width'), node.attr('height'));
         context.fill();
 
-
-        context.translate(node.attr('x'), opt.chart.innerHeight);
-        context.rotate(-Math.PI/2);
-        context.textAlign = "bottom";
-        context.textBaseline = 'middle';
-
-        context.strokeStyle = 'rgba(255,255,255, 0.7)';
-        context.lineWidth = 4;
-        context.strokeText(node.attr('title'), 5, node.attr('width') / 2);
-
-        context.fillStyle = 'black';
-        context.fillText(node.attr('title'), 5, node.attr('width') / 2);
-
-        context.restore();
+        drawVerticalLabel(context, node, opt);
+        drawMetricOntTop(context, node, opt)
     });
 }
+
 
 class Bar extends AbstractCanvasChart {
 
@@ -112,7 +130,8 @@ class Bar extends AbstractCanvasChart {
             .duration(this._options.animation.duration.update)
             .each(()=> {
                 bars
-                    .attr('title', this._getDimensionVal)
+                    .attr('dimension', this._getDimensionVal)
+                    .attr('metric', this._getMetricVal)
                     .transition("update-rect-transition")
                     .delay((d, i) => i / this._data.length * this._options.animation.duration.update)
                     .attr('fill', this._c)
@@ -134,7 +153,8 @@ class Bar extends AbstractCanvasChart {
                     .attr('opacity', 1)
                     .attr("x", this._x)
                     .attr('width', this._w)
-                    .attr('title', '')
+                    .attr('dimension', '')
+                    .attr('metric', '')
                     .attr("y", _hasNegative ? this._zero(0) : this._options.chart.innerHeight)
                     .attr("height", 0)
                     .transition()
@@ -144,7 +164,8 @@ class Bar extends AbstractCanvasChart {
                     .attr("height", d=> _hasNegative
                         ? Math.abs( this._y(d) - this._zero() )
                         : this._h(d))
-                    .attr('title', this._getDimensionVal)
+                    .attr('dimension', this._getDimensionVal)
+                    .attr('metric', this._getMetricVal)
                     .tween("append.rects", drawCanvasInTransition);
             });
 
