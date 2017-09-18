@@ -103,7 +103,7 @@ class Axis {
         if (this._options.yAxis.length > 0 &&
             this._options.yAxis[0].title.text != null) {
             _svg.append("text")
-                .attr('class', 'y-axis-title')
+                .attr('class', 'axis-label')
                 .attr("transform", "rotate(-90)")
                 .attr("y", 0 - this._options.chart.margin.left + 10)
                 .attr("x",0 - (this._options.chart.innerHeight / 2))
@@ -114,7 +114,7 @@ class Axis {
 
         if (this._options.xAxis.title.text != null) {
             _svg.append("text")
-                .attr('class', 'x-axis-title')
+                .attr('class', 'axis-label')
                 .attr("transform",
                     "translate(" + ((this._options.chart.innerWidth)/2) + " ," +
                     (this._options.chart.innerHeight + this._options.chart.margin.top + 30) + ")")
