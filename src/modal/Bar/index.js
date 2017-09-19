@@ -1,21 +1,15 @@
-import { interpolateArray } from 'd3-interpolate';
-import { timer } from 'd3-timer';
 import { mouse, select } from 'd3-selection';
 import { transition } from 'd3-transition';
-import { easeCubic } from 'd3-ease';
-
 import {
     Globals,
     mergeOptions
 } from 'vizart-core';
 import isUndefined from 'lodash-es/isUndefined';
-import isNull from 'lodash-es/isNull';
 import isFunction from 'lodash-es/isFunction';
 
 import AbstractCanvasChart from '../../canvas/AbstractCanvasChart';
 import createCartesianOpt from '../../options/createCartesianOpt';
-import processCartesianData from '../../data/coordinates/cartesian';
-import {getSortDef} from '../../data/helper';
+import sortSelector from '../../data/helper/sort-selector';
 
 const BarOpt = {
     chart: { type: 'bar_horizontal'},
@@ -106,10 +100,6 @@ class Bar extends AbstractCanvasChart {
 
     _animate() {
         this.drawDetachedBars();
-
-        // timer((elapsed)=> {
-        //     drawRects(this._frontContext, this._detachedContainer.selectAll('.bar'), this._options)
-        // });
     }
 
 
@@ -232,34 +222,22 @@ class Bar extends AbstractCanvasChart {
         };
 
         this._data = super.data(this._data);
-        const _field = getSortDef(this._options);
-        const _accessor = _field.accessor;
+        sortSelector(this._detachedContainer.selectAll('.bar'))
 
-        this._detachedContainer.selectAll('.bar')
-            .sort((a, b) => {
-                if (_field.type === Globals.DataType.STRING) {
-                    return (direction === 'asc')
-                        ? a[_accessor].localeCompare(b[_accessor])
-                        : b[_accessor].localeCompare(a[_accessor]);
-                } else {
-                    return (direction === 'asc')
-                        ? a[_accessor] - b[_accessor]
-                        : b[_accessor] - a[_accessor];
-                }
-            });
+        const drawCanvasInTransition = ()=> {
+            return t=> {
+                drawRects(this._frontContext, this._detachedContainer.selectAll('.bar'), this._options);
+            }};
 
         this._detachedContainer.selectAll(".bar")
             .transition()
             .duration(this._options.animation.duration.update)
             .delay((d, i)=> i / this._data.length * this._options.animation.duration.update)
-            .attr("x", this._x);
+            .attr("x", this._x)
+            .tween("append.rects", drawCanvasInTransition);
 
         this.axes.update(this._svg, this._data);
-
-        timer((elapsed)=> {
-            drawRects(this._frontContext, this._detachedContainer.selectAll('.bar'), this._options)
-        });
-    };
+    }
 
     createOptions(_userOptions) {
         return createCartesianOpt(BarOpt, _userOptions);

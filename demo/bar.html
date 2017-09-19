@@ -79,7 +79,7 @@
             chart: {
                 margin: {
                     left: 50,
-                    bottom: 50
+                    bottom: 100
                 }
             },
 
@@ -92,12 +92,23 @@
             ],
 
             xAxis: {
-                showTicks: false,
                 ticks: 160,
                 labelAngle: 30,
                 title: {
                     text: 'Director',
-                    offset: 5
+                    offset: 65
+                }
+            },
+
+            plots: {
+                barLabel: {
+                    enabled: false,
+                    color: 'black'
+                },
+                metricLabel: {
+                    enabled: true,
+                    color: 'black',
+                    offset: 10
                 }
             }
         };
@@ -109,7 +120,7 @@
         d3.csv('assets/movies.csv', function(err, res){
             var data = _.uniqWith(res, function(a, b) {
                 return a.Director === b.Director;
-            }).splice(0, 10);
+            }).splice(0, 60);
 
 
             for (var i = 0; i < data.length; i++) {

@@ -206,6 +206,8 @@ class Axis {
             .delay(_delay)
             .call(this._yAxis);
 
+        _svg.select('.x.axis').selectAll('.tick').attr('opacity', this._options.xAxis.showTicks === true ? 1 : 0);
+        _svg.select('.y.axis').selectAll('.tick').attr('opacity', this._options.yAxis[0].showTicks === true ? 1 : 0);
         rotateXTicks(_svg, this._options.xAxis.labelAngle, false);
     }
 }
