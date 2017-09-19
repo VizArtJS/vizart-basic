@@ -2,19 +2,19 @@ import { Globals } from 'vizart-core';
 import getSortDef from './get-sort-def';
 
 const sortSelector = (selector, opt)=> {
-    const _field = getSortDef(opt);
-    const _accessor = _field.accessor;
+    const field = getSortDef(opt);
+    const accessor = field.accessor;
 
     selector
         .sort((a, b) => {
-            if (_field.type === Globals.DataType.STRING) {
+            if (field.type === Globals.DataType.STRING) {
                 return (direction === 'asc')
-                    ? a[_accessor].localeCompare(b[_accessor])
-                    : b[_accessor].localeCompare(a[_accessor]);
+                    ? a[accessor].localeCompare(b[accessor])
+                    : b[accessor].localeCompare(a[accessor]);
             } else {
                 return (direction === 'asc')
-                    ? a[_accessor] - b[_accessor]
-                    : b[_accessor] - a[_accessor];
+                    ? a[accessor] - b[accessor]
+                    : b[accessor] - a[accessor];
             }
         });
 }
