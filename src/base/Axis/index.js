@@ -12,9 +12,6 @@ import rotateXTicks from './rotete-ticks';
 
 const isTickDiv = (data, units)=> (data.length - 1) % units === 0;
 
-const showTitle = (svg, opt)=> {
-
-}
 
 class Axis {
     constructor(_options) {
@@ -91,12 +88,12 @@ class Axis {
 
         this.update(_svg, _data);
 
-        _svg.append("g")
+        const xAxis = _svg.append("g")
             .attr("class", "x axis")
             .attr("transform", "translate(0," + this._options.chart.innerHeight + ")")
             .call(this._xAxis);
 
-        _svg.append("g")
+       const yAxis = _svg.append("g")
             .attr("class", "y axis")
             .call(this._yAxis);
 
@@ -105,7 +102,7 @@ class Axis {
             _svg.append("text")
                 .attr('class', 'axis-label')
                 .attr("transform", "rotate(-90)")
-                .attr("y", 0 - this._options.chart.margin.left + 10)
+                .attr("y", 0 - this._options.chart.margin.left  + this._options.yAxis[0].title.offset)
                 .attr("x",0 - (this._options.chart.innerHeight / 2))
                 .attr("dy", "1em")
                 .style("text-anchor", "middle")
@@ -117,11 +114,13 @@ class Axis {
                 .attr('class', 'axis-label')
                 .attr("transform",
                     "translate(" + ((this._options.chart.innerWidth)/2) + " ," +
-                    (this._options.chart.innerHeight + this._options.chart.margin.top + 30) + ")")
+                    (this._options.chart.innerHeight + this._options.chart.margin.top + this._options.xAxis.title.offset) + ")")
                 .style("text-anchor", "middle")
                 .text(this._options.xAxis.title.text);
         }
 
+        xAxis.selectAll('.tick').attr('opacity', this._options.xAxis.showTicks === true ? 1 : 0);
+        yAxis.selectAll('.tick').attr('opacity', this._options.yAxis[0].showTicks === true ? 1 : 0);
 
         rotateXTicks(_svg, this._options.xAxis.labelAngle, false);
     }

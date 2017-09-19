@@ -19,6 +19,7 @@ const CartesianOptions = {
     },
 
     xAxis: {
+        showTicks: true,
         allowDecimals: false,
         scale: null,
         ticks: 0,
@@ -29,12 +30,14 @@ const CartesianOptions = {
 
         title: {
             text: null,
-            style: null
+            style: null,
+            offset: 10
         }
     },
 
     yAxis: [
         {
+            showTicks: true,
             allowDecimals: false,
             scale: null,
             max: null,
@@ -43,7 +46,8 @@ const CartesianOptions = {
             tier: 6,
             title: {
                 text: null,
-                style: null
+                style: null,
+                offset: 10
             }
         }
     ],
