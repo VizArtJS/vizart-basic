@@ -56,10 +56,10 @@
         var options = {
             data: {
                 x:
-                    { name: 'name', type: 'string', accessor: 'x'}
+                    { name: 'name', type: 'string', accessor: 'mx'}
                 ,
                 y: [
-                    { name: 'performance', type: 'number', accessor: 'y'}
+                    { name: 'performance', type: 'number', accessor: 'my'}
                 ],
             },
 
@@ -78,8 +78,8 @@
 
         for (var i = 0; i < 50; i++) {
             fakeData.push({
-                x: chance.name(),
-                y: chance.floating({min: 1, max: 10})
+                mx: chance.name(),
+                my: chance.integer({min: 1, max: 10})
             })
         }
 
