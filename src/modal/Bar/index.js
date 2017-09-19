@@ -11,6 +11,8 @@ import AbstractCanvasChart from '../../canvas/AbstractCanvasChart';
 import createCartesianOpt from '../../options/createCartesianOpt';
 import sortSelector from '../../data/helper/sort-selector';
 
+import drawRects from './draw-rects';
+
 const BarOpt = {
     chart: { type: 'bar_horizontal'},
     plots: {
@@ -29,53 +31,6 @@ const BarOpt = {
 const withinRect = (d, x, y)=> {
     return this.x <= x && x <= this.x + this.width
         && this.y <= y && y <= this.y + this.height;
-}
-
-const drawVerticalLabel = (context, node, opt)=> {
-    context.save();
-
-    context.translate(node.attr('x'), opt.chart.innerHeight);
-    context.rotate(-Math.PI/2);
-    context.textAlign = "bottom";
-    context.textBaseline = 'middle';
-
-    context.strokeStyle = 'rgba(255,255,255, 0.7)';
-    context.lineWidth = 4;
-    context.strokeText(node.attr('dimension'), 5, node.attr('width') / 2);
-
-    context.fillStyle = opt.plots.barLabel.color;
-    context.fillText(node.attr('dimension'), 5, node.attr('width') / 2);
-
-    context.restore();
-}
-
-const drawMetricOntTop = (context, node, opt)=> {
-    context.save();
-
-    context.translate(node.attr('x'), node.attr('y'));
-    context.textAlign = "center";
-    // context.textBaseline = 'middle';
-
-    context.fillStyle = opt.plots.metricLabel.color;
-    context.fillText(node.attr('metric'), node.attr('width')/2, -opt.plots.metricLabel.offset, node.attr('width'));
-
-    context.restore();
-}
-
-const drawRects =  (context, selection, opt)=> {
-    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-
-    selection.each(function(d){
-        const node = select(this);
-        context.beginPath();
-        context.fillStyle = node.attr('fill');
-        context.globalAlpha = node.attr('opacity');
-        context.rect(node.attr('x'), node.attr('y'), node.attr('width'), node.attr('height'));
-        context.fill();
-
-        if (opt.plots.barLabel.enabled === true) drawVerticalLabel(context, node, opt);
-        if (opt.plots.metricLabel.enabled === true) drawMetricOntTop(context, node, opt);
-    });
 }
 
 
