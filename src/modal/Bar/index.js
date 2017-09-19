@@ -18,7 +18,17 @@ import processCartesianData from '../../data/coordinates/cartesian';
 import {getSortDef} from '../../data/helper';
 
 const BarOpt = {
-    chart: { type: 'bar_horizontal'}
+    chart: { type: 'bar_horizontal'},
+    plots: {
+        barLabel: {
+            enabled: true,
+            color: 'black'
+        },
+        metricLabel: {
+            enabled: true,
+            color: 'black'
+        }
+    }
 };
 
 const withinRect = (d, x, y)=> {
@@ -38,7 +48,7 @@ const drawVerticalLabel = (context, node, opt)=> {
     context.lineWidth = 4;
     context.strokeText(node.attr('dimension'), 5, node.attr('width') / 2);
 
-    context.fillStyle = 'black';
+    context.fillStyle = opt.plots.barLabel.color;
     context.fillText(node.attr('dimension'), 5, node.attr('width') / 2);
 
     context.restore();
@@ -51,7 +61,7 @@ const drawMetricOntTop = (context, node, opt)=> {
     context.textAlign = "center";
     // context.textBaseline = 'middle';
 
-    context.fillStyle = 'black';
+    context.fillStyle = opt.plots.metricLabel.color;
     context.fillText(node.attr('metric'), node.attr('width')/2, -25, node.attr('width'));
 
     context.restore();
@@ -68,8 +78,8 @@ const drawRects =  (context, selection, opt)=> {
         context.rect(node.attr('x'), node.attr('y'), node.attr('width'), node.attr('height'));
         context.fill();
 
-        drawVerticalLabel(context, node, opt);
-        drawMetricOntTop(context, node, opt)
+        if (opt.plots.barLabel.enabled === true) drawVerticalLabel(context, node, opt);
+        if (opt.plots.metricLabel.enabled === true) drawMetricOntTop(context, node, opt);
     });
 }
 
