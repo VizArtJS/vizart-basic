@@ -3,7 +3,8 @@ import getSortDef from './get-sort-def';
 
 const sortSelector = (selector, opt)=> {
     const field = getSortDef(opt);
-    const accessor = field.accessor;
+    const accessor = opt.ordering.accessor;
+    const direction = opt.ordering.direction;
 
     selector
         .sort((a, b) => {

@@ -1,3 +1,5 @@
+import { select } from 'd3-selection';
+
 import drawVerticalLabel from './draw-vertical-label';
 import drawMetricOntTop from './draw-metric-on-top';
 

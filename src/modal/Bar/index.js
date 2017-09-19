@@ -177,7 +177,7 @@ class Bar extends AbstractCanvasChart {
         };
 
         this._data = super.data(this._data);
-        sortSelector(this._detachedContainer.selectAll('.bar'))
+        sortSelector(this._detachedContainer.selectAll('.bar'), this._options);
 
         const drawCanvasInTransition = ()=> {
             return t=> {
