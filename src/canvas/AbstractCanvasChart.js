@@ -26,16 +26,6 @@ class AbstractCanvasChart extends AbstractBasicCartesianChartWithAxes {
 
         const devicePixelRatio = window.devicePixelRatio || 1;
 
-        this._hiddenCanvas = select(this._containerId)
-            .append("canvas")
-            .attr("id", this._frontCanvasId)
-            .style('display', 'none')
-            .style("width", this._options.chart.innerWidth + "px")
-            .style("height", this._options.chart.innerHeight + "px")
-            .style('margin', this._options.chart.margin.top + 'px 0 0 ' + this._options.chart.margin.left + 'px ')
-            .attr('width', this._options.chart.innerWidth * devicePixelRatio)
-            .attr('height', this._options.chart.innerHeight * devicePixelRatio);
-
         this._frontCanvas = select(this._containerId)
             .append("canvas")
             .attr("id", this._fontCanvasId)
@@ -46,10 +36,23 @@ class AbstractCanvasChart extends AbstractBasicCartesianChartWithAxes {
             .attr('width', this._options.chart.innerWidth * devicePixelRatio)
             .attr('height', this._options.chart.innerHeight * devicePixelRatio);
 
-
+        this._hiddenCanvas = select(this._containerId)
+            .append("canvas")
+            .attr("id", this._frontCanvasId)
+            .style('display', 'none')
+            .style("width", this._options.chart.innerWidth + "px")
+            .style("height", this._options.chart.innerHeight + "px")
+            .style('margin', this._options.chart.margin.top + 'px 0 0 ' + this._options.chart.margin.left + 'px ')
+            .attr('width', this._options.chart.innerWidth * devicePixelRatio)
+            .attr('height', this._options.chart.innerHeight * devicePixelRatio);
 
         this._hiddenContext = this._hiddenCanvas.node().getContext("2d");
         this._frontContext = this._frontCanvas.node().getContext('2d');
+
+        this._hiddenContext.mozImageSmoothingEnabled = false;
+        this._hiddenContext.webkitImageSmoothingEnabled = false;
+        this._hiddenContext.msImageSmoothingEnabled = false;
+        this._hiddenContext.imageSmoothingEnabled = false;
 
 
         const backingStoreRatio = this._frontContext.webkitBackingStorePixelRatio
@@ -60,6 +63,7 @@ class AbstractCanvasChart extends AbstractBasicCartesianChartWithAxes {
             || 1;
 
         const ratio = devicePixelRatio / backingStoreRatio;
+        this._canvasScale = ratio;
         this._frontContext.scale(ratio, ratio);
         this._hiddenContext.scale(ratio, ratio);
 

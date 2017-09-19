@@ -12,6 +12,7 @@ import createCartesianOpt from '../../options/createCartesianOpt';
 import sortSelector from '../../data/helper/sort-selector';
 
 import drawRects from './draw-rects';
+import drawHiddenRects from './draw-hidden-rects';
 
 const BarOpt = {
     chart: { type: 'bar_horizontal'},
@@ -51,6 +52,9 @@ class Bar extends AbstractCanvasChart {
         };
         this._h = d=>  this._options.chart.innerHeight - this._y(d);
         this._zero = ()=> this._getMetric().scale(0);
+
+        // We also make a map/dictionary to keep track of colors associated with node.
+        this.colToNode;
     }
 
     _animate() {
@@ -125,7 +129,10 @@ class Bar extends AbstractCanvasChart {
                     .tween("append.rects", drawCanvasInTransition);
             });
 
+        const that = this;
         enterTransition.on('end', ()=> {
+            const colorMap = drawHiddenRects(this._hiddenContext, this._detachedContainer.selectAll('.bar'), this._options);
+
             // shadow color?
             /**
              * callback for when the mouse moves across the overlay
@@ -133,17 +140,22 @@ class Bar extends AbstractCanvasChart {
             function mouseMoveHandler() {
                 // get the current mouse position
                 const [mx, my] = mouse(this);
-                // closest to the mouse, limited by max distance voronoiRadius
-                const closest = that._voronoi.find(mx, my, QuadtreeRadius);
+                // This will return that pixel's color
+                const col = that._hiddenContext.getImageData(mx * that._canvasScale, my * that._canvasScale, 1, 1).data;
+                //Our map uses these rgb strings as keys to nodes.
+                const colString = "rgb(" + col[0] + "," + col[1] + ","+ col[2] + ")";
+                console.log(colString);
+                const node = colorMap.get(colString);
+                console.log(node);
 
-                if (closest) {
+                if (node) {
                     that._tooltip
-                        .html( that._getTooltipHTML(closest.data.data))
+                        .html( that._getTooltipHTML(node))
                         .transition()
                         .duration(that._options.animation.tooltip)
                         .style("opacity", 1)
-                        .style("left", closest[0] + "px")
-                        .style("top", closest[1] + "px");
+                        .style("left", mx + "px")
+                        .style("top", my + "px");
 
                 } else {
                     that._tooltip
@@ -158,6 +170,9 @@ class Bar extends AbstractCanvasChart {
             }
 
             that._frontCanvas.on('mousemove', mouseMoveHandler);
+            that._frontCanvas.on('mouseout', mouseOutHandler);
+
+
         })
     }
 
