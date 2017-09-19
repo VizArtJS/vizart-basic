@@ -48,11 +48,11 @@ const drawMetricOntTop = (context, node, opt)=> {
     context.save();
 
     context.translate(node.attr('x'), node.attr('y'));
-    // context.textAlign = "center";
+    context.textAlign = "center";
     // context.textBaseline = 'middle';
 
     context.fillStyle = 'black';
-    context.fillText(node.attr('metric'), 0, -10, node.attr('width'));
+    context.fillText(node.attr('metric'), node.attr('width')/2, -25, node.attr('width'));
 
     context.restore();
 }
@@ -170,7 +170,38 @@ class Bar extends AbstractCanvasChart {
             });
 
         enterTransition.on('end', ()=> {
+            // shadow color?
+            /**
+             * callback for when the mouse moves across the overlay
+             */
+            function mouseMoveHandler() {
+                // get the current mouse position
+                const [mx, my] = mouse(this);
+                // closest to the mouse, limited by max distance voronoiRadius
+                const closest = that._voronoi.find(mx, my, QuadtreeRadius);
 
+                if (closest) {
+                    that._tooltip
+                        .html( that._getTooltipHTML(closest.data.data))
+                        .transition()
+                        .duration(that._options.animation.tooltip)
+                        .style("opacity", 1)
+                        .style("left", closest[0] + "px")
+                        .style("top", closest[1] + "px");
+
+                } else {
+                    that._tooltip
+                        .transition()
+                        .duration(that._options.animation.tooltip)
+                        .style("opacity", 0)
+                }
+            }
+
+            function mouseOutHandler() {
+                that._tooltip.style("opacity", 0)
+            }
+
+            that._frontCanvas.on('mousemove', mouseMoveHandler);
         })
     }
 
