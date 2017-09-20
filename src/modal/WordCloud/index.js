@@ -23,13 +23,32 @@ const DefaultOptions = {
     },
 
     plots: {
+        opacity: 1,
         padding: 5,
         rotates: 0,
         fontSizeMax: 100,
         fontSizeMin: 10,
+        fontFamily: 'Arial',
         spiral: SPIRAL.REECANGULAR
     }
 };
+
+const drawCanvas = (context, layout, opt)=> {
+    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+    console.log('----');
+    console.log(layout);
+    context.translate(opt.chart.width / 2, opt.chart.height / 2);
+
+    for (let d of layout) {
+        context.save();
+        context.fillStyle = d.c;
+        context.font=`${d.size}px ${opt.plots.fontFamily}`;
+        context.globalAlpha = opt.plots.opacity;
+        context.fillText(d.text, d.x, d.y);
+        context.restore();
+    }
+
+}
 
 const TimeInterval = 10;
 
@@ -38,97 +57,29 @@ class WordCloud extends AbstractBasicCartesianChart {
         super(canvasId, _userOptions);
     }
 
-    render(_data) {
-        super.render(_data);
+    _animate(){
+        const layout = cloud().timeInterval(TimeInterval);
 
-        this._svg.attr("transform", "translate(" + (this._options.chart.width / 2) + ","
-            + (this._options.chart.height / 2) + ")");
-        this._background = this._container.append('g');
-        this._layout = cloud().timeInterval(TimeInterval);
-        this._sizeScale = scaleLinear();
-        this._f = (d)=> { return this._sizeScale(this._getMetricVal(d)); }
-
-        this.update();
-    }
-
-    update(){
-        super.update();
-
-        this._sizeScale.domain(extent(this._data, (d)=> {
-                return this._getMetricVal(d);
-            }))
+        const sizeScale = scaleLinear()
+            .domain(extent(this._data, d=> this._getMetricVal(d)))
             .range([this._options.plots.fontSizeMin, this._options.plots.fontSizeMax]);
 
-
-        this._layout
+        layout
             .stop()
             .words(this._data)
             .padding(this._options.plots.padding)
             .spiral(this._options.plots.spiral)
             .size([this._options.chart.innerWidth, this._options.chart.innerHeight])
-            .text(this.s_getDimensionVal)
+            .text(this._getDimensionVal)
             .rotate(this._options.plots.rotates)
-            .fontSize(this._f)
+            .fontSize(d=> sizeScale(this._getMetricVal(d)))
             .on("end", ()=>{
-                let dataUpdate = this._svg
-                    .selectAll(".word")
-                    .data(this._data);
-
-                let dataJoin = dataUpdate.enter();
-
-                dataUpdate
-                    .transition()
-                    .duration(this._options.animation.duration.quickUpdate)
-                    .style("font-size", (d)=> { return this._f(d) + 'px'; })
-                    .style("fill", this._c)
-                    .attr("text-anchor", "middle")
-                    .attr("transform",  (d)=> {
-                        return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
-                    })
-                    .text(this._getDimensionVal);
-
-
-                dataJoin.append("text")
-                    .attr('class', 'word')
-                    .attr("text-anchor", "middle")
-                    .attr("transform",  (d)=> {
-                        return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
-                    })
-                    .style("font-size", (d)=> {
-                        return this._f(d) + 'px';
-                    })
-                    .style("fill", this._c)
-                    .text(this._getDimensionVal);
-
-                let shadowBG = this._background
-                    .append("g")
-                    .attr("transform", this._svg.attr("transform"));
-                let shadowNode = shadowBG.node();
-                dataUpdate.exit().each(function () {
-                    shadowNode.appendChild(this)
-                });
-
-                shadowBG.transition()
-                    .duration(this._options.animation.duration.update)
-                    .style("opacity", 1e-6)
-                    .remove();
+                drawCanvas(this._frontContext, this._data, this._options)
             });
 
-        this._layout.start();
-
+        layout.start();
 
     }
-
-    transitionColor(colorOptions) {
-        super.transitionColor(colorOptions);
-
-        this._svg.selectAll('.word')
-            .transition()
-            .delay(1e3)
-            .duration(this._options.animation.duration.color)
-            .style('fill', this._c);
-    };
-
 
     createOptions(_userOptions) {
         return createCartesianOpt(DefaultOptions, _userOptions);
