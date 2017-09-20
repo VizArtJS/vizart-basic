@@ -18,6 +18,30 @@ import getLinePosition from './get-line-position';
 import getLabelPosition from './get-label-position';
 import limitSliceValues from './limit-slice-values';
 
+const drawControlPoint = (context, slice, opt, radius)=> {
+    const outerArc = arc()
+        .innerRadius(radius * 0.8)
+        .outerRadius(radius * 0.8)
+        .context(context);
+
+    const [x, y] = outerArc.centroid(slice);
+    // pythagorean theorem for hypotenuse
+    const h = Math.sqrt(x * x + y * y);
+
+    context.beginPath();
+    context.fillStyle = slice.data.c;
+    context.globalAlpha = slice.data.alpha;
+    context.arc(x / h * radius * 0.8,
+        y / h * radius * 0.8,
+        opt.plots.labelControlPointRadius,
+        0, 2 * Math.PI, false);
+    context.fill();
+
+    context.strokeStyle = 'white';
+    context.strokeWidth = 4;
+    context.stroke();
+}
+
 const drawCanvas = (context, state, opt)=> {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
@@ -25,11 +49,6 @@ const drawCanvas = (context, state, opt)=> {
     const innerArc = arc()
         .outerRadius(radius * 0.8)
         .innerRadius(() => opt.plots.isDonut ? radius * opt.plots.innerRadiusRatio : 0)
-        .context(context);
-
-    const outerArc = arc()
-        .innerRadius(radius * 0.9)
-        .outerRadius(radius * 0.9)
         .context(context);
 
     const _pie = pie()
@@ -46,10 +65,10 @@ const drawCanvas = (context, state, opt)=> {
         innerArc(s);
         context.fillStyle = s.data.c;
         context.fill();
+        drawControlPoint(context, s, opt, radius);
+
     }
-
     context.restore();
-
 }
 
 const percentFormat = format(".00%");
@@ -59,10 +78,10 @@ const DefaultOptions = {
         type: 'pie'
     },
     plots: {
-        aggregate: true,
         othersTitle: 'Others',
         isDonut: false,
         innerRadiusRatio: 0.4,
+        labelControlPointRadius: 6,
         labelPosition: 'auto',
         labelMinPercentage: 0.01
     },
