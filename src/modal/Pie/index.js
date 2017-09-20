@@ -9,7 +9,7 @@ import {
 
 import createCartesianOpt from '../../options/createCartesianOpt';
 import AbstractCanvasChart from '../../canvas/AbstractCanvasChart';
-import tooltipMarkup from '../../canvas/tooltip';
+import tooltipMarkup from '../../base/tooltip';
 import drawCanvas from './draw-canvas';
 import drawHiddenCanvas from './draw-hidden-canvas';
 import limitSliceValues from './limit-slice-values';
@@ -97,7 +97,7 @@ class Pie extends AbstractCanvasChart {
 
                     if (node) {
                         that._tooltip
-                            .html( tooltipMarkup(node.data.data, that))
+                            .html( that.tooltip(node.data.data))
                             .transition()
                             .duration(that._options.animation.tooltip)
                             .style("opacity", 1)

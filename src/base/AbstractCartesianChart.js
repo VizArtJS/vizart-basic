@@ -6,6 +6,7 @@ import {
 } from 'vizart-core';
 import './tooltip.css';
 import { select } from 'd3-selection';
+import tooltipMarkup from './tooltip';
 
 class AbstractCartesianChart extends AbstractChart {
     constructor(canvasId, _userOptions) {
@@ -68,6 +69,10 @@ class AbstractCartesianChart extends AbstractChart {
         }
 
         return hasNegative;
+    }
+
+    tooltip(d) {
+        return tooltipMarkup(d, this);
     }
 }
 

@@ -1,4 +1,4 @@
-const TooltipMarkup = (d, chartContext)=>
+const tooltipMarkup = (d, chartContext)=>
     `
     <div class="tooltip-content" style="border-color: ${d.c ? d.c: chartContext._c(d)};">
         <div class="tooltip-header">${chartContext._getDimensionVal(d)}</div>
@@ -9,4 +9,4 @@ const TooltipMarkup = (d, chartContext)=>
     </div>
     `;
 
-export default TooltipMarkup;
+export default tooltipMarkup;

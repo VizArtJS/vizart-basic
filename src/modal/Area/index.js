@@ -18,7 +18,7 @@ import applyQuadtree from '../../canvas/quadtree/apply';
 import applyVoronoi from '../../canvas/voronoi/apply';
 import linearGradient from '../../canvas/gradient-stroke';
 import genColorByIndex from '../../canvas/generate-color';
-import tooltipMarkup from'../../canvas/tooltip';
+import tooltipMarkup from '../../base/tooltip';
 
 const AreaOpt = {
     chart: {
@@ -182,7 +182,7 @@ class Area extends AbstractCanvasChart {
                     if (closest) {
                         that._tooltip.style("left", closest[0] + "px")
                             .style("top", closest[1] + "px")
-                            .html( tooltipMarkup(closest.data.data, that));
+                            .html( that.tooltip(closest.data.data));
 
                         that._tooltip.style("opacity", 1)
                     } else {

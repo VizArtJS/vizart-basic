@@ -10,7 +10,7 @@ import isFunction from 'lodash-es/isFunction';
 import AbstractCanvasChart from '../../canvas/AbstractCanvasChart';
 import createCartesianOpt from '../../options/createCartesianOpt';
 import sortSelector from '../../data/helper/sort-selector';
-import tooltipMarkup from '../../canvas/tooltip';
+import tooltipMarkup from '../../base/tooltip';
 import drawRects from './draw-rects';
 import drawHiddenRects from './draw-hidden-rects';
 
@@ -149,7 +149,7 @@ class Bar extends AbstractCanvasChart {
 
                 if (node) {
                     that._tooltip
-                        .html(tooltipMarkup(node, that))
+                        .html(that.tooltip(node))
                         .transition()
                         .duration(that._options.animation.tooltip)
                         .style("opacity", 1)

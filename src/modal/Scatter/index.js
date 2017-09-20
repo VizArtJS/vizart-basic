@@ -11,7 +11,7 @@ import applyVoronoi from '../../canvas/voronoi/apply';
 import createCartesianOpt from '../../options/createCartesianOpt';
 import updateRadiusScale from './update-radius-scale';
 import hexbinLayout from './hexbin-layout';
-import tooltipMarkup from "../../canvas/tooltip";
+import tooltipMarkup from "../../base/tooltip";
 
 const ScatterOptions = {
     chart: {
@@ -149,7 +149,7 @@ class Scatter extends AbstractCanvasChart {
 
                     if (closest) {
                         that._tooltip
-                            .html( tooltipMarkup(closest.data.data, that))
+                            .html( that.tooltip(closest.data.data))
                             .transition()
                             .duration(that._options.animation.tooltip)
                             .style("opacity", 1)
