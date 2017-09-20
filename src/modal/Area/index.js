@@ -162,15 +162,6 @@ class Area extends AbstractCanvasChart {
             if (t === 1) {
                 batchRendering.stop();
 
-                for (let d of finalState) {
-                    d._ = {
-                        x: that._getDimensionVal(d.data),
-                        y: that._getMetricVal(d.data),
-                        metric: that._getMetric().name,
-                        style: `border-color: ${nodeColor};`
-                    }
-                }
-
                 that._voronoi = applyVoronoi(that._frontContext,
                     that._options, finalState);
 
@@ -191,7 +182,7 @@ class Area extends AbstractCanvasChart {
                     if (closest) {
                         that._tooltip.style("left", closest[0] + "px")
                             .style("top", closest[1] + "px")
-                            .html( tooltipMarkup(closest.data._));
+                            .html( tooltipMarkup(closest.data.data, that));
 
                         that._tooltip.style("opacity", 1)
                     } else {
