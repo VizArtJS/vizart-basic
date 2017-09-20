@@ -2,12 +2,16 @@ import { interpolateArray } from 'd3-interpolate';
 import { timer } from 'd3-timer';
 import { mouse } from 'd3-selection';
 import { easeCubic } from 'd3-ease';
-import { check, Globals } from 'vizart-core';
+import {
+    check,
+    Globals
+} from 'vizart-core';
 
 import createCartesianOpt from '../../options/createCartesianOpt';
 import AbstractCanvasChart from '../../canvas/AbstractCanvasChart';
 import TooltipTpl from '../../base/tooltip-tpl';
 import drawCanvas from './draw-canvas';
+import drawHiddenCanvas from './draw-hidden-canvas';
 import limitSliceValues from './limit-slice-values';
 
 const DefaultOptions = {
@@ -37,7 +41,6 @@ class Pie extends AbstractCanvasChart {
         const initialState = this.previousState
             ? this.previousState
             : this._data.map(d=>{
-
                 return {
                     y: 0,
                     c: this._c(d),
@@ -78,26 +81,27 @@ class Pie extends AbstractCanvasChart {
             if (t === 1) {
                 batchRendering.stop();
 
-
+                const colorMap = drawHiddenCanvas(that._hiddenContext,
+                    transformedFinal,
+                    that._options);
                 /**
                  * callback for when the mouse moves across the overlay
                  */
                 function mouseMoveHandler() {
                     // get the current mouse position
                     const [mx, my] = mouse(this);
-                    const QuadtreeRadius = 100;
-                    // use the new diagram.find() function to find the Voronoi site
-                    // closest to the mouse, limited by max distance voronoiRadius
-                    const closest = that._voronoi.find(mx, my, QuadtreeRadius);
+                    const col = that._hiddenContext.getImageData(mx * that._canvasScale, my * that._canvasScale, 1, 1).data;
+                    const colString = "rgb(" + col[0] + "," + col[1] + ","+ col[2] + ")";
+                    const node = colorMap.get(colString);
 
-                    if (closest) {
+                    if (node) {
                         that._tooltip
-                            .html( that._getTooltipHTML(closest.data.data))
+                            .html( that._getTooltipHTML(node.data))
                             .transition()
                             .duration(that._options.animation.tooltip)
                             .style("opacity", 1)
-                            .style("left", closest[0] + "px")
-                            .style("top", closest[1] + "px");
+                            .style("left", mx + "px")
+                            .style("top", my + "px");
 
                     } else {
                         that._tooltip
@@ -113,11 +117,6 @@ class Pie extends AbstractCanvasChart {
 
                 that._frontCanvas.on('mousemove', mouseMoveHandler);
                 that._frontCanvas.on('mouseout', mouseOutHandler);
-
-                // draw hidden in parallel;
-                // drawPoints(that._hiddenContext,
-                //     interpolateParticles(t),
-                //     that._options, true);
 
                 that._listeners.call('rendered');
             }

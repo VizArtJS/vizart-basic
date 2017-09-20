@@ -144,9 +144,7 @@ class Bar extends AbstractCanvasChart {
                 const col = that._hiddenContext.getImageData(mx * that._canvasScale, my * that._canvasScale, 1, 1).data;
                 //Our map uses these rgb strings as keys to nodes.
                 const colString = "rgb(" + col[0] + "," + col[1] + ","+ col[2] + ")";
-                console.log(colString);
                 const node = colorMap.get(colString);
-                console.log(node);
 
                 if (node) {
                     that._tooltip
@@ -171,8 +169,6 @@ class Bar extends AbstractCanvasChart {
 
             that._frontCanvas.on('mousemove', mouseMoveHandler);
             that._frontCanvas.on('mouseout', mouseOutHandler);
-
-
         })
     }
 
