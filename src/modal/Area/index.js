@@ -131,13 +131,7 @@ class Area extends AbstractCanvasChart {
                     r: this._options.plots.nodeRadius,
                     c: nodeColor,
                     alpha: 0,
-                    data: d,
-                    _: {
-                        x: this._getDimensionVal(d),
-                        y: this._getMetricVal(d),
-                        metric: this._getMetric().name,
-                        style: `border-color: ${nodeColor};`
-                    }
+                    data: d
                 }
         });
 
@@ -148,13 +142,7 @@ class Area extends AbstractCanvasChart {
                 r: this._options.plots.nodeRadius,
                 c: nodeColor,
                 alpha: 1,
-                data: d,
-                _: {
-                    x: this._getDimensionVal(d),
-                    y: this._getMetricVal(d),
-                    metric: this._getMetric().name,
-                    style: `border-color: ${nodeColor};`
-                }
+                data: d
             }
         });
 
@@ -173,6 +161,15 @@ class Area extends AbstractCanvasChart {
 
             if (t === 1) {
                 batchRendering.stop();
+
+                for (let d of finalState) {
+                    d._ = {
+                        x: that._getDimensionVal(d.data),
+                        y: that._getMetricVal(d.data),
+                        metric: that._getMetric().name,
+                        style: `border-color: ${nodeColor};`
+                    }
+                }
 
                 that._voronoi = applyVoronoi(that._frontContext,
                     that._options, finalState);
