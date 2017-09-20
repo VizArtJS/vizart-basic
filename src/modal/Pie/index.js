@@ -33,13 +33,22 @@ const centroidOnArc = (context, radius, slice)=> {
 }
 
 const drawPolyLine = (context, slice, opt, radius)=> {
-    const centroid = centroidOnArc(context, radius, slice);
+    const outerArc = arc()
+        .innerRadius(radius * 0.8)
+        .outerRadius(radius * 0.8)
+        .context(context);
 
+    const start = centroidOnArc(context, radius, slice);
+    const end = getLinePosition(outerArc, slice);
+
+    context.save();
     context.beginPath();
-
-    context.strokeStyle = 'white';
+    context.strokeStyle = slice.data.c;
     context.strokeWidth = 4;
+    context.moveTo(start[0], start[1]);
+    context.lineTo(end[0], end[1]);
     context.stroke();
+    context.restore();
 }
 
 const drawControlPoint = (context, slice, opt, radius)=> {
@@ -54,6 +63,7 @@ const drawControlPoint = (context, slice, opt, radius)=> {
     context.strokeStyle = 'white';
     context.strokeWidth = 4;
     context.stroke();
+    context.closePath();
 }
 
 const drawCanvas = (context, state, opt)=> {
@@ -80,6 +90,7 @@ const drawCanvas = (context, state, opt)=> {
         context.fillStyle = s.data.c;
         context.fill();
         drawControlPoint(context, s, opt, radius);
+        drawPolyLine(context, s, opt, radius);
 
     }
     context.restore();
