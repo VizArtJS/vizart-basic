@@ -11,8 +11,8 @@ import {
 } from 'd3-time';
 
 
-const cnTimeFormat = function (date, i) {
-    let CN = timeFormatLocale({
+const cnTimeFormat = date=> {
+    const CN = timeFormatLocale({
         "dateTime": "%a %b %e %X %Y",
         "date": "%m/%d/%Y",
         "time": "%H:%M:%S",
@@ -23,7 +23,7 @@ const cnTimeFormat = function (date, i) {
         "shortMonths": ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"]
     });
 
-    let formatMillisecond = CN.format(".%L"),
+    const formatMillisecond = CN.format(".%L"),
         formatSecond = CN.format(":%S"),
         formatMinute = CN.format("%I:%M"),
         formatHour = CN.format("%I %p"),
