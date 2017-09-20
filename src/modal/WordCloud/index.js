@@ -35,15 +35,17 @@ const DefaultOptions = {
 
 const drawCanvas = (context, layout, opt)=> {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+    context.save();
     context.translate(opt.chart.width / 2, opt.chart.height / 2);
 
     for (let d of layout) {
         context.fillStyle = d.c;
+        context.textAlign = "center";
         context.font=`${d.size}px ${opt.plots.fontFamily}`;
         context.globalAlpha = opt.plots.opacity;
         context.fillText(d.text, d.x, d.y);
     }
-
+    context.restore();
 }
 
 const TimeInterval = 10;
@@ -59,6 +61,8 @@ class WordCloud extends AbstractBasicCartesianChart {
         const sizeScale = scaleLinear()
             .domain(extent(this._data, d=> this._getMetricVal(d)))
             .range([this._options.plots.fontSizeMin, this._options.plots.fontSizeMax]);
+
+        this._frontContext.clearRect(0, 0, this._frontContext.canvas.width, this._frontContext.canvas.height);
 
         layout
             .stop()
@@ -85,6 +89,15 @@ class WordCloud extends AbstractBasicCartesianChart {
         return createCartesianOpt(DefaultOptions, _userOptions);
     }
 
+    archimedean() {
+        this._options.plots.spiral = SPIRAL.ARCHIMEDIAN;
+        this.update();
+    }
+
+    rectangular() {
+        this._options.plots.spiral = SPIRAL.REECANGULAR;
+        this.update();
+    }
 }
 
 
