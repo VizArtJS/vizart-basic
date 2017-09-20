@@ -11,6 +11,7 @@ import applyVoronoi from '../../canvas/voronoi/apply';
 import createCartesianOpt from '../../options/createCartesianOpt';
 import updateRadiusScale from './update-radius-scale';
 import hexbinLayout from './hexbin-layout';
+import tooltipMarkup from "../../canvas/tooltip";
 
 const ScatterOptions = {
     chart: {
@@ -129,6 +130,16 @@ class Scatter extends AbstractCanvasChart {
             if (t === 1) {
                 batchRendering.stop();
 
+
+                for (let d of finalState) {
+                    d._ = {
+                        x: that._getDimensionVal(d.data),
+                        y: that._getMetricVal(d.data),
+                        metric: that._getMetric().name,
+                        style: `border-color: ${d.c};`
+                    }
+                }
+
                 that._voronoi = applyVoronoi(that._frontContext,
                     that._options, finalState);
 
@@ -148,7 +159,7 @@ class Scatter extends AbstractCanvasChart {
 
                     if (closest) {
                         that._tooltip
-                            .html( that._getTooltipHTML(closest.data.data))
+                            .html( tooltipMarkup(closest.data._))
                             .transition()
                             .duration(that._options.animation.tooltip)
                             .style("opacity", 1)
