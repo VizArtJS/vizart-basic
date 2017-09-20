@@ -100,11 +100,11 @@ class AbstractCanvasChart extends AbstractBasicCartesianChartWithAxes {
         this.update();
     }
 
-    _revealVoronoi(color = "#ff5730") {
+    revealVoronoi(color = "#ff5730") {
         drawVoronoi(this._frontContext, this._voronoi, color)
     }
 
-    _revealQuadtree(color = '#1f97e7'){
+    revealQuadtree(color = '#1f97e7'){
         drawQuadtree(this._frontContext, this._quadtree, color)
     }
 }

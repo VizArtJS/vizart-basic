@@ -11,21 +11,14 @@ import { mouse } from 'd3-selection';
 import { easeCubic } from 'd3-ease';
 import { check, Globals } from 'vizart-core';
 
-
 import createCartesianOpt from '../../options/createCartesianOpt';
 import AbstractCanvasChart from '../../canvas/AbstractCanvasChart';
 import TooltipTpl from '../../base/tooltip-tpl';
 
-import {
-    midAngle,
-    getLinePosition,
-    getLabelPosition
-} from './Pie-Angle';
-
-import {
-    mergeWithFirstEqualZero,
-    limitSliceValues
-} from './helper';
+import midAngle from './mid-angle';
+import getLinePosition from './get-line-position';
+import getLabelPosition from './get-label-position';
+import limitSliceValues from './limit-slice-values';
 
 const drawCanvas = (context, state, opt)=> {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
