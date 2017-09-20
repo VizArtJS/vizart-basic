@@ -1,4 +1,14 @@
-const limitSliceValues = (data, opt, total, minPct)=> {
+import { sum } from 'd3-array';
+
+const limitSliceValues = (data, opt, color)=> {
+    const minPct = opt.plots.labelMinPercentage;
+
+    if (minPct === 0) {
+        return data;
+    }
+
+    const total = sum(data, d=>d.y);
+
     let maxTicks = opt.xAxis.ticks > 0 ? opt.xAxis.ticks : 31;
     let maxLength = data.length;
     let lastSmall = false;
@@ -8,6 +18,7 @@ const limitSliceValues = (data, opt, total, minPct)=> {
     if (maxLength > maxTicks) {
         let maxIndividual = maxTicks - 1;
         let etcTotal = 0;
+        let etcData = [];
         let i;
 
         maxData = new Array();
@@ -28,17 +39,20 @@ const limitSliceValues = (data, opt, total, minPct)=> {
 
         for (i = maxIndividual; i < maxLength; ++i) {
             etcTotal += data[i].y;
+            etcData.push(data[i]);
         }
 
         maxData[maxIndividual] = {
             x: opt.plots.othersTitle,
-            y: etcTotal
+            y: etcTotal,
+            c: color(etcTotal),
+            alpha: opt.plots.opacity,
+            data: etcData
         };
 
         if (lastSmall && etcTotal / total < minPct) {
             noTwoSmalls = false;
         }
-
     } else {
         for (let i = 0; i < maxLength; ++i) {
             if (noTwoSmalls) {

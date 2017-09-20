@@ -3,9 +3,7 @@ import {
     arc
 } from 'd3-shape';
 import { format } from 'd3-format';
-import { sum } from 'd3-array';
 import { interpolateArray } from 'd3-interpolate';
-import { transition } from 'd3-transition';
 import { timer } from 'd3-timer';
 import { mouse } from 'd3-selection';
 import { easeCubic } from 'd3-ease';
@@ -61,14 +59,13 @@ const DefaultOptions = {
         type: 'pie'
     },
     plots: {
+        aggregate: true,
         othersTitle: 'Others',
         isDonut: false,
-        innerRadiusRatio: 0.4
-    },
-    slice: {
+        innerRadiusRatio: 0.4,
         labelPosition: 'auto',
         labelMinPercentage: 0.01
-    }
+    },
 };
 
 class Pie extends AbstractCanvasChart {
@@ -80,18 +77,13 @@ class Pie extends AbstractCanvasChart {
     _animate() {
         const Duration = this._options.animation.duration.update;
 
-        this.minPct = this._options.slice.labelMinPercentage > 0
-            ? this._options.slice.labelMinPercentage
-            : 0.01;
-
-
         const initialState = this.previousState
             ? this.previousState
             : this._data.map(d=>{
 
                 return {
                     x: this._x(d),
-                    y: this._frontCanvas.node().height,
+                    y: 0,
                     c: this._c(d),
                     alpha: 0,
                     data: d
@@ -99,7 +91,6 @@ class Pie extends AbstractCanvasChart {
             });
 
         const finalState = this._data.map(d=>{
-            console.log(this._c(d));
             return {
                 x: this._x(d),
                 y: this._y(d),
@@ -112,7 +103,10 @@ class Pie extends AbstractCanvasChart {
         // cache finalState as the initial state of next animation call
         this.previousState = finalState;
 
-        const interpolateParticles = interpolateArray(initialState, finalState);
+        const transformedInitial = limitSliceValues(initialState, this._options, this._color);
+        const transformedFinal = limitSliceValues(finalState, this._options, this._color);
+
+        const interpolateParticles = interpolateArray(transformedInitial, transformedFinal);
 
         let that = this;
         const batchRendering = timer( (elapsed)=> {
@@ -171,20 +165,6 @@ class Pie extends AbstractCanvasChart {
         });
     }
 
-
-
-    donut(isDonut = false) {
-        this._options.plots.isDonut = isDonut;
-        this.update();
-    }
-
-    data(_data) {
-        if (check(_data) === true) {
-            this.total = sum(_data, this._getMetricVal);
-        }
-
-        super.data(_data);
-    }
 
     createOptions(_userOpt) {
         return createCartesianOpt(DefaultOptions, _userOpt);
