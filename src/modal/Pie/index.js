@@ -9,7 +9,7 @@ import {
 
 import createCartesianOpt from '../../options/createCartesianOpt';
 import AbstractCanvasChart from '../../canvas/AbstractCanvasChart';
-import TooltipTpl from '../../base/tooltip-tpl';
+import tooltipMarkup from '../../canvas/tooltip';
 import drawCanvas from './draw-canvas';
 import drawHiddenCanvas from './draw-hidden-canvas';
 import limitSliceValues from './limit-slice-values';
@@ -83,7 +83,8 @@ class Pie extends AbstractCanvasChart {
 
                 const colorMap = drawHiddenCanvas(that._hiddenContext,
                     transformedFinal,
-                    that._options);
+                    that._options,
+                    that);
                 /**
                  * callback for when the mouse moves across the overlay
                  */
@@ -96,7 +97,7 @@ class Pie extends AbstractCanvasChart {
 
                     if (node) {
                         that._tooltip
-                            .html( that._getTooltipHTML(node.data))
+                            .html( tooltipMarkup(node))
                             .transition()
                             .duration(that._options.animation.tooltip)
                             .style("opacity", 1)
