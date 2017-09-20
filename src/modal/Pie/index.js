@@ -32,7 +32,7 @@ const centroidOnArc = (context, radius, slice)=> {
         y / h * radius * 0.8]
 }
 
-const drawPolyLine = (context, slice, opt, radius)=> {
+const drawLabel = (context, slice, opt, radius)=> {
     const outerArc = arc()
         .innerRadius(radius * 0.8)
         .outerRadius(radius * 0.8)
@@ -40,6 +40,25 @@ const drawPolyLine = (context, slice, opt, radius)=> {
 
     const start = centroidOnArc(context, radius, slice);
     const end = getLinePosition(outerArc, slice);
+
+    context.save();
+    context.beginPath();
+    context.strokeStyle = slice.data.c;
+    context.strokeWidth = 4;
+    context.moveTo(start[0], start[1]);
+    context.lineTo(end[0], end[1]);
+    context.stroke();
+    context.restore();
+}
+
+const drawPolyLine = (context, slice, opt, radius)=> {
+    const outerArc = arc()
+        .innerRadius(radius * 0.8)
+        .outerRadius(radius * 0.8)
+        .context(context);
+
+    const start = centroidOnArc(context, radius, slice);
+    const end = getLinePosition(outerArc, slice, opt.plots.labelOffset);
 
     context.save();
     context.beginPath();
@@ -106,6 +125,7 @@ const DefaultOptions = {
         othersTitle: 'Others',
         isDonut: false,
         innerRadiusRatio: 0.4,
+        labelOffset: 30,
         labelControlPointRadius: 6,
         labelPosition: 'auto',
         labelMinPercentage: 0.01
