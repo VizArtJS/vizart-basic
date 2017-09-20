@@ -18,6 +18,7 @@ import applyQuadtree from '../../canvas/quadtree/apply';
 import applyVoronoi from '../../canvas/voronoi/apply';
 import linearGradient from '../../canvas/gradient-stroke';
 import genColorByIndex from '../../canvas/generate-color';
+import tooltipMarkup from'../../canvas/tooltip';
 
 const AreaOpt = {
     chart: {
@@ -130,7 +131,13 @@ class Area extends AbstractCanvasChart {
                     r: this._options.plots.nodeRadius,
                     c: nodeColor,
                     alpha: 0,
-                    data: d
+                    data: d,
+                    _: {
+                        x: this._getDimensionVal(d),
+                        y: this._getMetricVal(d),
+                        metric: this._getMetric().name,
+                        style: `border-color: ${nodeColor};`
+                    }
                 }
         });
 
@@ -141,7 +148,13 @@ class Area extends AbstractCanvasChart {
                 r: this._options.plots.nodeRadius,
                 c: nodeColor,
                 alpha: 1,
-                data: d
+                data: d,
+                _: {
+                    x: this._getDimensionVal(d),
+                    y: this._getMetricVal(d),
+                    metric: this._getMetric().name,
+                    style: `border-color: ${nodeColor};`
+                }
             }
         });
 
@@ -181,7 +194,7 @@ class Area extends AbstractCanvasChart {
                     if (closest) {
                         that._tooltip.style("left", closest[0] + "px")
                             .style("top", closest[1] + "px")
-                            .html( that._getTooltipHTML(closest.data.data));
+                            .html( tooltipMarkup(closest.data._));
 
                         that._tooltip.style("opacity", 1)
                     } else {
