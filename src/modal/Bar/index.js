@@ -132,7 +132,7 @@ class Bar extends AbstractCanvasChart {
 
         const that = this;
         enterTransition.on('end', ()=> {
-            const colorMap = drawHiddenRects(this._hiddenContext, this._detachedContainer.selectAll('.bar'), that);
+            const colorMap = drawHiddenRects(this._hiddenContext, this._detachedContainer.selectAll('.bar'));
 
             // shadow color?
             /**
@@ -149,7 +149,7 @@ class Bar extends AbstractCanvasChart {
 
                 if (node) {
                     that._tooltip
-                        .html(tooltipMarkup(node))
+                        .html(tooltipMarkup(node, that))
                         .transition()
                         .duration(that._options.animation.tooltip)
                         .style("opacity", 1)
