@@ -18,7 +18,7 @@ import getLinePosition from './get-line-position';
 import getLabelPosition from './get-label-position';
 import limitSliceValues from './limit-slice-values';
 
-const drawControlPoint = (context, slice, opt, radius)=> {
+const centroidOnArc = (context, radius, slice)=> {
     const outerArc = arc()
         .innerRadius(radius * 0.8)
         .outerRadius(radius * 0.8)
@@ -28,13 +28,27 @@ const drawControlPoint = (context, slice, opt, radius)=> {
     // pythagorean theorem for hypotenuse
     const h = Math.sqrt(x * x + y * y);
 
+    return [x / h * radius * 0.8,
+        y / h * radius * 0.8]
+}
+
+const drawPolyLine = (context, slice, opt, radius)=> {
+    const centroid = centroidOnArc(context, radius, slice);
+
+    context.beginPath();
+
+    context.strokeStyle = 'white';
+    context.strokeWidth = 4;
+    context.stroke();
+}
+
+const drawControlPoint = (context, slice, opt, radius)=> {
+    const centroid = centroidOnArc(context, radius, slice);
+
     context.beginPath();
     context.fillStyle = slice.data.c;
     context.globalAlpha = slice.data.alpha;
-    context.arc(x / h * radius * 0.8,
-        y / h * radius * 0.8,
-        opt.plots.labelControlPointRadius,
-        0, 2 * Math.PI, false);
+    context.arc(centroid[0], centroid[1], opt.plots.labelControlPointRadius, 0, 2 * Math.PI, false);
     context.fill();
 
     context.strokeStyle = 'white';
