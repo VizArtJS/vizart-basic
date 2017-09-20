@@ -174,19 +174,13 @@ class Pie extends AbstractCanvasChart {
 
 
     donut(isDonut = false) {
-        if (isDonut === false) {
-            this._options.plots.isDonut = false;
-        } else {
-            this._options.plots.isDonut = true;
-            this._options.plots.innerRadiusRatio = 0.4;
-        }
-
+        this._options.plots.isDonut = isDonut;
         this.update();
     }
 
     data(_data) {
         if (check(_data) === true) {
-            this.total = sum(_data, d => this._getMetricVal(d));
+            this.total = sum(_data, this._getMetricVal);
         }
 
         super.data(_data);
