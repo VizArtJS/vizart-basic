@@ -2,7 +2,7 @@ import AbstractBasicCartesianChart from './AbstractBasicCartesianChart';
 import {
     renderAxis,
     updateAxis
-} from './Axis';
+} from './axis';
 
 class AbstractBasicCartesianChartWithAxes extends AbstractBasicCartesianChart {
     constructor(canvasId, _userOptions) {

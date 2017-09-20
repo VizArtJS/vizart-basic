@@ -1,4 +1,4 @@
-const rotateXTicks = function(_selector, angle, transition = false) {
+const rotateXTicks = (_selector, angle, transition = false)=> {
     let _rotate = "rotate(-" + angle + ")";
 
     let _tickText = _selector.selectAll('.x.axis .tick text');
