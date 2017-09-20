@@ -1,7 +1,3 @@
-import {
-    pie,
-    arc
-} from 'd3-shape';
 import { interpolateArray } from 'd3-interpolate';
 import { timer } from 'd3-timer';
 import { mouse } from 'd3-selection';
@@ -11,11 +7,8 @@ import { check, Globals } from 'vizart-core';
 import createCartesianOpt from '../../options/createCartesianOpt';
 import AbstractCanvasChart from '../../canvas/AbstractCanvasChart';
 import TooltipTpl from '../../base/tooltip-tpl';
-
-import limitSliceValues from './limit-slice-values';
-
 import drawCanvas from './draw-canvas';
-
+import limitSliceValues from './limit-slice-values';
 
 const DefaultOptions = {
     chart: {
