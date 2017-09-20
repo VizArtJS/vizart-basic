@@ -7,10 +7,9 @@ import {
 import isUndefined from 'lodash-es/isUndefined';
 import isFunction from 'lodash-es/isFunction';
 
-import AbstractCanvasChart from '../../canvas/AbstractCanvasChart';
+import AbstractBasicCartesianChartWithAxes from '../../base/AbstractBasicCartesianChartWithAxes';
 import createCartesianOpt from '../../options/createCartesianOpt';
 import sortSelector from '../../data/helper/sort-selector';
-import tooltipMarkup from '../../base/tooltip';
 import drawRects from './draw-rects';
 import drawHiddenRects from './draw-hidden-rects';
 
@@ -36,7 +35,7 @@ const withinRect = (d, x, y)=> {
 }
 
 
-class Bar extends AbstractCanvasChart {
+class Bar extends AbstractBasicCartesianChartWithAxes {
 
     constructor(canvasId, _userOptions) {
         super(canvasId, _userOptions);

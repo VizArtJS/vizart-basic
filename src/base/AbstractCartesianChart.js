@@ -1,5 +1,4 @@
 import {
-    AbstractChart,
     mergeBase,
     Globals,
     uuid
@@ -7,8 +6,9 @@ import {
 import './tooltip.css';
 import { select } from 'd3-selection';
 import tooltipMarkup from './tooltip';
+import AbstractCanvasChart from '../canvas/AbstractCanvasChart';
 
-class AbstractCartesianChart extends AbstractChart {
+class AbstractCartesianChart extends AbstractCanvasChart {
     constructor(canvasId, _userOptions) {
         super(canvasId, _userOptions);
 

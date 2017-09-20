@@ -1,11 +1,13 @@
-import { uuid } from 'vizart-core';
-import { select, mouse } from 'd3-selection';
+import {
+    uuid,
+    AbstractChart
+} from 'vizart-core';
+import { select } from 'd3-selection';
 
-import AbstractBasicCartesianChartWithAxes from '../base/AbstractBasicCartesianChartWithAxes';
 import drawQuadtree from './quadtree/draw';
 import drawVoronoi from './voronoi/draw';
 
-class AbstractCanvasChart extends AbstractBasicCartesianChartWithAxes {
+class AbstractCanvasChart extends AbstractChart {
     constructor(canvasId, _userOptions) {
         super(canvasId, _userOptions);
 

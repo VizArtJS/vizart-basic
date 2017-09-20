@@ -8,8 +8,7 @@ import {
 } from 'vizart-core';
 
 import createCartesianOpt from '../../options/createCartesianOpt';
-import AbstractCanvasChart from '../../canvas/AbstractCanvasChart';
-import tooltipMarkup from '../../base/tooltip';
+import AbstractBasicCartesianChart from '../../base/AbstractBasicCartesianChart';
 import drawCanvas from './draw-canvas';
 import drawHiddenCanvas from './draw-hidden-canvas';
 import limitSliceValues from './limit-slice-values';
@@ -29,7 +28,7 @@ const DefaultOptions = {
     },
 };
 
-class Pie extends AbstractCanvasChart {
+class Pie extends AbstractBasicCartesianChart {
     constructor(canvasId, _userOptions) {
         super(canvasId, _userOptions);
     }

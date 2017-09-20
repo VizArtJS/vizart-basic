@@ -5,13 +5,12 @@ import { easeCubic } from 'd3-ease';
 import isNull from 'lodash-es/isNull';
 
 import { Globals } from 'vizart-core';
-import AbstractCanvasChart from '../../canvas/AbstractCanvasChart';
+import AbstractBasicCartesianChartWithAxes from '../../base/AbstractBasicCartesianChartWithAxes';
 import applyQuadtree from '../../canvas/quadtree/apply';
 import applyVoronoi from '../../canvas/voronoi/apply';
 import createCartesianOpt from '../../options/createCartesianOpt';
 import updateRadiusScale from './update-radius-scale';
 import hexbinLayout from './hexbin-layout';
-import tooltipMarkup from "../../base/tooltip";
 
 const ScatterOptions = {
     chart: {
@@ -72,7 +71,7 @@ const drawHexbin = (context, particles, opt)=> {
 }
 
 
-class Scatter extends AbstractCanvasChart {
+class Scatter extends AbstractBasicCartesianChartWithAxes {
     constructor(canvasId, _userOptions) {
         super(canvasId, _userOptions);
 

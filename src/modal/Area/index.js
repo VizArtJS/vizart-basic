@@ -11,14 +11,13 @@ import {
     linearStops
 } from 'vizart-core';
 
-import AbstractCanvasChart from '../../canvas/AbstractCanvasChart';
+import AbstractBasicCartesianChartWithAxes from '../../base/AbstractBasicCartesianChartWithAxes';
 import createCartesianOpt from '../../options/createCartesianOpt';
 import interpolateCurve from '../../util/curve';
 import applyQuadtree from '../../canvas/quadtree/apply';
 import applyVoronoi from '../../canvas/voronoi/apply';
 import linearGradient from '../../canvas/gradient-stroke';
 import genColorByIndex from '../../canvas/generate-color';
-import tooltipMarkup from '../../base/tooltip';
 
 const AreaOpt = {
     chart: {
@@ -112,7 +111,7 @@ const draw = (context, particles, opt, hidden = false)=> {
     }
 }
 
-class Area extends AbstractCanvasChart {
+class Area extends AbstractBasicCartesianChartWithAxes {
     constructor(canvasId, _userOptions) {
         super(canvasId, _userOptions);
     }
