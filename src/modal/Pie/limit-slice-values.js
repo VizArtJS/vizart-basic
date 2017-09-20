@@ -47,7 +47,6 @@ const limitSliceValues = (data, opt, color)=> {
         }
 
         maxData[maxIndividual] = {
-            x: opt.plots.othersTitle,
             y: etcTotal,
             c: color(etcTotal),
             alpha: opt.plots.opacity,

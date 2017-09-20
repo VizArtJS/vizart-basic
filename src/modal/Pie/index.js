@@ -39,7 +39,6 @@ class Pie extends AbstractCanvasChart {
             : this._data.map(d=>{
 
                 return {
-                    x: this._x(d),
                     y: 0,
                     c: this._c(d),
                     alpha: 0,
@@ -51,7 +50,6 @@ class Pie extends AbstractCanvasChart {
 
         const finalState = this._data.map(d=>{
             return {
-                x: this._x(d),
                 y: this._y(d),
                 c: this._c(d),
                 alpha: this._options.plots.opacity,
