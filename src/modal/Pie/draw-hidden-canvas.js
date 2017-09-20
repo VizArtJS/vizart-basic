@@ -6,7 +6,7 @@ import {
 import genColorByIndex from '../../canvas/generate-color';
 
 
-const drawHiddenCanvas = (context, state, opt, chartContext)=> {
+const drawHiddenCanvas = (context, state, opt)=> {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
     const colorMap = new Map();
 
@@ -32,12 +32,7 @@ const drawHiddenCanvas = (context, state, opt, chartContext)=> {
         context.fillStyle = color;
         context.fill();
 
-        colorMap.set(color, {
-            x: chartContext._getDimensionVal(s.data.data),
-            y: chartContext._getMetricVal(s.data.data),
-            metric: chartContext._getMetric().name,
-            style: `border-color: ${chartContext._c(s.data.data)};`
-        });
+        colorMap.set(color, s);
     }
 
     context.restore();

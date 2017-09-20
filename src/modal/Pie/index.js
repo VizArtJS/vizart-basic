@@ -97,7 +97,7 @@ class Pie extends AbstractCanvasChart {
 
                     if (node) {
                         that._tooltip
-                            .html( tooltipMarkup(node))
+                            .html( tooltipMarkup(node.data.data, that))
                             .transition()
                             .duration(that._options.animation.tooltip)
                             .style("opacity", 1)
