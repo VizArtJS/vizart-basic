@@ -12,94 +12,10 @@ import createCartesianOpt from '../../options/createCartesianOpt';
 import AbstractCanvasChart from '../../canvas/AbstractCanvasChart';
 import TooltipTpl from '../../base/tooltip-tpl';
 
-import getLinePosition from './get-line-position';
 import limitSliceValues from './limit-slice-values';
 
-const centroidOnArc = (arc, context, radius, slice)=> {
-    const [x, y] = arc.centroid(slice);
-    // pythagorean theorem for hypotenuse
-    const h = Math.sqrt(x * x + y * y);
+import drawCanvas from './draw-canvas';
 
-    return [x / h * radius * 0.8,
-        y / h * radius * 0.8]
-}
-
-
-const drawPolyLine = (context, slice, centroid, opt)=> {
-    const start = centroid;
-    const end = getLinePosition(centroid, slice, opt.plots.labelOffset);
-
-    context.save();
-    context.beginPath();
-    context.strokeStyle = slice.data.c;
-    context.strokeWidth = 4;
-
-    context.moveTo(start[0], start[1]);
-    context.lineTo(end[0], end[1]);
-    context.stroke();
-
-    context.translate(end[0], end[1]);
-    context.textAlign = end[0] > start[0] ? "start": 'end';
-    context.textBaseline = 'middle';
-    context.fillStyle = 'black';
-    context.fillText(slice.data.label + ': ' + slice.data.p, end[0] > start[0] ? 5 : -5, 0);
-    context.restore();
-}
-
-const drawControlPoint = (context, slice, centroid, opt)=> {
-    context.save();
-
-    context.beginPath();
-    context.fillStyle = slice.data.c;
-    context.globalAlpha = slice.data.alpha;
-    context.arc(centroid[0], centroid[1], opt.plots.labelControlPointRadius, 0, 2 * Math.PI, false);
-    context.fill();
-
-    context.strokeStyle = 'white';
-    context.strokeWidth = 4;
-    context.stroke();
-    context.closePath();
-
-    context.restore();
-
-}
-
-const drawCanvas = (context, state, opt)=> {
-    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-
-    const radius = Math.min(opt.chart.innerWidth, opt.chart.innerHeight) / 2;
-    const arcDiagram = arc()
-        .outerRadius(radius * 0.8)
-        .innerRadius(() => opt.plots.isDonut ? radius * opt.plots.innerRadiusRatio : 0)
-        .context(context);
-
-    const pieDiagram = pie()
-        .sort(null)
-        .value(d=>d.y);
-
-    const slices = pieDiagram(state);
-
-    context.save();
-    context.translate(opt.chart.width / 2, opt.chart.height / 2);
-
-    for (const s of slices) {
-        context.beginPath();
-        arcDiagram(s);
-        context.fillStyle = s.data.c;
-        context.fill();
-
-        const outerArc = arc()
-            .innerRadius(radius * 0.8)
-            .outerRadius(radius * 0.8)
-            .context(context);
-        const centroid = centroidOnArc(outerArc, context, radius, s);
-
-        drawControlPoint(context, s, centroid, opt);
-        drawPolyLine(context, s, centroid, opt);
-
-    }
-    context.restore();
-}
 
 const DefaultOptions = {
     chart: {
