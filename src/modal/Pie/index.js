@@ -15,7 +15,6 @@ import TooltipTpl from '../../base/tooltip-tpl';
 
 import midAngle from './mid-angle';
 import getLinePosition from './get-line-position';
-import getLabelPosition from './get-label-position';
 import limitSliceValues from './limit-slice-values';
 
 const centroidOnArc = (context, radius, slice)=> {
@@ -67,6 +66,12 @@ const drawPolyLine = (context, slice, opt, radius)=> {
     context.moveTo(start[0], start[1]);
     context.lineTo(end[0], end[1]);
     context.stroke();
+
+    context.translate(end[0], end[1]);
+    context.textAlign = end[0] > start[0] ? "start": 'end';
+    context.textBaseline = 'middle';
+    context.fillStyle = 'black';
+    context.fillText(slice.data.label + ': ' + slice.data.p, end[0] > start[0] ? 5 : -5, 0);
     context.restore();
 }
 
@@ -115,8 +120,6 @@ const drawCanvas = (context, state, opt)=> {
     context.restore();
 }
 
-const percentFormat = format(".00%");
-
 const DefaultOptions = {
     chart: {
         type: 'pie'
@@ -150,7 +153,9 @@ class Pie extends AbstractCanvasChart {
                     y: 0,
                     c: this._c(d),
                     alpha: 0,
-                    data: d
+                    data: d,
+                    p: '0%',
+                    label: this._getDimensionVal(d)
                 }
             });
 
@@ -160,7 +165,9 @@ class Pie extends AbstractCanvasChart {
                 y: this._y(d),
                 c: this._c(d),
                 alpha: this._options.plots.opacity,
-                data: d
+                data: d,
+                label: this._getDimensionVal(d),
+                p: ''
             }
         });
 

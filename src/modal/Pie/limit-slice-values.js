@@ -1,12 +1,10 @@
 import { sum } from 'd3-array';
+import { format } from 'd3-format';
+
+const percentFormat = format(".00%");
 
 const limitSliceValues = (data, opt, color)=> {
     const minPct = opt.plots.labelMinPercentage;
-
-    if (minPct === 0) {
-        return data;
-    }
-
     const total = sum(data, d=>d.y);
 
     let maxTicks = opt.xAxis.ticks > 0 ? opt.xAxis.ticks : 31;
@@ -14,6 +12,11 @@ const limitSliceValues = (data, opt, color)=> {
     let lastSmall = false;
     let noTwoSmalls = true;
     let maxData;
+
+    if (minPct === 0) {
+        maxData = data;
+    }
+
 
     if (maxLength > maxTicks) {
         let maxIndividual = maxTicks - 1;
@@ -25,6 +28,7 @@ const limitSliceValues = (data, opt, color)=> {
 
         for (i = 0; i < maxIndividual; ++i) {
             maxData[i] = data[i];
+
             if (noTwoSmalls) {
                 if (data[i].y / total < minPct) {
                     if (lastSmall) {
@@ -47,7 +51,8 @@ const limitSliceValues = (data, opt, color)=> {
             y: etcTotal,
             c: color(etcTotal),
             alpha: opt.plots.opacity,
-            data: etcData
+            data: etcData,
+            label: opt.plots.othersTitle
         };
 
         if (lastSmall && etcTotal / total < minPct) {
@@ -70,6 +75,10 @@ const limitSliceValues = (data, opt, color)=> {
     }
 
     // this.consecutiveSmalls = !noTwoSmalls;
+
+    for (let d of maxData) {
+        d.p = percentFormat(d.y / total);
+    }
 
     return maxData;
 }
