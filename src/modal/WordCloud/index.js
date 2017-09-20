@@ -35,17 +35,13 @@ const DefaultOptions = {
 
 const drawCanvas = (context, layout, opt)=> {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-    console.log('----');
-    console.log(layout);
     context.translate(opt.chart.width / 2, opt.chart.height / 2);
 
     for (let d of layout) {
-        context.save();
         context.fillStyle = d.c;
         context.font=`${d.size}px ${opt.plots.fontFamily}`;
         context.globalAlpha = opt.plots.opacity;
         context.fillText(d.text, d.x, d.y);
-        context.restore();
     }
 
 }
@@ -66,7 +62,11 @@ class WordCloud extends AbstractBasicCartesianChart {
 
         layout
             .stop()
-            .words(this._data)
+            .words(this._data.map(d=> {
+                const t = d;
+                t.c = this._c(d);
+                return t;
+            }))
             .padding(this._options.plots.padding)
             .spiral(this._options.plots.spiral)
             .size([this._options.chart.innerWidth, this._options.chart.innerHeight])
