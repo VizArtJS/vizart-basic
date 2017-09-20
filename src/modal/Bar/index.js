@@ -10,9 +10,10 @@ import isFunction from 'lodash-es/isFunction';
 import AbstractCanvasChart from '../../canvas/AbstractCanvasChart';
 import createCartesianOpt from '../../options/createCartesianOpt';
 import sortSelector from '../../data/helper/sort-selector';
-
+import tooltipMarkup from '../../canvas/tooltip';
 import drawRects from './draw-rects';
 import drawHiddenRects from './draw-hidden-rects';
+
 
 const BarOpt = {
     chart: { type: 'bar_horizontal'},
@@ -131,7 +132,7 @@ class Bar extends AbstractCanvasChart {
 
         const that = this;
         enterTransition.on('end', ()=> {
-            const colorMap = drawHiddenRects(this._hiddenContext, this._detachedContainer.selectAll('.bar'), this._options);
+            const colorMap = drawHiddenRects(this._hiddenContext, this._detachedContainer.selectAll('.bar'), that);
 
             // shadow color?
             /**
@@ -148,7 +149,7 @@ class Bar extends AbstractCanvasChart {
 
                 if (node) {
                     that._tooltip
-                        .html( that._getTooltipHTML(node))
+                        .html(tooltipMarkup(node))
                         .transition()
                         .duration(that._options.animation.tooltip)
                         .style("opacity", 1)

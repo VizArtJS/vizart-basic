@@ -1,7 +1,7 @@
 import { select } from 'd3-selection';
 import genColorByIndex from '../../canvas/generate-color';
 
-const drawHiddenRects =  (context, selection, opt)=> {
+const drawHiddenRects =  (context, selection, chartContext)=> {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
     const colorMap = new Map();
@@ -14,8 +14,12 @@ const drawHiddenRects =  (context, selection, opt)=> {
         context.rect(node.attr('x'), node.attr('y'), node.attr('width'), node.attr('height'));
         context.fill();
 
-        d._pickColor = color;
-        colorMap.set(color, d);
+        colorMap.set(color, {
+            x: chartContext._getDimensionVal(d),
+            y: chartContext._getMetricVal(d),
+            metric: chartContext._getMetric().name,
+            style: `border-color: ${chartContext._c(d)};`
+        });
     });
 
     return colorMap;
