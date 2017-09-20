@@ -13,7 +13,6 @@ import createCartesianOpt from '../../options/createCartesianOpt';
 import AbstractCanvasChart from '../../canvas/AbstractCanvasChart';
 import TooltipTpl from '../../base/tooltip-tpl';
 
-import midAngle from './mid-angle';
 import getLinePosition from './get-line-position';
 import limitSliceValues from './limit-slice-values';
 
@@ -31,24 +30,6 @@ const centroidOnArc = (context, radius, slice)=> {
         y / h * radius * 0.8]
 }
 
-const drawLabel = (context, slice, opt, radius)=> {
-    const outerArc = arc()
-        .innerRadius(radius * 0.8)
-        .outerRadius(radius * 0.8)
-        .context(context);
-
-    const start = centroidOnArc(context, radius, slice);
-    const end = getLinePosition(outerArc, slice);
-
-    context.save();
-    context.beginPath();
-    context.strokeStyle = slice.data.c;
-    context.strokeWidth = 4;
-    context.moveTo(start[0], start[1]);
-    context.lineTo(end[0], end[1]);
-    context.stroke();
-    context.restore();
-}
 
 const drawPolyLine = (context, slice, opt, radius)=> {
     const outerArc = arc()
