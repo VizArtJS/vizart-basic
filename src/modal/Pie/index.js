@@ -2,7 +2,6 @@ import {
     pie,
     arc
 } from 'd3-shape';
-import { format } from 'd3-format';
 import { interpolateArray } from 'd3-interpolate';
 import { timer } from 'd3-timer';
 import { mouse } from 'd3-selection';
@@ -16,13 +15,8 @@ import TooltipTpl from '../../base/tooltip-tpl';
 import getLinePosition from './get-line-position';
 import limitSliceValues from './limit-slice-values';
 
-const centroidOnArc = (context, radius, slice)=> {
-    const outerArc = arc()
-        .innerRadius(radius * 0.8)
-        .outerRadius(radius * 0.8)
-        .context(context);
-
-    const [x, y] = outerArc.centroid(slice);
+const centroidOnArc = (arc, context, radius, slice)=> {
+    const [x, y] = arc.centroid(slice);
     // pythagorean theorem for hypotenuse
     const h = Math.sqrt(x * x + y * y);
 
@@ -31,19 +25,15 @@ const centroidOnArc = (context, radius, slice)=> {
 }
 
 
-const drawPolyLine = (context, slice, opt, radius)=> {
-    const outerArc = arc()
-        .innerRadius(radius * 0.8)
-        .outerRadius(radius * 0.8)
-        .context(context);
-
-    const start = centroidOnArc(context, radius, slice);
-    const end = getLinePosition(outerArc, slice, opt.plots.labelOffset);
+const drawPolyLine = (context, slice, centroid, opt)=> {
+    const start = centroid;
+    const end = getLinePosition(centroid, slice, opt.plots.labelOffset);
 
     context.save();
     context.beginPath();
     context.strokeStyle = slice.data.c;
     context.strokeWidth = 4;
+
     context.moveTo(start[0], start[1]);
     context.lineTo(end[0], end[1]);
     context.stroke();
@@ -56,8 +46,8 @@ const drawPolyLine = (context, slice, opt, radius)=> {
     context.restore();
 }
 
-const drawControlPoint = (context, slice, opt, radius)=> {
-    const centroid = centroidOnArc(context, radius, slice);
+const drawControlPoint = (context, slice, centroid, opt)=> {
+    context.save();
 
     context.beginPath();
     context.fillStyle = slice.data.c;
@@ -69,33 +59,43 @@ const drawControlPoint = (context, slice, opt, radius)=> {
     context.strokeWidth = 4;
     context.stroke();
     context.closePath();
+
+    context.restore();
+
 }
 
 const drawCanvas = (context, state, opt)=> {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
     const radius = Math.min(opt.chart.innerWidth, opt.chart.innerHeight) / 2;
-    const innerArc = arc()
+    const arcDiagram = arc()
         .outerRadius(radius * 0.8)
         .innerRadius(() => opt.plots.isDonut ? radius * opt.plots.innerRadiusRatio : 0)
         .context(context);
 
-    const _pie = pie()
+    const pieDiagram = pie()
         .sort(null)
         .value(d=>d.y);
 
-    const slices = _pie(state);
+    const slices = pieDiagram(state);
 
     context.save();
     context.translate(opt.chart.width / 2, opt.chart.height / 2);
 
     for (const s of slices) {
         context.beginPath();
-        innerArc(s);
+        arcDiagram(s);
         context.fillStyle = s.data.c;
         context.fill();
-        drawControlPoint(context, s, opt, radius);
-        drawPolyLine(context, s, opt, radius);
+
+        const outerArc = arc()
+            .innerRadius(radius * 0.8)
+            .outerRadius(radius * 0.8)
+            .context(context);
+        const centroid = centroidOnArc(outerArc, context, radius, s);
+
+        drawControlPoint(context, s, centroid, opt);
+        drawPolyLine(context, s, centroid, opt);
 
     }
     context.restore();

@@ -1,10 +1,12 @@
 import midAngle from './mid-angle';
 
-const getLinePosition = (arc, d2, offset = 30)=> {
-    let pos = arc.centroid(d2);
-    let angle =  midAngle(d2)/ Math.PI * 180;
+const getLinePosition = (centroid, d2, offset = 30)=> {
+    let pos = [];
+    const angle = midAngle(d2) / Math.PI * 180;
 
-    pos[0] = angle > 180 ? pos[0] - offset : pos[0] + offset;
+    pos[0] = angle > 180 ? centroid[0] - offset : centroid[0] + offset;
+    pos[1] = centroid[1];
+
     if (angle <= 0 || angle >= 360) {
         pos[1] -= offset;
     } else if (angle == 180) {
