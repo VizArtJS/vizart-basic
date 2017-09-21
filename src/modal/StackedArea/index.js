@@ -15,6 +15,10 @@ import {
     ExpandedOptions
 } from './StackedArea-Options';
 
+const reMeasure = (context, state, opt)=> {
+
+}
+
 const drawCanvas = (context, state, opt)=> {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
@@ -161,6 +165,19 @@ class StackedArea extends AbstractStackedCartesianChartWithAxes {
         this._options.chart.type = _opt.chart.type;
         this._options.plots.stackLayout = _opt.plots.stackLayout;
         this._options.plots.stackMethod = _opt.plots.stackMethod;
+
+        const Duration = 250;
+        const batchRendering = timer( (elapsed)=> {
+            const t = Math.min(1, easeCubic(elapsed / Duration));
+
+            reMeasure(that._frontContext,
+                this.previousState,
+                that._options);
+
+            if (t === 1) {
+                batchRendering.stop();
+            }
+        });
     }
 
     stackLayout() {
