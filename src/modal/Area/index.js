@@ -1,7 +1,3 @@
-import {
-    area,
-    line,
-} from 'd3-shape';
 import { interpolateArray } from 'd3-interpolate';
 import { timer } from 'd3-timer';
 import { mouse } from 'd3-selection';
@@ -13,11 +9,9 @@ import {
 
 import AbstractBasicCartesianChartWithAxes from '../../base/AbstractBasicCartesianChartWithAxes';
 import createCartesianOpt from '../../options/createCartesianOpt';
-import interpolateCurve from '../../util/curve';
 import applyQuadtree from '../../canvas/quadtree/apply';
 import applyVoronoi from '../../canvas/voronoi/apply';
-import linearGradient from '../../canvas/gradient-stroke';
-import genColorByIndex from '../../canvas/generate-color';
+import drawCanvas from './draw-canvas';
 
 const AreaOpt = {
     chart: {
@@ -33,83 +27,6 @@ const AreaOpt = {
     }
 };
 
-
-const nodeColor = opt=> {
-    const stops = linearStops(opt.color.scheme);
-    return stops[stops.length - 1].color;
-}
-
-const drawPoints = (context, particles, opt, hidden)=> {
-    for (const [i, p] of particles.entries()) {
-        context.beginPath();
-        context.fillStyle = hidden === true? genColorByIndex(i) : nodeColor(opt);
-        context.globalAlpha = p.alpha;
-        context.arc(p.x, p.y, p.r, 0, 2 * Math.PI, false);
-        context.fill();
-    }
-}
-
-const drawLine = (context, particles, opt)=> {
-    const curve = line()
-            .x(d=>d.x)
-            .y(d=>d.y)
-            .context(context);
-    interpolateCurve(opt.plots.curve, [curve]);
-
-    context.beginPath();
-    curve(particles);
-    context.lineWidth = opt.plots.strokeWidth;
-    const gradientStyle = linearGradient(context, opt.color.scheme, 1);
-    context.strokeStyle = gradientStyle;
-
-    context.stroke();
-    context.closePath();
-}
-
-const drawArea = (context, particles, opt)=> {
-    const curve = area()
-        .x(d=>d.x)
-        .y0(context.canvas.height)
-        .y1(d=>d.y)
-        .context(context);
-
-    interpolateCurve(opt.plots.curve, [curve]);
-    context.beginPath();
-    curve(particles);
-    context.lineWidth = opt.plots.strokeWidth;
-    const gradientStyle = linearGradient(context, opt.color.scheme, opt.plots.areaOpacity);
-    context.fillStyle = gradientStyle;
-    context.strokeStyle = nodeColor(opt);
-    context.stroke();
-
-    context.fill();
-    context.closePath();
-}
-
-/**
- * a particle contains x, y, r, c, alpha
- *
- * @param context
- * @param particles, particle colors may be defined in rgb string and thus cannot be recognized by
- * canvas. This is caused by d3's interpolation.
- */
-const draw = (context, particles, opt, hidden = false)=> {
-    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-
-    if (hidden === true) {
-        drawPoints(context, particles, opt, true);
-    } else {
-        if (opt.plots.showDots === true) {
-            drawPoints(context, particles, opt, false);
-        }
-
-        if (opt.plots.drawArea === true) {
-            drawArea(context, particles, opt);
-        } else {
-            drawLine(context, particles, opt);
-        }
-    }
-}
 
 class Area extends AbstractBasicCartesianChartWithAxes {
     constructor(canvasId, _userOptions) {
@@ -154,7 +71,7 @@ class Area extends AbstractBasicCartesianChartWithAxes {
         const batchRendering = timer( (elapsed)=> {
             const t = Math.min(1, easeCubic(elapsed / Duration));
 
-            draw(that._frontContext,
+            drawCanvas(that._frontContext,
                 interpolateParticles(t),
                 that._options);
 
@@ -197,7 +114,7 @@ class Area extends AbstractBasicCartesianChartWithAxes {
                 that._frontCanvas.on('mouseout', mouseOutHandler);
 
                 // draw hidden in parallel;
-                draw(that._hiddenContext,
+                drawCanvas(that._hiddenContext,
                     interpolateParticles(t),
                     that._options, true);
 

@@ -21,7 +21,6 @@ const updateAxis = (_svg, _data, opt, isBar = false)=>  {
     const xAxis = axisBottom();
     const yAxis = axisLeft();
 
-
     //scale ticks, bar is special because every column is distinct
     if (isBar === true) {
         updateXAxisTicks(_data, opt);

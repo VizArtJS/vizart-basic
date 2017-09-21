@@ -2,7 +2,83 @@ import { area } from 'd3-shape';
 
 import { AbstractStackedCartesianChartWithAxes } from '../../base';
 import createCartesianStackedOpt from '../../options/createCartesianStackedOpt';
-import interpolateCurve from '../../util/curve';
+const nodeColor = opt=> {
+    const stops = linearStops(opt.color.scheme);
+    return stops[stops.length - 1].color;
+}
+
+const drawPoints = (context, particles, opt, hidden)=> {
+    for (const [i, p] of particles.entries()) {
+        context.beginPath();
+        context.fillStyle = hidden === true? genColorByIndex(i) : nodeColor(opt);
+        context.globalAlpha = p.alpha;
+        context.arc(p.x, p.y, p.r, 0, 2 * Math.PI, false);
+        context.fill();
+    }
+}
+
+const drawLine = (context, particles, opt)=> {
+    const curve = line()
+        .x(d=>d.x)
+        .y(d=>d.y)
+        .context(context);
+    interpolateCurve(opt.plots.curve, [curve]);
+
+    context.beginPath();
+    curve(particles);
+    context.lineWidth = opt.plots.strokeWidth;
+    const gradientStyle = linearGradient(context, opt.color.scheme, 1);
+    context.strokeStyle = gradientStyle;
+
+    context.stroke();
+    context.closePath();
+}
+
+const drawArea = (context, particles, opt)=> {
+    const curve = area()
+        .x(d=>d.x)
+        .y0(context.canvas.height)
+        .y1(d=>d.y)
+        .context(context);
+
+    interpolateCurve(opt.plots.curve, [curve]);
+    context.beginPath();
+    curve(particles);
+    context.lineWidth = opt.plots.strokeWidth;
+    const gradientStyle = linearGradient(context, opt.color.scheme, opt.plots.areaOpacity);
+    context.fillStyle = gradientStyle;
+    context.strokeStyle = nodeColor(opt);
+    context.stroke();
+
+    context.fill();
+    context.closePath();
+}
+
+/**
+ * a particle contains x, y, r, c, alpha
+ *
+ * @param context
+ * @param particles, particle colors may be defined in rgb string and thus cannot be recognized by
+ * canvas. This is caused by d3's interpolation.
+ */
+const draw = (context, particles, opt, hidden = false)=> {
+    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+
+    if (hidden === true) {
+        drawPoints(context, particles, opt, true);
+    } else {
+        if (opt.plots.showDots === true) {
+            drawPoints(context, particles, opt, false);
+        }
+
+        if (opt.plots.drawArea === true) {
+            drawArea(context, particles, opt);
+        } else {
+            drawLine(context, particles, opt);
+        }
+    }
+}
+
 
 import {
     StackedOptions,
@@ -19,11 +95,6 @@ class StackedArea extends AbstractStackedCartesianChartWithAxes {
             .y0(this._options.chart.innerHeight)
             .y1(this._y);
 
-        this._baseLine = area()
-            .x(this._x)
-            .y0(this._options.chart.innerHeight)
-            .y1(this._options.chart.innerHeight);
-
         this._nodeY = (d) => {
             return this._options.plots.stackLayout
                 ? this._y1(d)
@@ -31,170 +102,95 @@ class StackedArea extends AbstractStackedCartesianChartWithAxes {
         }
     }
 
-    createOptions(_userOpt) {
-        return createCartesianStackedOpt(StackedOptions, _userOpt);
-    };
+    _animate() {
+        const Duration = this._options.animation.duration.update;
+        const stops = linearStops(this._options.color.scheme);
+        const nodeColor = stops[stops.length - 1].color;
 
-    render(_data) {
-        super.render(_data);
-        this.update();
-    }
-
-    update() {
-        super.update();
-
-        if(this._options.plots.stackLayout) {
-            this._curve = area().x(this._x)
-                .y0(this._y0)
-                .y1(this._y1);
-        } else {
-            this._curve = area()
-                .x(this._x)
-                .y0(this._options.chart.innerHeight)
-                .y1(this._y);
-        }
-
-        interpolateCurve(this._options.plots.curve, [this._curve, this._baseLine]);
-
-        let seriesUpdate = this._svg.selectAll(".series")
-            .data(this._data.nested);
-
-
-        // EXIT
-        let exitSeries = seriesUpdate.exit();
-
-        exitSeries.select('.curve')
-            .transition("shape-fall-down")
-            .duration(this._options.animation.duration.remove)
-            .attr("d", (d) => { return this._baseLine(d.values); });
-
-        exitSeries.selectAll(".node")
-            .transition("shape-fall-down")
-            .duration(this._options.animation.duration.remove)
-            .attr('opacity', 0.2)
-            .attr("cy", this._options.chart.innerHeight);
-
-        exitSeries.remove();
-
-        // UPDATE
-        seriesUpdate.select('.curve')
-            .transition()
-            .duration(this._options.animation.duration.curve)
-            .delay((d, i) => {
-                return i / this._data.nested.length * this._options.animation.duration.curve
-            })
-            .attr("d", (d) => {
-                return this._curve(d.values)
-            })
-            .style('stroke-width', this._options.plots.strokeWidth)
-            .style('fill', this._c)
-            .style('fill-opacity', this._options.plots.opacityArea)
-            .style('stroke', this._c);
-
-
-        let updatedNodes = seriesUpdate.selectAll(".node")
-            .data((d) => {
-                return d.values
+        const initialState = this.previousState
+            ? this.previousState
+            : this._data.map(d=>{
+                return {
+                    x: this._x(d),
+                    y: this._frontCanvas.node().height,
+                    r: this._options.plots.nodeRadius,
+                    c: nodeColor,
+                    alpha: 0,
+                    data: d
+                }
             });
 
-        updatedNodes.exit()
-            .transition("remove-transition")
-            .duration(this._options.animation.duration.remove)
-            .attr('opacity', 0)
-            .remove();
+        const finalState = this._data.map(d=>{
+            return {
+                x: this._x(d),
+                y: this._y(d),
+                r: this._options.plots.nodeRadius,
+                c: nodeColor,
+                alpha: 1,
+                data: d
+            }
+        });
 
-        updatedNodes
-            .transition("update-transition")
-            .duration(this._options.animation.duration.remove)
-            .delay((d, i) => {
-                return i * 20;
-            })
-            .attr('opacity', this._options.showDots === true ? 1 : 0)
-            .attr("cx", this._x)
-            .attr("cy", this._nodeY);
+        // cache finalState as the initial state of next animation call
+        this.previousState = finalState;
 
-        updatedNodes.enter()
-            .append("circle")
-            .attr("class", "node")
-            .attr("r", 4)
-            .attr("cx", this._x)
-            .attr("cy", this._options.chart.innerHeight)
-            .attr('fill', this._c)
-            .attr('opacity', 0)
-            .transition("update-transition")
-            .duration(this._options.animation.duration.curve)
-            .delay((d, i) => {
-                return i / this._getDimension().values.length * this._options.animation.duration.curve
-            })
-            .attr("cy", this._nodeY)
-            .attr('opacity', this._options.showDots === true ? 1 : 0);
+        const interpolateParticles = interpolateArray(initialState, finalState);
 
-        // APPEND
-        let addedSeries = seriesUpdate
-            .enter()
-            .append("g")
-            .attr("class", "series");
+        let that = this;
+        const batchRendering = timer( (elapsed)=> {
+            const t = Math.min(1, easeCubic(elapsed / Duration));
 
-        addedSeries.append("path")
-            .style('stroke', this._c)
-            .style('stroke-opacity', 1)
-            .style('stroke-width', this._options.plots.strokeWidth)
-            .style('fill', this._c)
-            .style('fill-opacity', this._options.plots.opacityArea)
-            .attr("d", (d) => {
-                return this._baseLine(d.values)
-            })
-            .attr('class', 'curve')
-            .transition('append-series')
-            .duration(this._options.animation.duration.curve)
-            .delay((d, i) => {
-                return i / this._data.nested.length * this._options.animation.duration.curve;
-            })
-            .attr("d", (d) => {
-                return this._curve(d.values)
-            });
+            draw(that._frontContext,
+                interpolateParticles(t),
+                that._options);
 
-        addedSeries.selectAll(".node")
-            .data((d) => {
-                return d.values;
-            })
-            .enter()
-            .append("circle")
-            .attr("class", "node")
-            .attr("r", 4)
-            .attr("cx", this._x)
-            .attr("cy", this._options.chart.innerHeight)
-            .attr('fill', this._c)
-            .attr('opacity', 0)
-            .attr("data-ctrl", (d) => {
-                return "stream-node-" + this._getSeriesVal(d) + '-' + this._getDimensionVal(d);
-            })
-            .transition('append-series')
-            .duration(this._options.animation.duration.curve)
-            .delay((d, i) => {
-                return i / this._getDimension().values.length * this._options.animation.duration.curve
-            })
-            .attr("cy", this._nodeY)
-            .attr('opacity', this._options.plots.showDots === true ? 1 : 0);
+            if (t === 1) {
+                batchRendering.stop();
+
+                that._voronoi = applyVoronoi(that._frontContext,
+                    that._options, finalState);
+
+                that._quadtree = applyQuadtree(that._frontContext,
+                    that._options, finalState);
+
+                /**
+                 * callback for when the mouse moves across the overlay
+                 */
+                function mouseMoveHandler() {
+                    // get the current mouse position
+                    const [mx, my] = mouse(this);
+                    const QuadtreeRadius = 100;
+                    // use the new diagram.find() function to find the Voronoi site
+                    // closest to the mouse, limited by max distance voronoiRadius
+                    const closest = that._voronoi.find(mx, my, QuadtreeRadius);
+
+                    if (closest) {
+                        that._tooltip.style("left", closest[0] + "px")
+                            .style("top", closest[1] + "px")
+                            .html( that.tooltip(closest.data.data));
+
+                        that._tooltip.style("opacity", 1)
+                    } else {
+                        that._tooltip.style("opacity", 0)
+                    }
+                }
+
+                function mouseOutHandler() {
+                    that._tooltip.style("opacity", 0)
+                }
+
+                that._frontCanvas.on('mousemove', mouseMoveHandler);
+                that._frontCanvas.on('mouseout', mouseOutHandler);
+
+                // draw hidden in parallel;
+                draw(that._hiddenContext,
+                    interpolateParticles(t),
+                    that._options, true);
+
+                that._listeners.call('rendered');
+            }
+        });
     }
-
-    transitionColor(colorOptions) {
-        super.transitionColor(colorOptions);
-
-        // line
-        this._svg.selectAll('.curve')
-            .transition()
-            .duration(this._options.animation.duration.curve)
-            .delay( (d, i)=> { return i / this._data.nested.length * this._options.animation.duration.curve; })
-            .style('stroke', this._c)
-            .style('fill', this._c);
-
-        // link node
-        this._svg.selectAll(".area-node")
-            .transition()
-            .duration(this._options.animation.duration.remove)
-            .attr('fill', this._c);
-    };
 
 
     _updateLayout(_opt) {
@@ -205,20 +201,21 @@ class StackedArea extends AbstractStackedCartesianChartWithAxes {
 
     stackLayout() {
         this._updateLayout(StackedOptions);
-
         this.update();
     };
 
     expandLayout() {
         this._updateLayout(ExpandedOptions);
-
         this.update();
     };
 
     groupedLayout() {
         this._updateLayout(AreaMultiOptions);
-
         this.update();
+    };
+
+    createOptions(_userOpt) {
+        return createCartesianStackedOpt(StackedOptions, _userOpt);
     };
 
 }
