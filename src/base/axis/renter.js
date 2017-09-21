@@ -3,6 +3,7 @@ import rotateXTicks from './rotete';
 
 const renderAxis =(svg, data, opt)=> {
     const {x: _xAxis, y: _yAxis } = updateAxis(svg, data, opt);
+    console.log('-------')
 
     const xAxis = svg.append("g")
         .attr("class", "x axis")

@@ -2,10 +2,7 @@ import { scaleLinear } from 'd3-scale';
 
 import nest from './stacked-layout';
 import getStackedMetricScale from './metric-stacked';
-
 import processCartesianData from './cartesian';
-
-
 
 const buildStack = (_data, _options)=> {
     let _nestedData = nest(_data, _options);

@@ -32,6 +32,7 @@ const CartesianStackedOptions = {
 
 
     xAxis: {
+        showTicks: true,
         allowDecimals: false,
         scale: null,
         ticks: 0,
@@ -41,21 +42,22 @@ const CartesianStackedOptions = {
         labelAngle: 0,
 
         title: {
-            text: '',
-            style: ''
+            text: null,
+            style: null
         }
     },
 
     yAxis: [
         {
+            showTicks: true,
             allowDecimals: false,
             scale: null,
             max: null,
             min: null,
             ticks: 0,
             title: {
-                text: '',
-                style: ''
+                text: null,
+                style: null
             }
         }
     ],

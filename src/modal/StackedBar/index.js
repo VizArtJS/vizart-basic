@@ -23,7 +23,7 @@ class StackedBar extends AbstractStackedCartesianChartWithAxes {
                 ? xPos
                 : xPos
                 + this._band() / this._data.nested.length
-                * this._options.data.s.values.indexOf(this._getSeriesVal(d));
+                * this._options.data.s.values.indexOf(this._s(d));
         };
 
         this._y = (d) => {

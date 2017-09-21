@@ -91,11 +91,12 @@ const mergeLayout = (_data, _layout, _options)=> {
         for (let _n of _nest) {
             let _o = {
                 y0: _n[0],
-                y: _n[1]
+                y: _n[1],
+                data: {}
             };
-            _o[_options.data.s.accessor] = _nest.key;
-            _o[_options.data.x.accessor] = _n.data[_options.data.x.accessor];
-            _o[_options.data.y[0].accessor] = _n.data[_nest.key];
+            _o.data[_options.data.s.accessor] = _nest.key;
+            _o.data[_options.data.x.accessor] = _n.data[_options.data.x.accessor];
+            _o.data[_options.data.y[0].accessor] = _n.data[_nest.key];
 
             _values.push(_o);
         }

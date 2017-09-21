@@ -31,7 +31,7 @@ class Corona extends AbstractStackedCartesianChart {
         super(canvasId, _userOptions);
 
         this._c = (d) => {
-            return this._color(this._getSeriesVal(d));
+            return this._color(this._s(d));
         };
 
     }
