@@ -52,6 +52,11 @@
     $(document).ready(function () {
 
         var options = {
+            chart: {
+                margin: {
+                    right: 30
+                },
+            },
             data: {
                 s: { name: 'dep', type: 'string', accessor: 'ms'},
                 x:
@@ -65,7 +70,7 @@
             plots: {
                 stackLayout: false,
                 stackMethod: 'zero',
-                curve: 'natural',
+                curve: 'basis',
                 strokeWidth: 4,
                 opacityArea: 0.4
             }

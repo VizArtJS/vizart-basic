@@ -18,7 +18,6 @@ import {
 const drawCanvas = (context, state, opt)=> {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
-    console.log(opt.plots.stackLayout);
     const curve = opt.plots.stackLayout === true
         ? area()
             .x(d => d.x)
