@@ -8,22 +8,24 @@ const sortData = (_data, _options)=> {
 
         let _accessor = _field.accessor;
 
-        switch (_field.type) {
-            case Globals.DataType.STRING:
-                _data.sort( (a, b)=> {
-                    return (_options.ordering.direction === 'asc')
-                        ? a[_accessor].localeCompare(b[_accessor])
-                        : b[_accessor].localeCompare(a[_accessor]);
-                });
-                break;
-            default:
-                _data.sort( (a, b)=> {
-                    return (_options.ordering.direction === 'asc')
-                        ? a[_accessor] - b[_accessor]
-                        : b[_accessor] - a[_accessor];
-                });
+        if (check(_accessor)) {
+            switch (_field.type) {
+                case Globals.DataType.STRING:
+                    _data.sort( (a, b)=> {
+                        return (_options.ordering.direction === 'asc')
+                            ? a[_accessor].localeCompare(b[_accessor])
+                            : b[_accessor].localeCompare(a[_accessor]);
+                    });
+                    break;
+                default:
+                    _data.sort( (a, b)=> {
+                        return (_options.ordering.direction === 'asc')
+                            ? a[_accessor] - b[_accessor]
+                            : b[_accessor] - a[_accessor];
+                    });
 
-                break;
+                    break;
+            }
         }
     }
 }

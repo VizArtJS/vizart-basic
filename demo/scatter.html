@@ -4,17 +4,13 @@
     <meta charset="UTF-8">
     <title>Bar Chart Demo</title>
     <link href="./vizart-basic.css" rel="stylesheet" type="text/css"/>
-    <link rel="stylesheet" href="./lib/bootstrap-3.3.7/css/bootstrap.css">
+    <link href="./css/main.css" rel="stylesheet" type="text/css"/>
+    <link href="./lib/bootstrap-3.3.7/css/bootstrap.css" rel="stylesheet" type="text/css">
     <script src="./lib/jquery-1.12.4.min.js"></script>
     <script src="./lib/bootstrap-3.3.7/js/bootstrap.js"></script>
     <script src="./lib/d3.js"></script>
     <script src="./vizart-basic.standalone.js" type="text/javascript"></script>
     <style>
-        html,
-        body {
-            height: 100%;
-        }
-
         .y.axis .domain,
         .x.axis .domain {
             stroke: rgba(255, 255, 255, 0.41);
@@ -29,27 +25,6 @@
             fill: rgba(255, 255, 255, 0.41);;
             stroke: rgba(255, 255, 255, 0.41);
         }
-
-        .chart-container {
-            border-radius: 5px;
-
-            width: 90%;
-            left: 5%;
-            top: 60px;
-            margin: 0px auto;
-            height: calc(100% - 120px);
-            padding-top: 0px;
-            border-radius: 6px;
-            box-shadow: 0 12px 15px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
-        }
-
-        .ocean {
-            background-image: url(assets/vz-skin-galaxy_2.jpg);
-            background-repeat: no-repeat;
-            background-size: cover;
-
-        }
-
     </style>
 </head>
 <body>

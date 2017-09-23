@@ -8,6 +8,7 @@ const processStackedData = (_data, opt, cleanse = true)=> {
     let copy = processCartesianData(_data, opt, cleanse);
     let nestedData = nest(copy, opt);
 
+    console.log(nestedData);
     let minY;
     let maxY;
 
@@ -16,8 +17,8 @@ const processStackedData = (_data, opt, cleanse = true)=> {
         minY = _range[0];
         maxY = _range[1];
 
-        for (let _metric of opt.data.y) {
-            _metric.scale = scaleLinear()
+        for (let m of opt.data.y) {
+            m.scale = scaleLinear()
                 .domain([minY, maxY])
                 .range([opt.chart.innerHeight, 0]);
         }

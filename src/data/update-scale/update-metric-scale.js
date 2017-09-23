@@ -38,27 +38,27 @@ const updateMetricScale = (data, opt)=> {
     }
 
 
-    for (let metric of opt.data.y) {
-        metric.yAxis = metric.yAxis || 0;
+    for (let m of opt.data.y) {
+        m.yAxis = m.yAxis || 0;
 
-        if (opt.yAxis.length < metric.yAxis + 1) {
-            throw new Error('invalid yAxis definition for data y: ' + metric.accessor)
+        if (opt.yAxis.length < m.yAxis + 1) {
+            throw new Error('invalid yAxis definition for data y: ' + m.accessor)
         }
 
-        const axisDef = opt.yAxis[metric.yAxis];
+        const axisDef = opt.yAxis[m.yAxis];
         const range = [axisDef.min, axisDef.max];
 
-        let _tickedRange = tickRange(range, opt.yAxis[metric.yAxis].ticks, opt.yAxis[metric.yAxis].tier);
+        let _tickedRange = tickRange(range, opt.yAxis[m.yAxis].ticks, opt.yAxis[m.yAxis].tier);
 
-        metric.ticksMin = _tickedRange[0];
-        metric.ticksMax = _tickedRange[1];
-        metric.ticksTier = _tickedRange[2];
+        m.ticksMin = _tickedRange[0];
+        m.ticksMax = _tickedRange[1];
+        m.ticksTier = _tickedRange[2];
 
-        metric.min = range[0];
-        metric.max = range[1];
+        m.min = range[0];
+        m.max = range[1];
 
-        metric.scale = scaleLinear()
-            .domain([metric.ticksMin, metric.ticksMax])
+        m.scale = scaleLinear()
+            .domain([m.ticksMin, m.ticksMax])
             .range([opt.chart.innerHeight, 0]);
     }
 };
