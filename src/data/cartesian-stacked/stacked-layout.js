@@ -3,25 +3,29 @@ import getStack from './stack';
 import transformSeriesToMatrix from './series-to-matrix';
 import isSeriesDefined from '../helper/is-series-defined';
 import find from 'lodash-es/find';
+import uniq from 'lodash-es/uniq';
+import map from 'lodash-es/map';
 
 const generateLayout = (data, opt)=> {
     const matrix = isSeriesDefined(opt)
         ? transformSeriesToMatrix(data, opt)
         : data;
 
-    const series = isSeriesDefined(opt)
-        ? opt.data.s.values
-        : opt.data.y.map(d=>d.accessor);
+    if (isSeriesDefined(opt)) {
+        opt.data.s.values = uniq(map(_data, _options.data.s.accessor));
+    } else {
+        opt.data.s.values = opt.data.y.map(d=>d.accessor);
+    }
 
     const stack = getStack(opt);
-    stack.keys(series);
+    stack.keys(opt.data.s.values);
 
     return stack(matrix);
 };
 
 const mergeLayout = (data, layout, opt)=> {
-    return layout.map(d=>{
-        const metric = find(opt.data.y, e=>e.accessor = d.key);
+    return layout.map((d, i)=>{
+        const metric = find(opt.data.y, e=>e.accessor === d.key);
 
         return {
             label: metric.name,

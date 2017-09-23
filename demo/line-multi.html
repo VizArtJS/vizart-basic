@@ -22,7 +22,12 @@
             data: {
                 x:   { name: 'Director', type: 'string', accessor: 'Director'},
                 y: [
-                    { name: 'Total', type: 'number', accessor: 'Total', yAxis: 0}
+                    { name: 'Total', type: 'number', accessor: 'Total', yAxis: 0},
+                    { name: 'Pan', type: 'number', accessor: 'Pan', yAxis: 0},
+                    { name: 'Track', type: 'number', accessor: 'Track', yAxis: 0},
+                    { name: 'Tilt', type: 'number', accessor: 'Tilt', yAxis: 0},
+                    { name: 'Track w Pan', type: 'number', accessor: 'Track w Pan', yAxis: 0}
+
                 ],
             },
 
@@ -40,13 +45,6 @@
             var data = _.uniqWith(res, function(a, b) {
                 return a.Director === b.Director;
             });
-
-            console.log(data);
-
-            for (var i = 0; i < data.length; i++) {
-                data[i].Total = +data[i].Total;
-            }
-
 
             chart.render(data);
 
