@@ -19,7 +19,7 @@ const updateMetricScale = (data, opt)=> {
 
         if (isValid(x.min)) {
             if (x.min > universalMin) {
-                console.error('invalid yAxis min: ' + i);
+                console.error('invalid yAxis min detected, auto scale will be used');
             } else {
                 universalMin = x.min;
             }
@@ -27,7 +27,7 @@ const updateMetricScale = (data, opt)=> {
 
         if (isValid(x.max)) {
             if (x.max < universalMax) {
-                console.error('invalid yAxis min: ' + i);
+                console.error('invalid yAxis max detected, auto scale will be used');
             } else {
                 universalMax = x.max;
             }
@@ -44,7 +44,7 @@ const updateMetricScale = (data, opt)=> {
         if (opt.yAxis.length < metric.yAxis + 1) {
             throw new Error('invalid yAxis definition for data y: ' + metric.accessor)
         }
-        
+
         const axisDef = opt.yAxis[metric.yAxis];
         const range = [axisDef.min, axisDef.max];
 
