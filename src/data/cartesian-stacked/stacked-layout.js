@@ -1,7 +1,7 @@
 import { check } from 'vizart-core';
 import getStack from './stack';
 import transformSeriesToMatrix from './series-to-matrix';
-import isSeriesDefined from './is-series-defined';
+import isSeriesDefined from '../helper/is-series-defined';
 
 const generateLayout = (data, opt)=> {
     const matrix = isSeriesDefined(opt)
@@ -12,6 +12,7 @@ const generateLayout = (data, opt)=> {
         ? opt.data.s.values
         : opt.data.y.map(d=>d.accessor);
 
+    console.log(data);
     const stack = getStack(opt);
     stack.keys(series);
 
