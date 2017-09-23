@@ -3,7 +3,7 @@ import { check } from 'vizart-core';
 
 import getAllDataDef from './all-data-def';
 
-const getSortDef = (opt)=> {
+const getSortDef = opt=> {
     let allFields = getAllDataDef(opt);
 
     let _field = find(allFields, o=> o.accessor === opt.ordering.accessor);

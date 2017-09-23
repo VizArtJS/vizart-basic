@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="./lib/bootstrap-3.3.7/css/bootstrap.css">
     <script src="./lib/jquery-1.12.4.min.js"></script>
     <script src="./lib/bootstrap-3.3.7/js/bootstrap.js"></script>
-    <script src="http://chancejs.com/chance.min.js"></script>
+    <script src="./lib/d3.js"></script>
     <script src="./lib/lodash.min.js"></script>
     <script src="./vizart-basic.standalone.js" type="text/javascript"></script>
     <style>
@@ -26,42 +26,27 @@
     $(document).ready(function () {
         var options = {
             data: {
-                s: { name: 'dep', type: 'string', accessor: 'ms'},
-                x:
-                    { name: 'name', type: 'string', accessor: 'mx'}
-                ,
+                x:  { name: 'date', type: 'date', accessor: 'date', format: '%m/%d/%Y'},
                 y: [
-                    { name: 'performance', type: 'number', accessor: 'my'}
+                    { name: 'open', type: 'number', accessor: 'open'},
+                    { high: 'high', type: 'number', accessor: 'high'},
+                    { name: 'low', type: 'number', accessor: 'low'},
+                    { name: 'volume', type: 'number', accessor: 'volume'},
                 ],
             },
 
             plots: {
-                stackLayout: false,
-                stackMethod: 'expand',
                 curve: 'linear',
-                strokeWidth: 2,
-                opacityArea: 0.7
+                strokeWidth: 3,
+                showDots: false,
+                dotRadius: 4
             }
         };
 
-        var fakeData = [];
-
-        var dep = ['hr', 'r&d', 'financial', 'sales'];
-
-        _.each(dep, function(d, i){
-            for (var i = 1; i < 21; i++) {
-                fakeData.push({
-                    ms: d,
-                    mx: i + '',
-                    my: chance.integer({min: 0, max: 70})
-                })
-            }
-        });
-
-
-
         var chart = new VizArtBasic.MultiLine('#chart', options);
-        chart.render(fakeData);
+        d3.csv('assets/nasdaq1985-2012.csv', function(err, res){
+            chart.render(res);
+        });
 
     });
 </script>
