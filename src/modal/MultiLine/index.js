@@ -51,6 +51,38 @@ const drawCanvas = (context, state, opt)=> {
     }
 }
 
+const highlightLine = (context, state, opt, highlighted)=> {
+    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+    console.log(highlighted)
+    const curve = line()
+        .x(d => d.x)
+        .y(d => d.y)
+        .context(context);
+
+    for (const n of state) {
+        context.save();
+
+        if (n.key === highlighted) {
+            const color = n.c;
+            const hslColorSpace = hsl(color);
+            hslColorSpace.opacity = n.alpha;
+            context.strokeStyle = hslColorSpace;
+        } else {
+            const hslColorSpace = hsl('grey');
+            hslColorSpace.opacity = n.alpha;
+            context.strokeStyle = hslColorSpace;
+        }
+
+        interpolateCurve(opt.plots.curve, [curve]);
+        context.beginPath();
+        curve(n.values);
+        context.lineWidth = opt.plots.strokeWidth;
+        context.stroke();
+        context.restore();
+    }
+}
+
+
 
 class MultiLine extends AbstractStackedCartesianChartWithAxes {
     constructor(canvasId, _userOptions) {
@@ -70,6 +102,7 @@ class MultiLine extends AbstractStackedCartesianChartWithAxes {
                     alpha: 0,
                     values: d.values.map(e => {
                         return {
+                            key: d.key,
                             x: this._x(e.data),
                             y: this._options.chart.innerHeight,
                             data: e.data
@@ -82,9 +115,10 @@ class MultiLine extends AbstractStackedCartesianChartWithAxes {
             return {
                 key: d.key,
                 c: this._c(d),
-                alpha: 0.4,
+                alpha: 1,
                 values: d.values.map(e => {
                     return {
+                        key: d.key,
                         x: this._x(e.data),
                         y: e.y,
                         data: e.data
@@ -134,14 +168,26 @@ class MultiLine extends AbstractStackedCartesianChartWithAxes {
                             .style("top", closest[1] + "px")
                             .html( that.tooltip(closest.data.data));
 
-                        that._tooltip.style("opacity", 1)
+                        highlightLine(that._frontContext,
+                            interpolateParticles(t),
+                            that._options,
+                            closest.data.key);
+                        that._tooltip.style("opacity", 1);
                     } else {
-                        that._tooltip.style("opacity", 0)
+                        that._tooltip.style("opacity", 0);
+
+                        drawCanvas(that._frontContext,
+                            interpolateParticles(t),
+                            that._options);
                     }
                 }
 
                 function mouseOutHandler() {
-                    that._tooltip.style("opacity", 0)
+                    that._tooltip.style("opacity", 0);
+
+                    drawCanvas(that._frontContext,
+                        interpolateParticles(t),
+                        that._options);
                 }
 
                 that._frontCanvas.on('mousemove', mouseMoveHandler);
