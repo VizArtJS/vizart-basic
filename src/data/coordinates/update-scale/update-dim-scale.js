@@ -18,66 +18,66 @@ const isBar = options => options.chart.type === 'bar_horizontal'
     || options.chart.type === 'bar_stacked'
     || options.chart.type === 'bar_expanded';
 
-const updateDimensionScale = (_data, _options)=> {
-    let _dim = _options.data.x;
+const updateDimensionScale = (data, opt)=> {
+    let dim = opt.data.x;
 
 
-    if (isBar(_options)) {
-        _dim.values = uniq(map(_data, _dim.accessor));
+    if (isBar(opt)) {
+        dim.values = uniq(map(data, dim.accessor));
 
-        _dim.scale = scaleBand()
-            .domain(_dim.values)
-            .range([0, _options.chart.innerWidth])
+        dim.scale = scaleBand()
+            .domain(dim.values)
+            .range([0, opt.chart.innerWidth])
             .paddingInner(.1)
             .paddingOuter(.6);
 
         return;
     }
 
-    if (isYSort(_options)) {
-        _dim.values = uniq(map(_data, _dim.accessor));
-        _dim.scale = scalePoint()
-            .domain(_dim.values)
-            .range([0, _options.chart.innerWidth]);
+    if (isYSort(opt)) {
+        dim.values = uniq(map(data, dim.accessor));
+        dim.scale = scalePoint()
+            .domain(dim.values)
+            .range([0, opt.chart.innerWidth]);
 
         return;
     }
 
-    switch (_dim.type) {
+    switch (dim.type) {
         case Globals.DataType.DATE:
-            _dim.values = uniq(map(_data, _dim.accessor));
+            dim.values = uniq(map(data, dim.accessor));
 
-            let _range = extent(_data, d=> d[_dim.accessor]);
+            let _range = extent(data, d=> d[dim.accessor]);
 
-            _dim.min = _range[0];
-            _dim.max = _range[1];
+            dim.min = _range[0];
+            dim.max = _range[1];
 
-            _dim.scale = scaleTime()
-                .domain((_options.ordering.direction === 'asc') ? _range : _range.reverse())
-                .range([0, _options.chart.innerWidth])
+            dim.scale = scaleTime()
+                .domain((opt.ordering.direction === 'asc') ? _range : _range.reverse())
+                .range([0, opt.chart.innerWidth])
                 .interpolate(interpolateRound);
 
             break;
 
         case Globals.DataType.NUMBER:
             // todo number format
-            _dim.values = uniq(map(_data, _dim.accessor));
+            dim.values = uniq(map(data, dim.accessor));
 
-            let _rangeNm = extent(_data, d=> d[_dim.accessor]);
+            let _rangeNm = extent(data, d=> d[dim.accessor]);
 
-            _dim.min = _rangeNm[0];
-            _dim.max = _rangeNm[1];
+            dim.min = _rangeNm[0];
+            dim.max = _rangeNm[1];
 
-            _dim.scale = scaleLinear()
-                .domain((_options.ordering.direction === 'asc') ? _rangeNm : _rangeNm.reverse())
-                .range([0, _options.chart.innerWidth]);
+            dim.scale = scaleLinear()
+                .domain((opt.ordering.direction === 'asc') ? _rangeNm : _rangeNm.reverse())
+                .range([0, opt.chart.innerWidth]);
 
             break;
         case Globals.DataType.STRING:
-            _dim.values = uniq(map(_data, _dim.accessor));
-            _dim.scale = scalePoint()
-                .domain(_dim.values)
-                .range([0, _options.chart.innerWidth]);
+            dim.values = uniq(map(data, dim.accessor));
+            dim.scale = scalePoint()
+                .domain(dim.values)
+                .range([0, opt.chart.innerWidth]);
 
             break;
 
