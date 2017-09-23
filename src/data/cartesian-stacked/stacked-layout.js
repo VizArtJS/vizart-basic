@@ -6,7 +6,7 @@ import find from 'lodash-es/find';
 import uniq from 'lodash-es/uniq';
 import map from 'lodash-es/map';
 
-const generateLayout = (data, opt)=> {
+const generateStackLayout = (data, opt)=> {
     const matrix = isSeriesDefined(opt)
         ? transformSeriesToMatrix(data, opt)
         : data;
@@ -19,12 +19,9 @@ const generateLayout = (data, opt)=> {
 
     const stack = getStack(opt);
     stack.keys(opt.data.s.values);
+    const layout = stack(matrix);
 
-    return stack(matrix);
-};
-
-const mergeLayout = (data, layout, opt)=> {
-    return layout.map((d, i)=>{
+    return layout.map(d=>{
         const metric = find(opt.data.y, e=>e.accessor === d.key);
 
         return {
@@ -42,10 +39,4 @@ const mergeLayout = (data, layout, opt)=> {
     });
 }
 
-
-const nest = (data, opt)=> {
-    const layout = generateLayout(data, opt);
-    return mergeLayout(data, layout, opt);
-}
-
-export default nest;
+export default generateStackLayout;

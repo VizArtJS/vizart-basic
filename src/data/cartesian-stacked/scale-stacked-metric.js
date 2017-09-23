@@ -8,15 +8,15 @@ const mapY = d => d.values.map(e=> e.y);
 /**
  * get max/min of the nestedData
  *
- * @param _nested nested data
- * @param _oper min/max
+ * @param nested nested data
+ * @param operation min/max
  * @returns {*} max/min of the nestedData
  */
-const mapNested = (_nested, _oper)=> {
-    return _oper(_nested.map(d=> _oper(mapY(d))));
+const mapNested = (nested, operation)=> {
+    return operation(nested.map(d=> operation(mapY(d))));
 }
 
-const getStackedMetricScale = (nestedData, opt)=> {
+const rescaleStackedMetric = (nestedData, opt)=> {
     return opt.plots.stackMethod === Stacks.Expand
         ? [0, 1, 5]
         : tickRange([mapNested(nestedData, min), mapNested(nestedData, max)],
@@ -24,4 +24,4 @@ const getStackedMetricScale = (nestedData, opt)=> {
             opt.yAxis[0].tier);
 }
 
-export default getStackedMetricScale;
+export default rescaleStackedMetric;

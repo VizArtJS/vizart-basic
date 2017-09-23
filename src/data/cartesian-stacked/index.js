@@ -1,19 +1,18 @@
 import { scaleLinear } from 'd3-scale';
 
-import nest from './stacked-layout';
-import getStackedMetricScale from './metric-stacked';
+import generateStackLayout from './stacked-layout';
+import rescaleStackedMetric from './scale-stacked-metric';
 import processCartesianData from '../cartesian/index';
 
 const processStackedData = (_data, opt, cleanse = true)=> {
     let copy = processCartesianData(_data, opt, cleanse);
-    let nestedData = nest(copy, opt);
+    let nestedData = generateStackLayout(copy, opt);
 
-    console.log(nestedData);
     let minY;
     let maxY;
 
     if(opt.plots.stackLayout === true) {
-        let _range = getStackedMetricScale(nestedData, opt);
+        let _range = rescaleStackedMetric(nestedData, opt);
         minY = _range[0];
         maxY = _range[1];
 

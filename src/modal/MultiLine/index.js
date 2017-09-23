@@ -23,10 +23,6 @@ const DefaultOptions = {
     }
 };
 
-const reMeasure = (context, state, opt)=> {
-
-}
-
 const drawCanvas = (context, state, opt)=> {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
@@ -53,7 +49,6 @@ const drawCanvas = (context, state, opt)=> {
 
 const highlightLine = (context, state, opt, highlighted)=> {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-    console.log(highlighted)
     const curve = line()
         .x(d => d.x)
         .y(d => d.y)
@@ -191,7 +186,7 @@ class MultiLine extends AbstractStackedCartesianChartWithAxes {
                 }
 
                 that._frontCanvas.on('mousemove', mouseMoveHandler);
-
+                that._frontCanvas.on('mouseout', mouseOutHandler);
 
                 that._listeners.call('rendered');
             }
