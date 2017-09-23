@@ -24,6 +24,7 @@ const mergeLayout = (data, layout, opt)=> {
         const metric = find(opt.data.y, e=>e.accessor = d.key);
 
         return {
+            label: metric.name,
             key: d.key,
             values: d.map(e=> {
                 return {
