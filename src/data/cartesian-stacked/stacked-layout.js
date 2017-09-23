@@ -12,46 +12,30 @@ const generateLayout = (data, opt)=> {
         ? opt.data.s.values
         : opt.data.y.map(d=>d.accessor);
 
-    console.log(data);
     const stack = getStack(opt);
     stack.keys(series);
 
     return stack(matrix);
 };
 
-const mergeLayout = (_data, _layout, _options)=> {
-    let _nestedData = [];
-
-    for (let _nest of _layout) {
-        let _values = [];
-
-        for (let _n of _nest) {
-            let _o = {
-                y0: _n[0],
-                y: _n[1],
-                data: {}
-            };
-            _o.data[_options.data.s.accessor] = _nest.key;
-            _o.data[_options.data.x.accessor] = _n.data[_options.data.x.accessor];
-            _o.data[_options.data.y[0].accessor] = _n.data[_nest.key];
-
-            _values.push(_o);
+const mergeLayout = (data, layout, opt)=> {
+    return layout.map(d=>{
+        return {
+            key: d.key,
+            values: d.map(e=> {
+                return {
+                    y0: e[0],
+                    y: e[1],
+                    data: e.data
+                }
+            })
         }
-
-
-        _nestedData.push({
-            key: _nest.key,
-            values: _values
-        });
-    }
-
-    return _nestedData;
+    });
 }
 
 
 const nest = (data, opt)=> {
-    let layout = generateLayout(data, opt);
-    console.log(layout);
+    const layout = generateLayout(data, opt);
     return mergeLayout(data, layout, opt);
 }
 

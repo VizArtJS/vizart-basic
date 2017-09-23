@@ -4,14 +4,15 @@ import nest from './stacked-layout';
 import getStackedMetricScale from './metric-stacked';
 import processCartesianData from '../cartesian/index';
 
-const buildStack = (data, opt)=> {
-    let _nestedData = nest(data, opt);
+const processStackedData = (_data, _options, _cleanse = true)=> {
+    let copy = processCartesianData(_data, _options, _cleanse);
+    let nestedData = nest(copy, opt);
 
     let minY;
     let maxY;
 
     if(opt.plots.stackLayout === true) {
-        let _range = getStackedMetricScale(_nestedData, opt);
+        let _range = getStackedMetricScale(nestedData, opt);
         minY = _range[0];
         maxY = _range[1];
 
@@ -32,21 +33,12 @@ const buildStack = (data, opt)=> {
             }
         }
     }
-    
+
     return {
         maxY: maxY,
         minY: minY,
-        original: data,
-        nested: _nestedData
+        nested: nestedData
     };
-}
-
-
-
-const processStackedData = (_data, _options, _cleanse = true)=> {
-    let _copy = processCartesianData(_data, _options, _cleanse);
-
-    return buildStack(_copy, _options);
 }
 
 export default processStackedData;

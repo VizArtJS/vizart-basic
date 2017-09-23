@@ -1,5 +1,5 @@
 import { scaleLinear } from 'd3-scale';
-import { extent } from 'd3-array';
+import { extent, max, min } from 'd3-array';
 import isUndefined from 'lodash-es/isUndefined';
 import isNull from 'lodash-es/isNull';
 import isNumber from 'lodash-es/isNumber';
