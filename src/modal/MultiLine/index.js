@@ -116,7 +116,6 @@ class MultiLine extends AbstractStackedCartesianChartWithAxes {
             }
         });
 
-
         // cache finalState as the initial state of next animation call
         this.previousState = finalState;
 

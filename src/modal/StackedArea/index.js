@@ -89,7 +89,7 @@ class StackedArea extends AbstractStackedCartesianChartWithAxes {
                 values: d.values.map(e=> {
                     return {
                         x: this._x(e.data),
-                        y: this._y(e.data),
+                        y: e.y,
                         y0: this._y0(e),
                         y1: this._y1(e),
                         data: e.data

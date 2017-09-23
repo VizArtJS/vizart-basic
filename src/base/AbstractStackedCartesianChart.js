@@ -10,7 +10,7 @@ class AbstractStackedCartesianChart extends AbstractCartesianChart {
 
         this._getSeries = ()=> this._options.data.s;
         this._s = d=> d[this._getSeries().accessor];
-        this._y1 = d=> this._getMetric().scale(d.y);
+        this._y1 = d=> this._getMetric().scale(d.y1);
         this._y0 = d=> this._getMetric().scale(d.y0);
         this._c = d => {
             return (has(d, 'key'))
