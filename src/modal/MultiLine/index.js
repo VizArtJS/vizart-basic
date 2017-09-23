@@ -57,16 +57,10 @@ const highlightLine = (context, state, opt, highlighted)=> {
     for (const n of state) {
         context.save();
 
-        if (n.key === highlighted) {
-            const color = n.c;
-            const hslColorSpace = hsl(color);
-            hslColorSpace.opacity = n.alpha;
-            context.strokeStyle = hslColorSpace;
-        } else {
-            const hslColorSpace = hsl('grey');
-            hslColorSpace.opacity = n.alpha;
-            context.strokeStyle = hslColorSpace;
-        }
+        const color = n.c;
+        const hslColorSpace = hsl(color);
+        hslColorSpace.opacity = n.key === highlighted ? n.alpha : 0.2;
+        context.strokeStyle = hslColorSpace;
 
         interpolateCurve(opt.plots.curve, [curve]);
         context.beginPath();
