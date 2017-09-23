@@ -3,8 +3,8 @@ import { wrapSVGText } from 'vizart-core'
 import { CoronaOptions } from './Corona-Options';
 
 import createCartesianStackedOpt from '../../options/createCartesianStackedOpt';
-import metricStackedScale from '../../data/coordinates/metric-stacked';
-import metricScale from '../../data/coordinates/update-scale/update-metric-scale';
+import metricStackedScale from '../../data/cartesian-stacked/metric-stacked';
+import metricScale from '../../data/update-scale/update-metric-scale';
 import labelPrecision from './Corona-Label';
 
 import { Stacks } from '../../data';

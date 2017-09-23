@@ -11,7 +11,7 @@ import { extent } from 'd3-array';
 import uniq from 'lodash-es/uniq';
 import map from 'lodash-es/map';
 
-import { isYSort } from '../../helper/index';
+import { isYSort } from '../helper/index';
 
 const isBar = options => options.chart.type === 'bar_horizontal'
     || options.chart.type === 'bar_grouped'

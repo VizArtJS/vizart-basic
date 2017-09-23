@@ -1,6 +1,6 @@
 import { max, min } from 'd3-array';
 
-import tickRange from './update-scale/ticks';
+import tickRange from '../update-scale/ticks';
 import Stacks from '../constant/stack-methods';
 
 const mapY = d => d.values.map(e=> e.y);
