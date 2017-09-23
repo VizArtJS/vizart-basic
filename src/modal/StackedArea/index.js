@@ -173,24 +173,14 @@ class StackedArea extends AbstractStackedCartesianChartWithAxes {
                             .style("top", closest[1] + "px")
                             .html( that.tooltip(closest.data.data));
 
-                        highlightArea(that._frontContext,
-                            interpolateParticles(t),
-                            that._options,
-                            closest.data);
-
                         that._tooltip.style("opacity", 1)
                     } else {
-                        drawCanvas(that._frontContext,
-                            interpolateParticles(t),
-                            that._options);
+
                         that._tooltip.style("opacity", 0)
                     }
                 }
 
                 function mouseOutHandler() {
-                    drawCanvas(that._frontContext,
-                        interpolateParticles(t),
-                        that._options);
 
                     that._tooltip.style("opacity", 0)
                 }
@@ -212,10 +202,6 @@ class StackedArea extends AbstractStackedCartesianChartWithAxes {
         const Duration = 250;
         const batchRendering = timer( (elapsed)=> {
             const t = Math.min(1, easeCubic(elapsed / Duration));
-
-            reMeasure(that._frontContext,
-                this.previousState,
-                that._options);
 
             if (t === 1) {
                 batchRendering.stop();

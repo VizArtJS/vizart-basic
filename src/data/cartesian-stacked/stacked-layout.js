@@ -28,7 +28,6 @@ const generateStackLayout = (data, opt)=> {
             label: metric ? metric.name : d.key,
             key: d.key,
             values: d.map(e=> {
-                console.log(e);
                 return {
                     y0: e[0],
                     y1: e[1],

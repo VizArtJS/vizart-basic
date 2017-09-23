@@ -49,8 +49,8 @@
             },
 
             plots: {
-                stackLayout: false,
-                stackMethod: 'zero',
+                stackLayout: true,
+                stackMethod: 'expand',
                 curve: 'basis',
                 strokeWidth: 4,
                 opacityArea: 0.4
@@ -75,10 +75,10 @@
         var chart = new VizArtBasic.StackedArea('#chart', options);
         chart.render(fakeData);
 
-        chart.on('rendered', function(){
-            chart.revealVoronoi();
-            chart.revealQuadtree();
-        })
+//        chart.on('rendered', function(){
+//            chart.revealVoronoi();
+//            chart.revealQuadtree();
+//        })
         var options2 = chart.options();
 
         // change color

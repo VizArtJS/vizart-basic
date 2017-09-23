@@ -19,9 +19,8 @@ const getSeriesOrdering = opt=> opt.ordering.direction === 'desc'
 
 const getStack = opt=> {
     // nested data
-    let _stack = stack();
-
-    let _ordering = getSeriesOrdering(opt);
+    const _stack = stack();
+    const _ordering = getSeriesOrdering(opt);
 
     switch(opt.plots.stackMethod) {
         case Stacks.Expand:

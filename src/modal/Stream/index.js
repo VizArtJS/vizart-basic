@@ -78,6 +78,7 @@ class Stream extends AbstractStackedCartesianChartWithAxes {
                     alpha: 0,
                     values: d.values.map(e=> {
                         return {
+                            key: d.key,
                             x: this._x(e.data),
                             y0: this._options.chart.innerHeight / 2,
                             y1: this._options.chart.innerHeight / 2,
@@ -94,6 +95,7 @@ class Stream extends AbstractStackedCartesianChartWithAxes {
                 alpha: this._options.plots.opacityArea,
                 values: d.values.map(e=> {
                     return {
+                        key: d.key,
                         x: this._x(e.data),
                         y0: this._y0(e),
                         y1: this._y1(e),
