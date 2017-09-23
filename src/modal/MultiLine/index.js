@@ -59,7 +59,7 @@ const highlightLine = (context, state, opt, highlighted)=> {
 
         const color = n.c;
         const hslColorSpace = hsl(color);
-        hslColorSpace.opacity = n.key === highlighted ? n.alpha : 0.2;
+        hslColorSpace.opacity = n.key === highlighted.key ? n.alpha : 0.2;
         context.strokeStyle = hslColorSpace;
 
         interpolateCurve(opt.plots.curve, [curve]);
@@ -159,7 +159,7 @@ class MultiLine extends AbstractStackedCartesianChartWithAxes {
                         highlightLine(that._frontContext,
                             interpolateParticles(t),
                             that._options,
-                            closest.data.key);
+                            closest.data);
                         that._tooltip.style("opacity", 1);
                     } else {
                         that._tooltip.style("opacity", 0);

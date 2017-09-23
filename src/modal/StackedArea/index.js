@@ -5,6 +5,7 @@ import { hsl } from 'd3-color';
 import { mouse } from 'd3-selection';
 import { easeCubic } from 'd3-ease';
 import interpolateCurve from '../../util/curve';
+import applyVoronoi from '../../canvas/voronoi/apply';
 
 import { AbstractStackedCartesianChartWithAxes } from '../../base';
 import createCartesianStackedOpt from '../../options/createCartesianStackedOpt';
@@ -14,10 +15,6 @@ import {
     AreaMultiOptions,
     ExpandedOptions
 } from './StackedArea-Options';
-
-const reMeasure = (context, state, opt)=> {
-
-}
 
 const drawCanvas = (context, state, opt)=> {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
@@ -53,6 +50,40 @@ const drawCanvas = (context, state, opt)=> {
     }
 }
 
+const highlightArea = (context, state, opt, highlighted)=> {
+    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+
+    const curve = opt.plots.stackLayout === true
+        ? area()
+            .x(d => d.x)
+            .y0(d => d.y0)
+            .y1(d => d.y1)
+            .context(context)
+        : area()
+            .x(d => d.x)
+            .y0(opt.chart.innerHeight)
+            .y1(d => d.y)
+            .context(context);
+
+    for (const n of state) {
+        const color = n.c;
+        const hslColorSpace = hsl(color);
+        hslColorSpace.opacity = (n.key === highlighted.key) ? 0.6 : 0.2;
+
+        interpolateCurve(opt.plots.curve, [curve]);
+        context.beginPath();
+        curve(n.values);
+        context.lineWidth = opt.plots.strokeWidth;
+        context.strokeStyle = (n.key === highlighted.key) ? color : hslColorSpace;
+        context.stroke();
+
+        context.fillStyle = hslColorSpace;
+
+        context.fill();
+        context.closePath();
+    }
+}
+
 class StackedArea extends AbstractStackedCartesianChartWithAxes {
     constructor(canvasId, _userOptions) {
         super(canvasId, _userOptions);
@@ -71,6 +102,7 @@ class StackedArea extends AbstractStackedCartesianChartWithAxes {
                     alpha: 0,
                     values: d.values.map(e=> {
                         return {
+                            key: d.key,
                             x: this._x(e.data),
                             y: this._options.chart.innerHeight,
                             y0: this._y0(e),
@@ -88,6 +120,7 @@ class StackedArea extends AbstractStackedCartesianChartWithAxes {
                 alpha: this._options.plots.opacityArea,
                 values: d.values.map(e=> {
                     return {
+                        key: d.key,
                         x: this._x(e.data),
                         y: e.y,
                         y0: this._y0(e),
@@ -115,47 +148,57 @@ class StackedArea extends AbstractStackedCartesianChartWithAxes {
             if (t === 1) {
                 batchRendering.stop();
 
-                // that._voronoi = applyVoronoi(that._frontContext,
-                //     that._options, finalState);
-                //
+                that._voronoi = applyVoronoi(that._frontContext,
+                    that._options, finalState.reduce((acc, p)=>{
+                        acc = acc.concat(p.values);
+                        return acc;
+                    }, []));
+
                 // that._quadtree = applyQuadtree(that._frontContext,
                 //     that._options, finalState);
 
                 /**
                  * callback for when the mouse moves across the overlay
                  */
-                // function mouseMoveHandler() {
-                //     // get the current mouse position
-                //     const [mx, my] = mouse(this);
-                //     const QuadtreeRadius = 100;
-                //     // use the new diagram.find() function to find the Voronoi site
-                //     // closest to the mouse, limited by max distance voronoiRadius
-                //     const closest = that._voronoi.find(mx, my, QuadtreeRadius);
-                //
-                //     if (closest) {
-                //         that._tooltip.style("left", closest[0] + "px")
-                //             .style("top", closest[1] + "px")
-                //             .html( that.tooltip(closest.data.data));
-                //
-                //         that._tooltip.style("opacity", 1)
-                //     } else {
-                //         that._tooltip.style("opacity", 0)
-                //     }
-                // }
-                //
-                // function mouseOutHandler() {
-                //     that._tooltip.style("opacity", 0)
-                // }
-                //
-                // that._frontCanvas.on('mousemove', mouseMoveHandler);
-                // that._frontCanvas.on('mouseout', mouseOutHandler);
-                //
-                // // draw hidden in parallel;
-                // draw(that._hiddenContext,
-                //     interpolateParticles(t),
-                //     that._options, true);
-                //
-                // that._listeners.call('rendered');
+                function mouseMoveHandler() {
+                    // get the current mouse position
+                    const [mx, my] = mouse(this);
+                    const QuadtreeRadius = 40;
+                    // use the new diagram.find() function to find the Voronoi site
+                    // closest to the mouse, limited by max distance voronoiRadius
+                    const closest = that._voronoi.find(mx, my, QuadtreeRadius);
+
+                    if (closest) {
+                        that._tooltip.style("left", closest[0] + "px")
+                            .style("top", closest[1] + "px")
+                            .html( that.tooltip(closest.data.data));
+
+                        highlightArea(that._frontContext,
+                            interpolateParticles(t),
+                            that._options,
+                            closest.data);
+
+                        that._tooltip.style("opacity", 1)
+                    } else {
+                        drawCanvas(that._frontContext,
+                            interpolateParticles(t),
+                            that._options);
+                        that._tooltip.style("opacity", 0)
+                    }
+                }
+
+                function mouseOutHandler() {
+                    drawCanvas(that._frontContext,
+                        interpolateParticles(t),
+                        that._options);
+
+                    that._tooltip.style("opacity", 0)
+                }
+
+                that._frontCanvas.on('mousemove', mouseMoveHandler);
+                that._frontCanvas.on('mouseout', mouseOutHandler);
+
+                that._listeners.call('rendered');
             }
         });
     }
