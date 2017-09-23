@@ -1,44 +1,21 @@
-import groupBy from 'lodash-es/groupBy';
 import { check } from 'vizart-core';
 import getStack from './stack';
-
-const isSeriesDefined = opt=> check(opt.data.s) && check(opt.datat.s.accessor);
+import transformSeriesToMatrix from './series-to-matrix';
+import isSeriesDefined from './is-series-defined';
 
 const generateLayout = (data, opt)=> {
-    const _getDimension = ()=> { return opt.data.x; };
-    const _getDimensionVal = d=> d[_getDimension().accessor];
-    const _getMetric = ()=> opt.data.y[0];
-    const _getMetricValue = d=> d[_getMetric().accessor];
+    const matrix = isSeriesDefined(opt)
+        ? transformSeriesToMatrix(data, opt)
+        : data;
 
-    let _matrix = [];
-
-    if (isSeriesDefined(opt)) {
-        let dimensionGroup = groupBy(data, d=> _getDimensionVal(d));
-
-
-        for (let _dim of _getDimension().values) {
-            let _t = {};
-
-            _t[_getDimension().accessor] = _dim;
-
-            for (let _s of opt.data.s.values) {
-                _t[_s] = 0;
-            }
-
-            for (let _v of dimensionGroup[_dim]) {
-                _t[_v[opt.data.s.accessor]] = _getMetricValue(_v);
-            }
-
-            _matrix.push(_t);
-        }
-    } else {
-        _matrix= data;
-    }
+    const series = isSeriesDefined(opt)
+        ? opt.data.s.values
+        : opt.data.y.map(d=>d.accessor);
 
     const stack = getStack(opt);
-    stack.keys(opt.data.s.values);
+    stack.keys(series);
 
-    return stack(_matrix);
+    return stack(matrix);
 };
 
 const mergeLayout = (_data, _layout, _options)=> {
@@ -71,9 +48,10 @@ const mergeLayout = (_data, _layout, _options)=> {
 }
 
 
-const nest = (_data, _options)=> {
-    let layout = generateLayout(_data, _options);
-    return mergeLayout(_data, layout, _options);
+const nest = (data, opt)=> {
+    let layout = generateLayout(data, opt);
+    console.log(layout);
+    return mergeLayout(data, layout, opt);
 }
 
 export default nest;
