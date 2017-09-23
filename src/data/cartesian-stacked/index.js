@@ -4,8 +4,8 @@ import nest from './stacked-layout';
 import getStackedMetricScale from './metric-stacked';
 import processCartesianData from '../cartesian/index';
 
-const processStackedData = (_data, _options, _cleanse = true)=> {
-    let copy = processCartesianData(_data, _options, _cleanse);
+const processStackedData = (_data, opt, cleanse = true)=> {
+    let copy = processCartesianData(_data, opt, cleanse);
     let nestedData = nest(copy, opt);
 
     let minY;

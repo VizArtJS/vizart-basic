@@ -34,6 +34,7 @@ const drawCanvas = (context, state, opt)=> {
             .context(context);
 
     for (const n of state) {
+        context.save();
         const color = n.c;
         const hslColorSpace = hsl(color);
         hslColorSpace.opacity = n.alpha;
@@ -44,6 +45,7 @@ const drawCanvas = (context, state, opt)=> {
         context.lineWidth = opt.plots.strokeWidth;
         context.strokeStyle = color;
         context.stroke();
+        context.restore();
     }
 }
 
@@ -78,11 +80,11 @@ class MultiLine extends AbstractStackedCartesianChartWithAxes {
             return {
                 key: d.key,
                 c: this._c(d),
-                alpha: this._options.plots.opacityArea,
+                alpha: 0.4,
                 values: d.values.map(e => {
                     return {
                         x: this._x(e.data),
-                        y: this._y(e.data),
+                        y: e.y,
                         data: e.data
                     }
                 })
