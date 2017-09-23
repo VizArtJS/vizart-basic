@@ -47,12 +47,6 @@
 
         var chart = new VizArtBasic.MultiLine('#chart', options);
         d3.csv('assets/nasdaq1985-2012.csv', function(err, res){
-            for (var i = 0; i < res.length; i++) {
-                res[i].low = +res[i].low * 1.5;
-                res[i].high = +res[i].high * 2;
-                res[i].open = +res[i].open * 5;
-                res[i].close = +res[i].close * 6;
-            }
             chart.render(res);
         });
 
