@@ -10,7 +10,7 @@ import { area, curveCardinal } from 'd3-shape';
 import { AbstractStackedCartesianChartWithAxes } from '../../base';
 import { Stacks } from '../../data';
 import createCartesianStackedOpt from '../../options/createCartesianStackedOpt';
-
+import applyVoronoi from '../../canvas/voronoi/apply';
 
 const DefaultOptions = {
     chart: {
@@ -73,6 +73,7 @@ class Stream extends AbstractStackedCartesianChartWithAxes {
                     return {
                         key: d.key,
                         x: this._x(e.data),
+                        y: this._y1(e),
                         y0: this._y0(e),
                         y1: this._y1(e),
                         data: e.data
@@ -101,47 +102,43 @@ class Stream extends AbstractStackedCartesianChartWithAxes {
             if (t === 1) {
                 batchRendering.stop();
 
-                // that._voronoi = applyVoronoi(that._frontContext,
-                //     that._options, finalState);
-                //
-                // that._quadtree = applyQuadtree(that._frontContext,
-                //     that._options, finalState);
+                that._voronoi = applyVoronoi(that._frontContext,
+                    that._options, finalState.reduce((acc, p)=>{
+                        acc = acc.concat(p.values);
+                        return acc;
+                    }, []));
 
                 /**
                  * callback for when the mouse moves across the overlay
                  */
-                // function mouseMoveHandler() {
-                //     // get the current mouse position
-                //     const [mx, my] = mouse(this);
-                //     const QuadtreeRadius = 100;
-                //     // use the new diagram.find() function to find the Voronoi site
-                //     // closest to the mouse, limited by max distance voronoiRadius
-                //     const closest = that._voronoi.find(mx, my, QuadtreeRadius);
-                //
-                //     if (closest) {
-                //         that._tooltip.style("left", closest[0] + "px")
-                //             .style("top", closest[1] + "px")
-                //             .html( that.tooltip(closest.data.data));
-                //
-                //         that._tooltip.style("opacity", 1)
-                //     } else {
-                //         that._tooltip.style("opacity", 0)
-                //     }
-                // }
-                //
-                // function mouseOutHandler() {
-                //     that._tooltip.style("opacity", 0)
-                // }
-                //
-                // that._frontCanvas.on('mousemove', mouseMoveHandler);
-                // that._frontCanvas.on('mouseout', mouseOutHandler);
-                //
-                // // draw hidden in parallel;
-                // draw(that._hiddenContext,
-                //     interpolateParticles(t),
-                //     that._options, true);
-                //
-                // that._listeners.call('rendered');
+                function mouseMoveHandler() {
+                    // get the current mouse position
+                    const [mx, my] = mouse(this);
+                    const QuadtreeRadius = 40;
+                    // use the new diagram.find() function to find the Voronoi site
+                    // closest to the mouse, limited by max distance voronoiRadius
+                    const closest = that._voronoi.find(mx, my, QuadtreeRadius);
+
+                    if (closest) {
+                        that._tooltip.style("left", closest[0] + "px")
+                            .style("top", closest[1] + "px")
+                            .html( that.tooltip(closest.data.data));
+
+                        that._tooltip.style("opacity", 1)
+                    } else {
+
+                        that._tooltip.style("opacity", 0)
+                    }
+                }
+
+                function mouseOutHandler() {
+                    that._tooltip.style("opacity", 0)
+                }
+
+                that._frontCanvas.on('mousemove', mouseMoveHandler);
+                that._frontCanvas.on('mouseout', mouseOutHandler);
+
+                that._listeners.call('rendered');
             }
         });
     }
