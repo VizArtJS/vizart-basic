@@ -24,8 +24,9 @@ class AbstractStackedCartesianChart extends AbstractCartesianChart {
     }
 
     update() {
-        super.update();
         this.data(this._data.original);
+
+        super.update();
     }
 
     data(_data) {
