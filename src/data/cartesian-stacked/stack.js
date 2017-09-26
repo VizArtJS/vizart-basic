@@ -4,6 +4,7 @@ import {
     stackOffsetNone,
     stackOffsetSilhouette,
     stackOffsetWiggle,
+    stackOffsetDiverging,
     stackOrderAscending,
     stackOrderNone,
     stackOrderReverse,
@@ -34,6 +35,9 @@ const getStack = opt=> {
             break;
         case Stacks.Wiggle:
             _stack.offset(stackOffsetWiggle).order(stackOrderInsideOut);
+            break;
+        case Stacks.Divergent:
+            _stack.offset(stackOffsetDiverging).order(stackOrderInsideOut);
             break;
 
         default:

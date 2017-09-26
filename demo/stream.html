@@ -55,7 +55,7 @@
             },
 
             plots: {
-                stackMethod: 'silhouette'
+                stackMethod: 'divergent'
             }
         };
 
@@ -68,7 +68,7 @@
                 fakeData.push({
                     ms: d,
                     mx: i + '',
-                    my: chance.integer({min: 0, max: 70})
+                    my: chance.integer({min: -40, max: 70})
                 })
             }
         });
