@@ -60,11 +60,7 @@ class Stream extends AbstractStackedCartesianChartWithAxes {
 
     _animate() {
         const Duration = this._options.animation.duration.update;
-        let _min = min(this._data.nested.map((d) => {
-            return min(d.values.map((d) => {
-                return d.y0;
-            }));
-        }));
+        let _min = min(this._data.nested.map(d=> min(d.values.map(e => e.y0))));
 
         this._getMetric().scale.domain([_min, this._data.maxY]);
 
