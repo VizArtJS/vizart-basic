@@ -8,7 +8,7 @@
     <link href="./lib/bootstrap-3.3.7/css/bootstrap.css" rel="stylesheet" type="text/css">
     <script src="./lib/jquery-1.12.4.min.js"></script>
     <script src="./lib/bootstrap-3.3.7/js/bootstrap.js"></script>
-    <script src="./lib/chance.js"></script>
+    <script src="./lib/d3.js"></script>
     <script src="./lib/lodash.min.js"></script>
     <script src="./vizart-basic.standalone.js" type="text/javascript"></script>
 </head>
@@ -39,17 +39,18 @@
                 },
             },
             data: {
-                s: { name: 'dep', type: 'string', accessor: 'ms'},
                 x:
-                    { name: 'name', type: 'string', accessor: 'mx'}
+                    { name: 'Date', type: 'date', accessor: 'date', format: '%Y-%m-%d'}
                 ,
                 y: [
-                    { name: 'performance', type: 'number', accessor: 'my'}
+                    { name: 'Sales', type: 'number', accessor: 'sales'},
+                    { name: 'Volume', type: 'number', accessor: 'volume'},
+                    { name: 'Complaint', type: 'number', accessor: 'complaint'}
                 ],
             },
 
             plots: {
-                stackLayout: true,
+                stackLayout: false,
                 stackMethod: 'expand',
                 curve: 'basis',
                 strokeWidth: 4,
@@ -57,23 +58,11 @@
             }
         };
 
-        var fakeData = [];
-
-        var dep = ['hr', 'r&d', 'financial', 'scales'];
-
-        _.each(dep, function(d, i){
-            for (var j = 1; j < 40; j++) {
-                fakeData.push({
-                    ms: d,
-                    mx: j + '',
-                    my: chance.integer({min: 0, max: 70 * i})
-                })
-            }
-        });
-
-
         var chart = new VizArtBasic.StackedArea('#chart', options);
-        chart.render(fakeData);
+        d3.csv('assets/profit.csv', function(err, res){
+            chart.render(res);
+
+        });
 
 //        chart.on('rendered', function(){
 //            chart.revealVoronoi();

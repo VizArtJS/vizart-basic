@@ -24,16 +24,16 @@ const DefaultOptions = {
     }
 };
 
+const curve = area()
+    .x(d => d.x)
+    .y0(d => d.y0)
+    .y1(d => d.y1)
+    .curve(curveCardinal);
 
 const drawCanvas = (context, state, opt)=> {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
-    const curve = area()
-        .x(d => d.x)
-        .y0(d => d.y0)
-        .y1(d => d.y1)
-        .curve(curveCardinal)
-        .context(context);
+    curve.context(context);
 
     for (const n of state) {
         const color = n.c;
@@ -68,26 +68,6 @@ class Stream extends AbstractStackedCartesianChartWithAxes {
 
         this._getMetric().scale.domain([_min, this._data.maxY]);
 
-        const initialState = this.previousState
-            ? this.previousState
-            : this._data.nested.map(d=>{
-                return {
-                    key: d.key,
-                    c: this._c(d),
-                    s: d.key,
-                    alpha: 0,
-                    values: d.values.map(e=> {
-                        return {
-                            key: d.key,
-                            x: this._x(e.data),
-                            y0: this._options.chart.innerHeight / 2,
-                            y1: this._options.chart.innerHeight / 2,
-                            data: e.data
-                        }
-                    })
-                }
-            });
-
         const finalState = this._data.nested.map(d=>{
             return {
                 key: d.key,
@@ -105,6 +85,9 @@ class Stream extends AbstractStackedCartesianChartWithAxes {
             }
         });
 
+        const initialState = this.previousState
+            ? this.previousState
+            : finalState;
 
         // cache finalState as the initial state of next animation call
         this.previousState = finalState;

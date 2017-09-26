@@ -4,8 +4,8 @@ import generateStackLayout from './stacked-layout';
 import rescaleStackedMetric from './scale-stacked-metric';
 import processCartesianData from '../cartesian/index';
 
-const processStackedData = (_data, opt, cleanse = true)=> {
-    let copy = processCartesianData(_data, opt, cleanse);
+const processStackedData = (data, opt, cleanse = true)=> {
+    let copy = processCartesianData(data, opt, cleanse);
     let nestedData = generateStackLayout(copy, opt);
 
     let minY;
@@ -37,6 +37,7 @@ const processStackedData = (_data, opt, cleanse = true)=> {
     return {
         maxY: maxY,
         minY: minY,
+        original: data,
         nested: nestedData
     };
 }

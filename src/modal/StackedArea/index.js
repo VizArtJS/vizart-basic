@@ -199,14 +199,14 @@ class StackedArea extends AbstractStackedCartesianChartWithAxes {
         this._options.plots.stackLayout = _opt.plots.stackLayout;
         this._options.plots.stackMethod = _opt.plots.stackMethod;
 
-        const Duration = 250;
-        const batchRendering = timer( (elapsed)=> {
-            const t = Math.min(1, easeCubic(elapsed / Duration));
-
-            if (t === 1) {
-                batchRendering.stop();
-            }
-        });
+        // const Duration = 250;
+        // const batchRendering = timer( (elapsed)=> {
+        //     const t = Math.min(1, easeCubic(elapsed / Duration));
+        //
+        //     if (t === 1) {
+        //         batchRendering.stop();
+        //     }
+        // });
     }
 
     stackLayout() {
