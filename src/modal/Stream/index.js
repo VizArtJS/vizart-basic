@@ -64,6 +64,26 @@ class Stream extends AbstractStackedCartesianChartWithAxes {
 
         this._getMetric().scale.domain([_min, this._data.maxY]);
 
+        const initialState = this.previousState
+            ? this.previousState
+            : this._data.nested.map(d=>{
+                return {
+                    key: d.key,
+                    c: this._c(d),
+                    s: d.key,
+                    alpha: 0,
+                    values: d.values.map(e=> {
+                        return {
+                            key: d.key,
+                            x: this._x(e.data),
+                            y0: this._options.chart.innerHeight / 2,
+                            y1: this._options.chart.innerHeight / 2,
+                            data: e.data
+                        }
+                    })
+                }
+            });
+
         const finalState = this._data.nested.map(d=>{
             return {
                 key: d.key,
@@ -73,7 +93,6 @@ class Stream extends AbstractStackedCartesianChartWithAxes {
                     return {
                         key: d.key,
                         x: this._x(e.data),
-                        y: this._y1(e),
                         y0: this._y0(e),
                         y1: this._y1(e),
                         data: e.data
@@ -81,10 +100,6 @@ class Stream extends AbstractStackedCartesianChartWithAxes {
                 })
             }
         });
-
-        const initialState = this.previousState
-            ? this.previousState
-            : finalState;
 
         // cache finalState as the initial state of next animation call
         this.previousState = finalState;

@@ -12,6 +12,7 @@ import createCartesianOpt from '../../options/createCartesianOpt';
 import sortSelector from '../../data/helper/sort-selector';
 import drawRects from './draw-rects';
 import drawHiddenRects from './draw-hidden-rects';
+import hasNegative from '../../util/has-negative';
 
 
 const BarOpt = {
@@ -63,16 +64,16 @@ class Bar extends AbstractBasicCartesianChartWithAxes {
 
 
     drawDetachedBars() {
-        const _hasNegative = super._hasNegativeValue();
+        const _hasNegative = hasNegativeValue(this._data, this._options);
 
         const drawCanvasInTransition = ()=> {
             return t=> {
                 drawRects(this._frontContext, this._detachedContainer.selectAll('.bar'), this._options);
             }};
 
-        let bars = this._detachedContainer.selectAll('.bar').data(this._data);
-        let dataJoin = bars.enter();
-        let dataRemove = bars.exit();
+        const dataUpdate = this._detachedContainer.selectAll('.bar').data(this._data);
+        const dataJoin = dataUpdate.enter();
+        const dataRemove = dataUpdate.exit();
 
         const exitTransition = transition()
             .duration(this._options.animation.duration.remove)
@@ -89,7 +90,7 @@ class Bar extends AbstractBasicCartesianChartWithAxes {
         const updateTransition = exitTransition.transition()
             .duration(this._options.animation.duration.update)
             .each(()=> {
-                bars
+                dataUpdate
                     .attr('dimension', this._getDimensionVal)
                     .attr('metric', this._getMetricVal)
                     .transition("update-rect-transition")

@@ -55,22 +55,6 @@ class AbstractCartesianChart extends AbstractCanvasChart {
         this.update();
     };
 
-    _hasNegativeValue() {
-        let hasNegative = false;
-
-        dataLoop:
-        for (let d of this.data()) {
-            for (let _y of this._options.data.y) {
-                if (d[_y.accessor] < 0) {
-                    hasNegative = true;
-                    break dataLoop;
-                }
-            }
-        }
-
-        return hasNegative;
-    }
-
     tooltip(d) {
         return tooltipMarkup(d, this);
     }
