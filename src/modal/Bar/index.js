@@ -12,7 +12,7 @@ import createCartesianOpt from '../../options/createCartesianOpt';
 import sortSelector from '../../data/helper/sort-selector';
 import drawRects from './draw-rects';
 import drawHiddenRects from './draw-hidden-rects';
-import hasNegative from '../../util/has-negative';
+import hasNegativeValue from '../../util/has-negative';
 
 
 const BarOpt = {
