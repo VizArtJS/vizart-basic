@@ -1,6 +1,12 @@
-import { transition } from 'd3-transition';
-
+import { area } from 'd3-shape';
+import { interpolateArray } from 'd3-interpolate';
+import { timer } from 'd3-timer';
+import { hsl } from 'd3-color';
+import { mouse } from 'd3-selection';
+import { easeCubic } from 'd3-ease';
+import applyVoronoi from '../../canvas/voronoi/apply';
 import { AbstractStackedCartesianChartWithAxes } from '../../base';
+
 import hasNegativeValue from '../../util/has-negative';
 
 import {
@@ -9,20 +15,45 @@ import {
     ExpandedOptions
 } from './StackedBar-Options';
 
-const drawRects =  (context, selection, opt)=> {
+const bardWidth = (opt, seriesNum)=> {
+    const band = opt.data.x.scale.bandwidth();
+
+    return opt.plots.stackLayout === true
+        ? band
+        : band / seriesNum;
+}
+
+const computeX = (x, seriesNum, seriesIndex, opt)=> {
+    return opt.plots.stackLayout === true
+        ? x
+        : x + x / seriesNum * seriesIndex;
+}
+
+const barHeight = (opt, d)=> {
+    return opt.plots.stackLayout === true
+        ? d.y0 - d.y
+        : opt.chart.innerHeight - d.y;
+}
+
+
+const drawCanvas = (context, state, opt)=> {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
-    selection.each(function(d){
-        const node = select(this);
-        context.beginPath();
-        context.fillStyle = node.attr('fill');
-        context.globalAlpha = node.attr('opacity');
-        context.rect(node.attr('x'), node.attr('y'), node.attr('width'), node.attr('height'));
-        context.fill();
+    const universalWidth = bardWidth(opt, state.length);
 
-        if (opt.plots.barLabel.enabled === true) drawVerticalLabel(context, node, opt);
-        if (opt.plots.metricLabel.enabled === true) drawMetricOntTop(context, node, opt);
-    });
+    for (const [i, n] of state.entries()) {
+        const color = n.c;
+        const hslColorSpace = hsl(color);
+        hslColorSpace.opacity = n.alpha;
+
+        for (const b of n.values) {
+            context.beginPath();
+            context.fillStyle = hslColorSpace;
+            const bx = computeX(b.x, state.length, i, opt);
+            context.rect(bx, b.y, universalWidth, b.h);
+            context.fill();
+        }
+    }
 }
 
 import createCartesianStackedOpt from '../../options/createCartesianStackedOpt';
@@ -30,18 +61,11 @@ import createCartesianStackedOpt from '../../options/createCartesianStackedOpt';
 class StackedBar extends AbstractStackedCartesianChartWithAxes {
     constructor(canvasId, _userOptions) {
         super(canvasId, _userOptions);
+    }
 
+
+    _animate() {
         this._band = () => this._getDimension().scale.bandwidth();
-
-        this._x = d => {
-            let xPos = this._getDimension().scale(this._getDimensionVal(d));
-
-            return (this._options.plots.stackLayout === true)
-                ? xPos
-                : xPos
-                + this._band() / this._data.nested.length
-                * this._options.data.s.values.indexOf(this._s(d));
-        };
 
         this._y = d => {
             return (this._options.plots.stackLayout === true)
@@ -49,142 +73,112 @@ class StackedBar extends AbstractStackedCartesianChartWithAxes {
                 : this._getMetric().scale(this._getMetricVal(d));
         }
 
-        this._w = d => {
-            return (this._options.plots.stackLayout === true)
-                ? this._band()
-                : this._band() / this._data.nested.length;
-        }
-
         this._h = d => {
             return (this._options.plots.stackLayout === true)
                 ? this._getMetric().scale(d.y0) - this._getMetric().scale(d.y)
-                : this._options.chart.innerHeight - this._getMetric().scale(this._getMetricVal(d));
+                : this._options.chart.innerHeight - this._y(d);
         }
-    }
 
 
-    _animate() {
-        const dataUpdate = this._detachedContainer.selectAll(".series").data(this._data.nested);
-        const dataRemove = dataUpdate.exit();
-        const dataJoin = dataUpdate.enter();
+        const Duration = this._options.animation.duration.update;
 
-
-        const hasNegative = hasNegativeValue(this._data.original, this._options);
-        const drawCanvasInTransition = ()=> {
-            return t => {
-                drawRects(this._frontContext, this._detachedContainer.selectAll('.bar'), this._options);
-            }};
-
-        const exitTransition = transition()
-            .duration(this._options.animation.duration.remove)
-            .each(()=>{
-                dataRemove
-                    .selectAll('.bar')
-                    .transition()
-                    .attr("y", hasNegative ? this._y(0) : this._options.chart.innerHeight)
-                    .attr("height", 0)
-                    .tween("remove.rects", drawCanvasInTransition);
-
-                dataRemove.remove();
+        const initialState = this.previousState
+            ? this.previousState
+            : this._data.nested.map(d=>{
+                return {
+                    key: d.key,
+                    c: this._c(d),
+                    s: d.key,
+                    alpha: 0,
+                    values: d.values.map(e=> {
+                        return {
+                            key: d.key,
+                            x: this._x(e.data),
+                            y: this._options.chart.innerHeight,
+                            h: 0,
+                            data: e.data
+                        }
+                    })
+                }
             });
 
+        const finalState = this._data.nested.map(d=>{
+            return {
+                key: d.key,
+                c: this._c(d),
+                alpha: this._options.plots.opacityArea,
+                values: d.values.map(e=> {
+                    return {
+                        key: d.key,
+                        x: this._x(e.data),
+                        y: this._y(e.data),
+                        h: this._h(e.data),
+                        data: e.data
+                    }
+                })
+            }
+        });
 
-        const updateTransition = exitTransition.transition()
-            .duration(this._options.animation.duration.update)
-            .each(()=> {
-                dataUpdate
-                    .selectAll('.bar')
-                    .transition()
-                    .duration(this._options.animation.duration.layout)
-                    .delay((d, i) => i * 10)
-                    .attr("x", this._x)
-                    .attr("width", this._w)
-                    .transition()
-                    .attr("y", this._y)
-                    .attr("height", this._h);
-            });
 
-        const enterTransition = updateTransition.transition()
-            .duration(this._options.animation.duration.add)
-            .each((d)=>{
-                console.log(d);
+        // cache finalState as the initial state of next animation call
+        this.previousState = finalState;
 
-                dataJoin.append("rect")
-                    .data(d.values)
-                    .enter()
-                    .append("rect")
-                    .attr('class', 'bar')
-                    .attr('opacity', 1)
-                    .attr("x", this._x)
-                    .attr('width', this._w)
-                    .attr("y", this._options.chart.innerHeight)
-                    .attr("height", 0)
-                    .transition()
-                    .duration(this._options.animation.duration.add)
-                    .delay((d, i) => i  / this._getDimension().values.length * this._options.animation.duration.add)
-                    .attr("y", this._y)
-                    .attr("height", this._h)
-                    .tween("append.rects", drawCanvasInTransition);
-            });
-        // // UPDATE
-        // let bars_update = dataUpdate.selectAll('.bar')
-        //     .data((d) => {
-        //         return d.values;
-        //     });
-        //
-        // if (this._options.plots.stackLayout === true) {
-        //     bars_update.transition()
-        //         .duration(this._options.animation.duration.layout)
-        //         .delay((d, i) => {
-        //             return i * 10;
-        //         })
-        //         .attr("x", this._x)
-        //         .attr("width", this._w)
-        //         .transition()
-        //         .attr("y", this._y)
-        //         .attr("height", this._h);
-        // } else {
-        //     bars_update.transition()
-        //         .duration(this._options.animation.duration.layout)
-        //         .delay((d, i) => {
-        //             return i * 10;
-        //         })
-        //         .attr("y", this._y)
-        //         .attr("height", this._h)
-        //         .transition()
-        //         .attr("x", this._x)
-        //         .attr("width", this._w);
-        // }
-        //
-        // bars_update.exit()
-        //     .transition("remove-rect-transition")
-        //     .duration(this._options.animation.duration.add)
-        //     .delay((d, i) => {
-        //         return i * 100;
-        //     })
-        //     .attr("height", 0)
-        //     .attr("y", this._options.chart.innerHeight)
-        //     .remove();
-        //
-        //
-        // bars_update.enter()
-        //     .append("rect")
-        //     .attr('class', 'bar')
-        //     .attr('opacity', 1)
-        //     .attr("x", this._x)
-        //     .attr("width", this._w)
-        //     .attr("y", this._options.chart.innerHeight)
-        //     .attr("height", 0)
-        //     .transition("add-rect-transition")
-        //     .duration(this._options.animation.duration.add)
-        //     .delay((d, i) => {
-        //         return i / this._getDimension().values.length * this._options.animation.duration.add;
-        //     })
-        //     .attr("y", this._y)
-        //     .attr("height", this._h);
-        //
-        //
-        //
+        const interpolateParticles = interpolateArray(initialState, finalState);
+
+        let that = this;
+        const batchRendering = timer( (elapsed)=> {
+            const t = Math.min(1, easeCubic(elapsed / Duration));
+
+            drawCanvas(that._frontContext,
+                interpolateParticles(t),
+                that._options);
+
+            if (t === 1) {
+                batchRendering.stop();
+
+                // that._voronoi = applyVoronoi(that._frontContext,
+                //     that._options, finalState.reduce((acc, p)=>{
+                //         acc = acc.concat(p.values);
+                //         return acc;
+                //     }, []));
+
+                // that._quadtree = applyQuadtree(that._frontContext,
+                //     that._options, finalState);
+
+                /**
+                 * callback for when the mouse moves across the overlay
+                 */
+                // function mouseMoveHandler() {
+                //     // get the current mouse position
+                //     const [mx, my] = mouse(this);
+                //     const QuadtreeRadius = 40;
+                //     // use the new diagram.find() function to find the Voronoi site
+                //     // closest to the mouse, limited by max distance voronoiRadius
+                //     const closest = that._voronoi.find(mx, my, QuadtreeRadius);
+                //
+                //     if (closest) {
+                //         that._tooltip.style("left", closest[0] + "px")
+                //             .style("top", closest[1] + "px")
+                //             .html( that.tooltip(closest.data.data));
+                //
+                //         that._tooltip.style("opacity", 1)
+                //     } else {
+                //
+                //         that._tooltip.style("opacity", 0)
+                //     }
+                // }
+                //
+                // function mouseOutHandler() {
+                //
+                //     that._tooltip.style("opacity", 0)
+                // }
+                //
+                // that._frontCanvas.on('mousemove', mouseMoveHandler);
+                // that._frontCanvas.on('mouseout', mouseOutHandler);
+                //
+                // that._listeners.call('rendered');
+            }
+        });
 
     }
 

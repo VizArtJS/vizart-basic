@@ -11,7 +11,16 @@ const GroupedOptions = {
     },
     plots: {
         stackLayout: false,
-        stackMethod: Stacks.Zero
+        stackMethod: Stacks.Zero,
+        barLabel: {
+            enabled: true,
+            color: 'black'
+        },
+        metricLabel: {
+            enabled: true,
+            color: 'black',
+            offset: 10
+        }
     }
 };
 
@@ -26,7 +35,16 @@ const StackedOptions = {
     },
     plots: {
         stackLayout: true,
-        stackMethod: Stacks.Zero
+        stackMethod: Stacks.Zero,
+        barLabel: {
+            enabled: true,
+            color: 'black'
+        },
+        metricLabel: {
+            enabled: true,
+            color: 'black',
+            offset: 10
+        }
     }
 };
 
@@ -41,7 +59,16 @@ const ExpandedOptions = {
     },
     plots: {
         stackLayout: true,
-        stackMethod: Stacks.Expand
+        stackMethod: Stacks.Expand,
+        barLabel: {
+            enabled: true,
+            color: 'black'
+        },
+        metricLabel: {
+            enabled: true,
+            color: 'black',
+            offset: 10
+        }
     }
 };
 
