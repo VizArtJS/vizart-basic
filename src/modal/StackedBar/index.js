@@ -48,6 +48,43 @@ class StackedBar extends AbstractStackedCartesianChartWithAxes {
         const band = this._options.data.x.scale.bandwidth();
         const barWidth = band / seriesNum;
 
+
+        const initialGroupLayout = (d,i)=> {
+            return {
+                key: d.key,
+                c: this._c(d),
+                alpha: this._options.plots.opacity,
+                values: d.values.map(e=> {
+                    return {
+                        key: d.key,
+                        x: this._x(e.data) + barWidth * i,
+                        y: this._options.chart.innerHeight,
+                        w: barWidth,
+                        h: 0,
+                        data: e.data
+                    }
+                })
+            }
+        }
+
+        const initialStackLayout = d=> {
+            return {
+                key: d.key,
+                c: this._c(d),
+                alpha: this._options.plots.opacity,
+                values: d.values.map(e=> {
+                    return {
+                        key: d.key,
+                        x: this._x(e.data),
+                        y: this._getMetric().scale(e.y0),
+                        w: band,
+                        h: 0,
+                        data: e.data
+                    }
+                })
+            }
+        }
+
         const mapGroupLayout = (d, i)=> {
             return {
                 key: d.key,
@@ -88,24 +125,9 @@ class StackedBar extends AbstractStackedCartesianChartWithAxes {
 
         const initialState = this.previousState
             ? this.previousState
-            : this._data.nested.map(d=>{
-                return {
-                    key: d.key,
-                    c: this._c(d),
-                    s: d.key,
-                    alpha: this._options.plots.opacity,
-                    values: d.values.map(e=> {
-                        return {
-                            key: d.key,
-                            x: this._x(e.data),
-                            y: this._options.chart.innerHeight,
-                            h: 0,
-                            w: barWidth,
-                            data: e.data
-                        }
-                    })
-                }
-            });
+            : this._options.plots.stackLayout === true
+                ? this._data.nested.map(initialStackLayout)
+                : this._data.nested.map(initialGroupLayout);
 
         const finalState = this._options.plots.stackLayout === true
             ? this._data.nested.map(mapStackLayout)
