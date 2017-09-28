@@ -75,9 +75,9 @@ class StackedBar extends AbstractStackedCartesianChartWithAxes {
                     return {
                         key: d.key,
                         x: this._x(e.data),
-                        y: this._getMetric().scale(e.y),
+                        y: this._getMetric().scale(e.y0),
                         w: band,
-                        h: this._getMetric().scale(e.y0) - this._getMetric().scale(e.y),
+                        h: this._getMetric().scale(e.y1) - this._getMetric().scale(e.y0),
                         data: e.data
                     }
                 })
