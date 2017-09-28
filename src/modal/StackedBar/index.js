@@ -140,7 +140,7 @@ class StackedBar extends AbstractStackedCartesianChartWithAxes {
 
         // cache finalState as the initial state of next animation call
         this.previousState = finalState;
-        this.animateStates(initialState, finalState, Duration, ()=>{});
+        this.animateStates(initialState, finalState, Duration);
 
     }
 
@@ -153,22 +153,24 @@ class StackedBar extends AbstractStackedCartesianChartWithAxes {
         this.update();
     }
 
-    animateStates(initialState, finalState, duration, endCallback) {
+    animateStates(initialState, finalState, duration) {
         let that = this;
 
-        const interpolateParticles = interpolateArray(initialState, finalState);
+        return new Promise((resolve, reject)=> {
+            const interpolateParticles = interpolateArray(initialState, finalState);
 
-        const batchRendering = timer( (elapsed)=> {
-            const t = Math.min(1, easeCubic(elapsed / duration));
+            const batchRendering = timer( (elapsed)=> {
+                const t = Math.min(1, easeCubic(elapsed / duration));
 
-            drawCanvas(that._frontContext,
-                interpolateParticles(t),
-                that._options);
+                drawCanvas(that._frontContext,
+                    interpolateParticles(t),
+                    that._options);
 
-            if (t === 1) {
-                batchRendering.stop();
-                endCallback.call();
-            }
+                if (t === 1) {
+                    batchRendering.stop();
+                    resolve();
+                }
+            });
         });
     }
 
