@@ -37,10 +37,6 @@ const drawCanvas = (context, state)=> {
     }
 }
 
-const tweenAnimation = (initialState, finalState, duration, renderer, context, opt)=> {
-
-}
-
 class StackedBar extends AbstractStackedCartesianChartWithAxes {
     constructor(canvasId, _userOptions) {
         super(canvasId, _userOptions);
@@ -52,7 +48,6 @@ class StackedBar extends AbstractStackedCartesianChartWithAxes {
         const seriesNum = this._data.nested.length;
         const band = this._options.data.x.scale.bandwidth();
         const barWidth = band / seriesNum;
-
 
         const initialGroupLayout = (d,i)=> {
             return {
@@ -199,7 +194,7 @@ class StackedBar extends AbstractStackedCartesianChartWithAxes {
         if (layoutDirty) {
             this.animateStates(this.previousState, intrimLayout, 500).then(
                 ()=> {
-                    this._animate();
+                    this.update();
                 }
             );
             this.previousState = intrimLayout;
