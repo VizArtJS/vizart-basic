@@ -165,7 +165,6 @@ class StackedBar extends AbstractStackedCartesianChartWithAxes {
                 this._frontContext,
                 this._options);
 
-
             // cache finalState as the initial state of next animation call
             this.previousState = finalState;
         }
@@ -173,15 +172,6 @@ class StackedBar extends AbstractStackedCartesianChartWithAxes {
     }
 
 
-    _updateLayout(opt) {
-        this.stackSwitched = this._options.plots.stackLayout !== opt.plots.stackLayout;
-        // switch layout
-        this._options.chart.type = opt.chart.type;
-        this._options.plots.stackLayout = opt.plots.stackLayout;
-        this._options.plots.stackMethod = opt.plots.stackMethod;
-
-        this.update();
-    }
 
     options(userOpt){
         if (userOpt && userOpt.plots
@@ -190,6 +180,11 @@ class StackedBar extends AbstractStackedCartesianChartWithAxes {
         }
 
         return super.options(userOpt);
+    }
+
+    _updateLayout(opt) {
+        this.options(opt);
+        this.update();
     }
 
     stackLayout() {
