@@ -15,6 +15,8 @@ import animateStates from './tween-states';
 class StackedBar extends AbstractStackedCartesianChartWithAxes {
     constructor(canvasId, _userOptions) {
         super(canvasId, _userOptions);
+
+        this.stackSwitched = false;
     }
 
     _animate() {
@@ -94,34 +96,6 @@ class StackedBar extends AbstractStackedCartesianChartWithAxes {
             }
         }
 
-        const Duration = this._options.animation.duration.update;
-
-        const initialState = this.previousState
-            ? this.previousState
-            : this._options.plots.stackLayout === true
-                ? this._data.nested.map(initialStackLayout)
-                : this._data.nested.map(initialGroupLayout);
-
-        const finalState = this._options.plots.stackLayout === true
-            ? this._data.nested.map(mapStackLayout)
-            : this._data.nested.map(mapGroupLayout);
-
-        // cache finalState as the initial state of next animation call
-        this.previousState = finalState;
-        animateStates(initialState, finalState, Duration, this._frontContext, this._options);
-
-    }
-
-    _updateLayout(opt) {
-        const layoutDirty = this._options.plots.stackLayout !== opt.plots.stackLayout;
-        // switch layout
-        this._options.chart.type = opt.chart.type;
-        this._options.plots.stackLayout = opt.plots.stackLayout;
-        this._options.plots.stackMethod = opt.plots.stackMethod;
-
-        const seriesNum = this._data.nested.length;
-        const band = this._options.data.x.scale.bandwidth();
-        const barWidth = band / seriesNum;
         // stacked => x and width => grouped (y and height)
         const stackToGroup = (d, i)=> {
             return {
@@ -160,22 +134,63 @@ class StackedBar extends AbstractStackedCartesianChartWithAxes {
             }
         }
 
-        const intrimLayout = opt.plots.stackLayout === true
-            ? this._data.nested.map(groupToStack)
-            : this._data.nested.map(stackToGroup);
+        const initialState = this.previousState
+            ? this.previousState
+            : this._options.plots.stackLayout === true
+                ? this._data.nested.map(initialStackLayout)
+                : this._data.nested.map(initialGroupLayout);
 
-        if (layoutDirty) {
-            animateStates(this.previousState, intrimLayout, 500, this._frontContext, this._options).then(
-                ()=> {
-                    this.update();
-                }
-            );
-            this.previousState = intrimLayout;
+        const finalState = this._options.plots.stackLayout === true
+            ? this._data.nested.map(mapStackLayout)
+            : this._data.nested.map(mapGroupLayout);
+
+        if (this.stackSwitched) {
+            // reset stack layout dirty checker
+            this.stackSwitched = false;
+
+            const intrimState = this._options.plots.stackLayout === false
+                ? this._data.nested.map(groupToStack)
+                : this._data.nested.map(stackToGroup);
+
+            animateStates(initialState, intrimState, 500, this._frontContext, this._options)
+                .then(()=>{
+                    this.update()
+                });
+
+            this.previousState = intrimState;
         } else {
-            this.update();
+            animateStates(initialState,
+                finalState,
+                this._options.animation.duration.update,
+                this._frontContext,
+                this._options);
+
+
+            // cache finalState as the initial state of next animation call
+            this.previousState = finalState;
         }
+
     }
 
+
+    _updateLayout(opt) {
+        this.stackSwitched = this._options.plots.stackLayout !== opt.plots.stackLayout;
+        // switch layout
+        this._options.chart.type = opt.chart.type;
+        this._options.plots.stackLayout = opt.plots.stackLayout;
+        this._options.plots.stackMethod = opt.plots.stackMethod;
+
+        this.update();
+    }
+
+    options(userOpt){
+        if (userOpt && userOpt.plots
+            && userOpt.plots.stackLayout !== this._options.plots.stackLayout) {
+            this.stackSwitched = true;
+        }
+
+        return super.options(userOpt);
+    }
 
     stackLayout() {
         this._updateLayout(StackedOptions);
