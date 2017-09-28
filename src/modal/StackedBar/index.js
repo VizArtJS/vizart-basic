@@ -144,13 +144,68 @@ class StackedBar extends AbstractStackedCartesianChartWithAxes {
 
     }
 
-    _updateLayout(_opt) {
+    _updateLayout(opt) {
+        const layoutDirty = this._options.plots.stackLayout !== opt.plots.stackLayout;
         // switch layout
-        this._options.chart.type = _opt.chart.type;
-        this._options.plots.stackLayout = _opt.plots.stackLayout;
-        this._options.plots.stackMethod = _opt.plots.stackMethod;
+        this._options.chart.type = opt.chart.type;
+        this._options.plots.stackLayout = opt.plots.stackLayout;
+        this._options.plots.stackMethod = opt.plots.stackMethod;
 
-        this.update();
+        const seriesNum = this._data.nested.length;
+        const band = this._options.data.x.scale.bandwidth();
+        const barWidth = band / seriesNum;
+        // stacked => x and width => grouped (y and height)
+        const stackToGroup = (d, i)=> {
+            return {
+                key: d.key,
+                c: this._c(d),
+                alpha: this._options.plots.opacity,
+                values: d.values.map(e=> {
+                    return {
+                        key: d.key,
+                        x: this._x(e.data) + barWidth * i,
+                        y: this._getMetric().scale(e.y0),
+                        w: barWidth,
+                        h: this._getMetric().scale(e.y1) - this._getMetric().scale(e.y0),
+                        data: e.data
+                    }
+                })
+            }
+        }
+
+        // grouped => y and height => stacked (x and width)
+        const groupToStack = (d, i) => {
+            return {
+                key: d.key,
+                c: this._c(d),
+                alpha: this._options.plots.opacity,
+                values: d.values.map(e => {
+                    return {
+                        key: d.key,
+                        x: this._x(e.data) + barWidth * i,
+                        y: this._getMetric().scale(e.y0),
+                        w: barWidth,
+                        h: this._getMetric().scale(e.y1) - this._getMetric().scale(e.y0),
+                        data: e.data
+                    }
+                })
+            }
+        }
+
+        const intrimLayout = opt.plots.stackLayout === true
+            ? this._data.nested.map(groupToStack)
+            : this._data.nested.map(stackToGroup);
+
+        if (layoutDirty) {
+            this.animateStates(this.previousState, intrimLayout, 500).then(
+                ()=> {
+                    this._animate();
+                }
+            );
+            this.previousState = intrimLayout;
+        } else {
+            this.update();
+        }
     }
 
     animateStates(initialState, finalState, duration) {
