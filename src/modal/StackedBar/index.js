@@ -1,12 +1,10 @@
-import { area } from 'd3-shape';
 import { interpolateArray } from 'd3-interpolate';
 import { timer } from 'd3-timer';
 import { hsl } from 'd3-color';
 import { mouse } from 'd3-selection';
 import { easeCubic } from 'd3-ease';
-import applyVoronoi from '../../canvas/voronoi/apply';
 import { AbstractStackedCartesianChartWithAxes } from '../../base';
-
+import createCartesianStackedOpt from '../../options/createCartesianStackedOpt';
 import hasNegativeValue from '../../util/has-negative';
 
 import {
@@ -15,48 +13,29 @@ import {
     ExpandedOptions
 } from './StackedBar-Options';
 
-const bandWidth = (opt, seriesNum)=> {
-    const band = opt.data.x.scale.bandwidth();
+const transparentColor = d => {
+    const color = d.c;
+    const hslColorSpace = hsl(color);
+    hslColorSpace.opacity = d.alpha;
 
-    return opt.plots.stackLayout === true
-        ? band
-        : band / seriesNum;
-}
-
-const computeX = (x, seriesNum, seriesIndex, opt)=> {
-    return opt.plots.stackLayout === true
-        ? x
-        : x + bandWidth(opt, seriesNum) * seriesIndex ;
-}
-
-const barHeight = (opt, d)=> {
-    return opt.plots.stackLayout === true
-        ? d.y0 - d.y
-        : opt.chart.innerHeight - d.y;
+    return hslColorSpace;
 }
 
 
-const drawCanvas = (context, state, opt)=> {
+const drawCanvas = (context, state)=> {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
-    const universalWidth = bandWidth(opt, state.length);
-
-    for (const [i, n] of state.entries()) {
-        const color = n.c;
-        const hslColorSpace = hsl(color);
-        hslColorSpace.opacity = n.alpha;
+    for (const n of state) {
+        const color = transparentColor(n);
 
         for (const b of n.values) {
             context.beginPath();
-            context.fillStyle = hslColorSpace;
-            const bx = computeX(b.x, state.length, i, opt);
-            context.rect(bx, b.y, universalWidth, b.h);
+            context.fillStyle = color;
+            context.rect(b.x, b.y, b.w, b.h);
             context.fill();
         }
     }
 }
-
-import createCartesianStackedOpt from '../../options/createCartesianStackedOpt';
 
 class StackedBar extends AbstractStackedCartesianChartWithAxes {
     constructor(canvasId, _userOptions) {
@@ -65,20 +44,45 @@ class StackedBar extends AbstractStackedCartesianChartWithAxes {
 
 
     _animate() {
-        this._band = () => this._getDimension().scale.bandwidth();
+        const seriesNum = this._data.nested.length;
+        const band = this._options.data.x.scale.bandwidth();
+        const barWidth = band / seriesNum;
 
-        this._y = d => {
-            return (this._options.plots.stackLayout === true)
-                ? this._getMetric().scale(d.y)
-                : this._getMetric().scale(this._getMetricVal(d));
+        const mapGroupLayout = (d, i)=> {
+            return {
+                key: d.key,
+                c: this._c(d),
+                alpha: this._options.plots.opacity,
+                values: d.values.map(e=> {
+                    return {
+                        key: d.key,
+                        x: this._x(e.data) + barWidth * i,
+                        y: this._y(e.data),
+                        w: barWidth,
+                        h: this._options.chart.innerHeight - this._y(e.data),
+                        data: e.data
+                    }
+                })
+            }
         }
 
-        this._h = d => {
-            return (this._options.plots.stackLayout === true)
-                ? this._getMetric().scale(d.y0) - this._getMetric().scale(d.y)
-                : this._options.chart.innerHeight - this._y(d);
+        const mapStackLayout = d => {
+            return {
+                key: d.key,
+                c: this._c(d),
+                alpha: this._options.plots.opacity,
+                values: d.values.map(e=> {
+                    return {
+                        key: d.key,
+                        x: this._x(e.data),
+                        y: this._getMetric().scale(e.y),
+                        w: band,
+                        h: this._getMetric().scale(e.y0) - this._getMetric().scale(e.y),
+                        data: e.data
+                    }
+                })
+            }
         }
-
 
         const Duration = this._options.animation.duration.update;
 
@@ -96,28 +100,16 @@ class StackedBar extends AbstractStackedCartesianChartWithAxes {
                             x: this._x(e.data),
                             y: this._options.chart.innerHeight,
                             h: 0,
+                            w: barWidth,
                             data: e.data
                         }
                     })
                 }
             });
 
-        const finalState = this._data.nested.map(d=>{
-            return {
-                key: d.key,
-                c: this._c(d),
-                alpha: this._options.plots.opacity,
-                values: d.values.map(e=> {
-                    return {
-                        key: d.key,
-                        x: this._x(e.data),
-                        y: this._y(e.data),
-                        h: this._h(e.data),
-                        data: e.data
-                    }
-                })
-            }
-        });
+        const finalState = this._options.plots.stackLayout === true
+            ? this._data.nested.map(mapStackLayout)
+            : this._data.nested.map(mapGroupLayout);
 
 
         // cache finalState as the initial state of next animation call
@@ -190,20 +182,16 @@ class StackedBar extends AbstractStackedCartesianChartWithAxes {
         this.update();
     }
 
-
     stackLayout() {
         this._updateLayout(StackedOptions);
-        this.update();
     };
 
     expandLayout() {
         this._updateLayout(ExpandedOptions);
-        this.update();
     };
 
     groupedLayout() {
         this._updateLayout(GroupedOptions);
-        this.update();
     };
 
     createOptions(_userOpt) {
