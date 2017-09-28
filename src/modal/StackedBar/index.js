@@ -1,8 +1,5 @@
-import { interpolateArray } from 'd3-interpolate';
-import { timer } from 'd3-timer';
-import { hsl } from 'd3-color';
+
 import { mouse } from 'd3-selection';
-import { easeCubic } from 'd3-ease';
 import { AbstractStackedCartesianChartWithAxes } from '../../base';
 import createCartesianStackedOpt from '../../options/createCartesianStackedOpt';
 import hasNegativeValue from '../../util/has-negative';
@@ -12,37 +9,13 @@ import {
     StackedOptions,
     ExpandedOptions
 } from './StackedBar-Options';
+import animateStates from './tween-states';
 
-const transparentColor = d => {
-    const color = d.c;
-    const hslColorSpace = hsl(color);
-    hslColorSpace.opacity = d.alpha;
-
-    return hslColorSpace;
-}
-
-
-const drawCanvas = (context, state)=> {
-    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-
-    for (const n of state) {
-        const color = transparentColor(n);
-
-        for (const b of n.values) {
-            context.beginPath();
-            context.fillStyle = color;
-            context.rect(b.x, b.y, b.w, b.h);
-            context.fill();
-        }
-    }
-}
 
 class StackedBar extends AbstractStackedCartesianChartWithAxes {
     constructor(canvasId, _userOptions) {
         super(canvasId, _userOptions);
     }
-
-
 
     _animate() {
         const seriesNum = this._data.nested.length;
@@ -135,7 +108,7 @@ class StackedBar extends AbstractStackedCartesianChartWithAxes {
 
         // cache finalState as the initial state of next animation call
         this.previousState = finalState;
-        this.animateStates(initialState, finalState, Duration);
+        animateStates(initialState, finalState, Duration, this._frontContext, this._options);
 
     }
 
@@ -192,7 +165,7 @@ class StackedBar extends AbstractStackedCartesianChartWithAxes {
             : this._data.nested.map(stackToGroup);
 
         if (layoutDirty) {
-            this.animateStates(this.previousState, intrimLayout, 500).then(
+            animateStates(this.previousState, intrimLayout, 500, this._frontContext, this._options).then(
                 ()=> {
                     this.update();
                 }
@@ -203,26 +176,6 @@ class StackedBar extends AbstractStackedCartesianChartWithAxes {
         }
     }
 
-    animateStates(initialState, finalState, duration) {
-        let that = this;
-
-        return new Promise((resolve, reject)=> {
-            const interpolateParticles = interpolateArray(initialState, finalState);
-
-            const batchRendering = timer( (elapsed)=> {
-                const t = Math.min(1, easeCubic(elapsed / duration));
-
-                drawCanvas(that._frontContext,
-                    interpolateParticles(t),
-                    that._options);
-
-                if (t === 1) {
-                    batchRendering.stop();
-                    resolve();
-                }
-            });
-        });
-    }
 
     stackLayout() {
         this._updateLayout(StackedOptions);
