@@ -37,10 +37,15 @@ const drawCanvas = (context, state)=> {
     }
 }
 
+const tweenAnimation = (initialState, finalState, duration, renderer, context, opt)=> {
+
+}
+
 class StackedBar extends AbstractStackedCartesianChartWithAxes {
     constructor(canvasId, _userOptions) {
         super(canvasId, _userOptions);
     }
+
 
 
     _animate() {
@@ -133,15 +138,28 @@ class StackedBar extends AbstractStackedCartesianChartWithAxes {
             ? this._data.nested.map(mapStackLayout)
             : this._data.nested.map(mapGroupLayout);
 
-
         // cache finalState as the initial state of next animation call
         this.previousState = finalState;
+        this.animateStates(initialState, finalState, Duration, ()=>{});
+
+    }
+
+    _updateLayout(_opt) {
+        // switch layout
+        this._options.chart.type = _opt.chart.type;
+        this._options.plots.stackLayout = _opt.plots.stackLayout;
+        this._options.plots.stackMethod = _opt.plots.stackMethod;
+
+        this.update();
+    }
+
+    animateStates(initialState, finalState, duration, endCallback) {
+        let that = this;
 
         const interpolateParticles = interpolateArray(initialState, finalState);
 
-        let that = this;
         const batchRendering = timer( (elapsed)=> {
-            const t = Math.min(1, easeCubic(elapsed / Duration));
+            const t = Math.min(1, easeCubic(elapsed / duration));
 
             drawCanvas(that._frontContext,
                 interpolateParticles(t),
@@ -149,59 +167,9 @@ class StackedBar extends AbstractStackedCartesianChartWithAxes {
 
             if (t === 1) {
                 batchRendering.stop();
-
-                // that._voronoi = applyVoronoi(that._frontContext,
-                //     that._options, finalState.reduce((acc, p)=>{
-                //         acc = acc.concat(p.values);
-                //         return acc;
-                //     }, []));
-
-                // that._quadtree = applyQuadtree(that._frontContext,
-                //     that._options, finalState);
-
-                /**
-                 * callback for when the mouse moves across the overlay
-                 */
-                // function mouseMoveHandler() {
-                //     // get the current mouse position
-                //     const [mx, my] = mouse(this);
-                //     const QuadtreeRadius = 40;
-                //     // use the new diagram.find() function to find the Voronoi site
-                //     // closest to the mouse, limited by max distance voronoiRadius
-                //     const closest = that._voronoi.find(mx, my, QuadtreeRadius);
-                //
-                //     if (closest) {
-                //         that._tooltip.style("left", closest[0] + "px")
-                //             .style("top", closest[1] + "px")
-                //             .html( that.tooltip(closest.data.data));
-                //
-                //         that._tooltip.style("opacity", 1)
-                //     } else {
-                //
-                //         that._tooltip.style("opacity", 0)
-                //     }
-                // }
-                //
-                // function mouseOutHandler() {
-                //
-                //     that._tooltip.style("opacity", 0)
-                // }
-                //
-                // that._frontCanvas.on('mousemove', mouseMoveHandler);
-                // that._frontCanvas.on('mouseout', mouseOutHandler);
-                //
-                // that._listeners.call('rendered');
+                endCallback.call();
             }
         });
-
-    }
-
-    _updateLayout(_opt) {
-        this._options.chart.type = _opt.chart.type;
-        this._options.plots.stackLayout = _opt.plots.stackLayout;
-        this._options.plots.stackMethod = _opt.plots.stackMethod;
-
-        this.update();
     }
 
     stackLayout() {
