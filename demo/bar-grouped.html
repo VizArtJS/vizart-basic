@@ -57,6 +57,19 @@
 
                 ],
             },
+
+            plots: {
+                opacity: 1,
+                barLabel: {
+                    enabled: true,
+                    color: 'black'
+                },
+                metricLabel: {
+                    enabled: true,
+                    color: 'black',
+                    offset: 10
+                }
+            }
         };
 
 
@@ -65,7 +78,7 @@
         d3.csv('assets/movies.csv', function(err, res){
             var data = _.uniqWith(res, function(a, b) {
                 return a.Director === b.Director;
-            });
+            }).slice(0, 4);
 
             chart.render(data);
 

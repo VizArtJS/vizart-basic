@@ -12,6 +12,7 @@ const GroupedOptions = {
     plots: {
         stackLayout: false,
         stackMethod: Stacks.Zero,
+        opacity: 1,
         barLabel: {
             enabled: true,
             color: 'black'
@@ -36,6 +37,7 @@ const StackedOptions = {
     plots: {
         stackLayout: true,
         stackMethod: Stacks.Zero,
+        opacity: 1,
         barLabel: {
             enabled: true,
             color: 'black'
@@ -60,6 +62,7 @@ const ExpandedOptions = {
     plots: {
         stackLayout: true,
         stackMethod: Stacks.Expand,
+        opacity: 1,
         barLabel: {
             enabled: true,
             color: 'black'

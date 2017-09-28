@@ -15,7 +15,7 @@ import {
     ExpandedOptions
 } from './StackedBar-Options';
 
-const bardWidth = (opt, seriesNum)=> {
+const bandWidth = (opt, seriesNum)=> {
     const band = opt.data.x.scale.bandwidth();
 
     return opt.plots.stackLayout === true
@@ -26,7 +26,7 @@ const bardWidth = (opt, seriesNum)=> {
 const computeX = (x, seriesNum, seriesIndex, opt)=> {
     return opt.plots.stackLayout === true
         ? x
-        : x + x / seriesNum * seriesIndex;
+        : x + bandWidth(opt, seriesNum) * seriesIndex ;
 }
 
 const barHeight = (opt, d)=> {
@@ -39,7 +39,7 @@ const barHeight = (opt, d)=> {
 const drawCanvas = (context, state, opt)=> {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
-    const universalWidth = bardWidth(opt, state.length);
+    const universalWidth = bandWidth(opt, state.length);
 
     for (const [i, n] of state.entries()) {
         const color = n.c;
@@ -89,7 +89,7 @@ class StackedBar extends AbstractStackedCartesianChartWithAxes {
                     key: d.key,
                     c: this._c(d),
                     s: d.key,
-                    alpha: 0,
+                    alpha: this._options.plots.opacity,
                     values: d.values.map(e=> {
                         return {
                             key: d.key,
@@ -106,7 +106,7 @@ class StackedBar extends AbstractStackedCartesianChartWithAxes {
             return {
                 key: d.key,
                 c: this._c(d),
-                alpha: this._options.plots.opacityArea,
+                alpha: this._options.plots.opacity,
                 values: d.values.map(e=> {
                     return {
                         key: d.key,
