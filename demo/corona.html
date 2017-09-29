@@ -33,13 +33,10 @@
     $(document).ready(function () {
         var options = {
             data: {
-                x:   { name: 'Director', type: 'string', accessor: 'Director'},
+                s: { name: 'Page', type: 'string', accessor: 'page'},
+                x: { name: 'Hour', type: 'number', accessor: 'hour'},
                 y: [
-                    { name: 'Total', type: 'number', accessor: 'Total', yAxis: 0},
-                    { name: 'Pan', type: 'number', accessor: 'Pan', yAxis: 0},
-                    { name: 'Track', type: 'number', accessor: 'Track', yAxis: 0},
-                    { name: 'Tilt', type: 'number', accessor: 'Tilt', yAxis: 0},
-                    { name: 'Track w Pan', type: 'number', accessor: 'Track w Pan', yAxis: 0}
+                    { name: 'Views', type: 'number', accessor: 'views', yAxis: 0},
                 ],
             },
             plots: {
@@ -62,12 +59,8 @@
 
         var chart = new VizArtBasic.Corona('#chart', options);
 
-        d3.csv('assets/movies.csv', function(err, res){
-            var data = _.uniqWith(res, function(a, b) {
-                return a.Director === b.Director;
-            });
-
-            chart.render(data);
+        d3.csv('assets/corona_page_views.csv', function(err, res){
+            chart.render(res);
 
         });
 

@@ -22,6 +22,9 @@ const transparentColor = d => {
 const drawCanvas = (context, state, opt)=> {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
+    console.log(state);
+
+    context.save();
     context.translate(opt.chart.width / 2, opt.chart.height / 2);
 
     const shape = radialArea()
@@ -38,6 +41,8 @@ const drawCanvas = (context, state, opt)=> {
         shape(n.values);
         context.fill();
     }
+
+    context.restore();
 }
 
 export default drawCanvas;
