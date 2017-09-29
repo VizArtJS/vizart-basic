@@ -91,7 +91,8 @@ class Corona extends AbstractStackedCartesianChart {
             drawCanvas(that._frontContext,
                 interpolateParticles(t),
                 that._options,
-                innerRadius);
+                innerRadius,
+                outerRadius);
 
             if (t === 1) {
                 batchRendering.stop();
