@@ -25,15 +25,21 @@ const drawCanvas = (context, state, opt)=> {
     context.save();
     context.translate(opt.chart.width / 2, opt.chart.height / 2);
 
-    console.log(state);
-
     for (const n of state) {
-        const shape = radialArea()
-            .curve(curveCardinalClosed)
-            .angle(d=>d.angle)
-            .innerRadius(n.innerRadius)
-            .outerRadius(d=> d.r)
-            .context(context);
+        const shape = opt.plots.stackLayout === true
+            ? radialArea()
+                .curve(curveCardinalClosed)
+                .angle(d=>d.angle)
+                .innerRadius(d=> d.r0)
+                .outerRadius(d=> d.r1)
+                .context(context)
+            : radialArea()
+                .curve(curveCardinalClosed)
+                .angle(d=>d.angle)
+                .innerRadius(n.innerRadius)
+                .outerRadius(d=> d.r)
+                .context(context);
+
 
         context.beginPath();
         context.fillStyle = transparentColor(n);

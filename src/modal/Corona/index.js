@@ -41,28 +41,30 @@ class Corona extends AbstractStackedCartesianChart {
 
         const Duration = this._options.animation.duration.update;
 
-        const initialGroupLayout = d=> {
-            return {
-                key: d.key,
-                c: this._c(d),
-                s: d.key,
-                alpha: 1,
-                innerRadius: innerRadius,
-                outerRadius: outerRadius,
-                values: d.values.map((e, i) => {
-                    return {
-                        key: d.key,
-                        angle: Math.PI * 2 * i / d.values.length,
-                        r: innerRadius,
-                        r0: 0,
-                        r1: 0,
-                        data: e.data
-                    }
-                })
-            }
-        };
+        const initialState = this.previousState
+            ? this.previousState
+            : this._data.nested.map(d => {
+                return {
+                    key: d.key,
+                    c: this._c(d),
+                    s: d.key,
+                    alpha: 1,
+                    innerRadius: innerRadius,
+                    outerRadius: outerRadius,
+                    values: d.values.map((e, i) => {
+                        return {
+                            key: d.key,
+                            angle: Math.PI * 2 * i / d.values.length,
+                            r: innerRadius,
+                            r0: innerRadius,
+                            r1: innerRadius,
+                            data: e.data
+                        }
+                    })
+                }
+            });
 
-        const groupLayout = d=> {
+        const finalState = this._data.nested.map(d => {
             return {
                 key: d.key,
                 c: this._c(d),
@@ -81,13 +83,7 @@ class Corona extends AbstractStackedCartesianChart {
                     }
                 })
             }
-        }
-
-        const initialState = this.previousState
-            ? this.previousState
-            : this._data.nested.map(initialGroupLayout);
-
-        const finalState = this._data.nested.map(d => groupLayout);
+        });
         // cache finalState as the initial state of next animation call
         this.previousState = finalState;
 
