@@ -3,9 +3,14 @@ import { DefaultCategoricalColor } from 'vizart-core';
 
 const CoronaOptions = {
     chart: {
-        type: 'corona'
+        type: 'corona',
+        margin: {
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0
+        }
     },
-    color: DefaultCategoricalColor,
     plots: {
         levels: 0,				//How many levels or inner circles should there be drawn
         maxValue: 0, 			//What is the value that the biggest circle will represent
@@ -27,9 +32,14 @@ const CoronaOptions = {
 
 const RadarOptions = {
     chart: {
-        type: 'radar'
+        type: 'radar',
+        margin: {
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0
+        }
     },
-    color: DefaultCategoricalColor,
     plots: {
         levels: 0,				//How many levels or inner circles should there be drawn
         maxValue: 0, 			//What is the value that the biggest circle will represent
