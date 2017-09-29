@@ -19,7 +19,7 @@ const transparentColor = d => {
 
 
 
-const drawCanvas = (context, state, opt)=> {
+const drawCanvas = (context, state, opt, innerRadius)=> {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
     context.save();
@@ -36,7 +36,7 @@ const drawCanvas = (context, state, opt)=> {
             : radialArea()
                 .curve(curveCardinalClosed)
                 .angle(d=>d.angle)
-                .innerRadius(n.innerRadius)
+                .innerRadius(innerRadius)
                 .outerRadius(d=> d.r)
                 .context(context);
 

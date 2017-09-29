@@ -49,8 +49,6 @@ class Corona extends AbstractStackedCartesianChart {
                     c: this._c(d),
                     s: d.key,
                     alpha: 1,
-                    innerRadius: innerRadius,
-                    outerRadius: outerRadius,
                     values: d.values.map((e, i) => {
                         return {
                             key: d.key,
@@ -70,8 +68,6 @@ class Corona extends AbstractStackedCartesianChart {
                 c: this._c(d),
                 s: d.key,
                 alpha: 1,
-                innerRadius: innerRadius,
-                outerRadius: outerRadius,
                 values: d.values.map((e, i) => {
                     return {
                         key: d.key,
@@ -95,7 +91,8 @@ class Corona extends AbstractStackedCartesianChart {
 
             drawCanvas(that._frontContext,
                 interpolateParticles(t),
-                that._options);
+                that._options,
+                innerRadius);
 
             if (t === 1) {
                 batchRendering.stop();
