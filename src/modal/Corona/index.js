@@ -3,8 +3,6 @@ import { wrapSVGText } from 'vizart-core'
 import { CoronaOptions } from './Corona-Options';
 
 import createCartesianStackedOpt from '../../options/createCartesianStackedOpt';
-import metricStackedScale from '../../data/cartesian-stacked/scale-stacked-metric';
-import metricScale from '../../data/update-scale/update-metric-scale';
 import labelPrecision from './label-precision';
 
 import { Stacks } from '../../data';
@@ -16,8 +14,6 @@ import { range, extent } from 'd3-array';
 
 
 import isNumber from 'lodash-es/isNumber';
-
-import { innerRadar, outerRadar } from './radial-shapes';
 
 import { interpolateArray } from 'd3-interpolate';
 import { timer } from 'd3-timer';
@@ -73,8 +69,8 @@ class Corona extends AbstractStackedCartesianChart {
                         key: d.key,
                         angle: Math.PI * 2 * i / d.values.length,
                         r: radiusScale(e.y),
-                        r0: radiusScale(e.y0),
-                        r1: radiusScale(e.y1),
+                        r0: radiusScale(this._getMetric().scale(e.y0)),
+                        r1: radiusScale(this._getMetric().scale(e.y1)),
                         data: e.data
                     }
                 })
