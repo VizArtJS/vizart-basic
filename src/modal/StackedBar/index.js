@@ -1,8 +1,6 @@
-
 import { mouse } from 'd3-selection';
 import { AbstractStackedCartesianChartWithAxes } from '../../base';
 import createCartesianStackedOpt from '../../options/createCartesianStackedOpt';
-import hasNegativeValue from '../../util/has-negative';
 
 import {
     GroupedOptions,
