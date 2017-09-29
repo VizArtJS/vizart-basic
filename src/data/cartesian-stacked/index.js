@@ -8,8 +8,8 @@ const processStackedData = (data, opt, cleanse = true)=> {
     let copy = processCartesianData(data, opt, cleanse);
     let nestedData = generateStackLayout(copy, opt);
 
-    let minY;
-    let maxY;
+    let minY = 0;
+    let maxY = 0;
 
     if(opt.plots.stackLayout === true) {
         let _range = rescaleStackedMetric(nestedData, opt);
@@ -23,14 +23,9 @@ const processStackedData = (data, opt, cleanse = true)=> {
         }
 
     } else {
-        minY = opt.data.y[0].min;
-        maxY = opt.data.y[0].max;
-
-        if (opt.data.y.length > 1) {
-            for (let metric of opt.data.y) {
-                minY = Math.min(minY, metric.min);
-                maxY = Math.max(maxY, metric.max);
-            }
+        for (let m of opt.data.y) {
+            minY = Math.min(minY, m.min);
+            maxY = Math.max(maxY, m.max);
         }
     }
 
