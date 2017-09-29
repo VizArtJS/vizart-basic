@@ -35,6 +35,9 @@ class Corona extends AbstractStackedCartesianChart {
             .domain([this._getMetric().scale(this._data.minY), this._getMetric().scale(this._data.maxY)])
             .range([innerRadius, outerRadius]);
 
+        const rawRadiusScale = radiusScale.copy().domain([this._data.minY, this._data.maxY]);
+
+
         const Duration = this._options.animation.duration.update;
 
         const initialState = this.previousState
@@ -69,8 +72,8 @@ class Corona extends AbstractStackedCartesianChart {
                         key: d.key,
                         angle: Math.PI * 2 * i / d.values.length,
                         r: radiusScale(e.y),
-                        r0: radiusScale(this._getMetric().scale(e.y0)),
-                        r1: radiusScale(this._getMetric().scale(e.y1)),
+                        r0: rawRadiusScale(e.y0),
+                        r1: rawRadiusScale(e.y1),
                         data: e.data
                     }
                 })
