@@ -6,8 +6,6 @@ import {
 } from 'd3-shape';
 
 
-
-
 import { hsl } from 'd3-color';
 import drawGridArc from "./draw-grid-arc";
 
@@ -24,7 +22,6 @@ const drawCanvas = (context, state, opt, innerRadius, outerRadius)=> {
 
     context.save();
     context.translate(opt.chart.width / 2, opt.chart.height / 2);
-
 
     drawGridArc(context, innerRadius, outerRadius, opt);
 
