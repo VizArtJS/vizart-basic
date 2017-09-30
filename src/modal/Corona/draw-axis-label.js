@@ -2,8 +2,6 @@ import { arc } from 'd3-shape';
 import getLevels from './grid-levels';
 
 const drawAxisLabel = (context, state, opt, innerRadius, outerRadius)=> {
-    const levels = getLevels(opt);
-
     const gridArc = arc()
         .innerRadius(outerRadius)
         .outerRadius(outerRadius)
