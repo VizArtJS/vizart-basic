@@ -1,5 +1,6 @@
 import drawGridArc from "./draw-grid-arc";
 import drawGridLabel from "./draw-grid-label";
+import drawAxisLabel from './draw-axis-label';
 import drawArea from './draw-area';
 import drawLine from './draw-line';
 
@@ -9,8 +10,9 @@ const drawCanvas = (context, state, opt, innerRadius, outerRadius, minY, maxY)=>
     context.save();
     context.translate(opt.chart.width / 2, opt.chart.height / 2);
 
-    drawGridArc(context, innerRadius, outerRadius, opt);
-    drawGridLabel(context, innerRadius, outerRadius, opt, minY, maxY);
+    drawGridArc(context, opt, innerRadius, outerRadius);
+    drawGridLabel(context, opt, innerRadius, outerRadius, minY, maxY);
+    drawAxisLabel(context, state, opt, innerRadius, outerRadius);
 
     if (opt.plots.isArea === true) {
         drawArea(context, state, opt, innerRadius, outerRadius)

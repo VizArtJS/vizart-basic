@@ -1,7 +1,7 @@
 import { scaleLinear } from 'd3-scale';
 import getLevels from './grid-levels';
 
-const drawGridLabel = (context, innerRadius, outerRadius, opt, minY, maxY)=> {
+const drawGridLabel = (context, opt, innerRadius, outerRadius, minY, maxY)=> {
     const levels = getLevels(opt);
 
     const labelScale = scaleLinear().domain([0, levels])

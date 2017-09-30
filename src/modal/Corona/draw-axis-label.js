@@ -1,12 +1,12 @@
 import { arc } from 'd3-shape';
 import getLevels from './grid-levels';
 
-const drawGridArc = (context, opt, innerRadius, outerRadius)=> {
+const drawAxisLabel = (context, state, opt, innerRadius, outerRadius)=> {
     const levels = getLevels(opt);
 
     const gridArc = arc()
-        .innerRadius( d=> (outerRadius - innerRadius) / levels * (d - 1) + innerRadius)
-        .outerRadius(d=> (outerRadius - innerRadius) / levels * (d) + innerRadius)
+        .innerRadius(outerRadius)
+        .outerRadius(outerRadius)
         .startAngle(0)
         .endAngle(2 * Math.PI)
         .context(context);
@@ -19,4 +19,4 @@ const drawGridArc = (context, opt, innerRadius, outerRadius)=> {
     }
 }
 
-export default drawGridArc;
+export default drawAxisLabel;

@@ -66,7 +66,7 @@ class Corona extends AbstractStackedCartesianChart {
                 key: d.key,
                 c: this._c(d),
                 s: d.key,
-                alpha: this._options.plots.opacityArea,
+                alpha: this._options.plots.areaOpacity,
                 values: d.values.map((e, i) => {
                     return {
                         key: d.key,

@@ -16,6 +16,7 @@ const CoronaOptions = {
         levelColor: '#CDCDCD',
         levelLabelColor: '#737373',
         levelLabelPosition: 'top', //'top', 'bottom', 'right'
+        axisLabel: null,
         strokeOpacity: 0,
         strokeWidth: 4, 		//The width of the stroke around each blob
         areaOpacity: 0.35, 	//The opacity of the area of the blob
