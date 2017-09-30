@@ -3,8 +3,8 @@ const centroidOnArc = (arc, context, radius, slice)=> {
     // pythagorean theorem for hypotenuse
     const h = Math.sqrt(x * x + y * y);
 
-    return [x / h * radius * 0.8,
-        y / h * radius * 0.8]
+    return [x / h * radius,
+        y / h * radius]
 }
 
 export default centroidOnArc;

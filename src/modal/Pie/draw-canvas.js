@@ -35,7 +35,7 @@ const drawCanvas = (context, state, opt)=> {
             .innerRadius(radius * 0.8)
             .outerRadius(radius * 0.8)
             .context(context);
-        const centroid = centroidOnArc(outerArc, context, radius, s);
+        const centroid = centroidOnArc(outerArc, context, radius * 0.8, s);
 
         drawControlPoint(context, s, centroid, opt);
         drawPolyLine(context, s, centroid, opt);
