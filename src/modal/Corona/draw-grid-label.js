@@ -14,7 +14,7 @@ const drawGridLabel = (context, innerRadius, outerRadius, opt, minY, maxY)=> {
         context.fillStyle = opt.plots.levelLabelColor;
         context.fillText(
             labelScale(i),
-            4,
+            0,
             -i * ((outerRadius - innerRadius) / levels) - innerRadius,
             30);
     }
