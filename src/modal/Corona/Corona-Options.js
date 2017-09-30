@@ -15,6 +15,7 @@ const CoronaOptions = {
         levels: 0,				//How many levels or inner circles should there be drawn
         levelColor: '#CDCDCD',
         levelLabelColor: '#737373',
+        levelLabelPosition: 'top', //'top', 'bottom', 'right'
 
         strokeOpacity: 0,
         strokeWidth: 4, 		//The width of the stroke around each blob
