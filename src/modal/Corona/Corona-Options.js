@@ -17,9 +17,8 @@ const CoronaOptions = {
         labelFactor: 1.15, 	//How much farther than the radius of the outer circle should the labels be placed
         wrapWidth: 60, 		//The number of pixels after which a label needs to be given a new line
         opacityArea: 0.35, 	//The opacity of the area of the blob
-        dotRadius: 4, 			//The size of the colored circles of each blog
-        opacityCircles: 0.1, 	//The opacity of the circles of each blob
-        strokeWidth: 2, 		//The width of the stroke around each blob
+        drawStroke: false,
+        strokeWidth: 4, 		//The width of the stroke around each blob
         innerRadiusRatio: 0.4,
         showDots: true,
         sortArea: true, // show smallest area on top

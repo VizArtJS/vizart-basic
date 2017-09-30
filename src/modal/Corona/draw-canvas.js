@@ -45,6 +45,13 @@ const drawCanvas = (context, state, opt, innerRadius, outerRadius)=> {
         context.fillStyle = transparentColor(n);
         shape(n.values);
         context.fill();
+
+        if (opt.plots.drawStroke === true) {
+            context.lineWidth = opt.plots.strokeWidth;
+            context.strokeStyle = n.c;
+            context.stroke();
+        }
+
     }
 
     context.restore();
