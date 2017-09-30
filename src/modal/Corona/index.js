@@ -29,7 +29,7 @@ class Corona extends AbstractStackedCartesianChart {
     }
 
     _animate() {
-        const outerRadius = Math.min(this._options.chart.innerWidth / 2, this._options.chart.innerHeight / 2) - 20;
+        const outerRadius = Math.min(this._options.chart.innerWidth / 2, this._options.chart.innerHeight / 2) - this._options.plots.outerRadiusMargin;
         const innerRadius = outerRadius * this._options.plots.innerRadiusRatio;
         const radiusScale = scaleLinear()
             .domain([this._getMetric().scale(this._data.minY), this._getMetric().scale(this._data.maxY)])

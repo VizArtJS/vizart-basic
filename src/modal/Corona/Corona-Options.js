@@ -16,7 +16,6 @@ const CoronaOptions = {
         levelColor: '#CDCDCD',
         levelLabelColor: '#737373',
         levelLabelPosition: 'top', //'top', 'bottom', 'right'
-
         strokeOpacity: 0,
         strokeWidth: 4, 		//The width of the stroke around each blob
         areaOpacity: 0.35, 	//The opacity of the area of the blob
@@ -24,6 +23,7 @@ const CoronaOptions = {
         labelFactor: 1.15, 	//How much farther than the radius of the outer circle should the labels be placed
         wrapWidth: 60, 		//The number of pixels after which a label needs to be given a new line
         innerRadiusRatio: 0.4,
+        outerRadiusMargin: 60,
         sortArea: true, // show smallest area on top
         stackLayout: true, // stack areas
         stackMethod: Stacks.Zero,
