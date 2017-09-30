@@ -26,11 +26,11 @@ const drawArea = (context, state, opt, innerRadius, outerRadius)=> {
         shape(n.values);
         context.fill();
 
-        if (opt.plots.drawStroke === true) {
-            context.lineWidth = opt.plots.strokeWidth;
-            context.strokeStyle = n.c;
-            context.stroke();
-        }
+        // if (opt.plots.drawStroke === true) {
+        //     context.lineWidth = opt.plots.strokeWidth;
+        //     context.strokeStyle = n.c;
+        //     context.stroke();
+        // }
     }
 }
 
