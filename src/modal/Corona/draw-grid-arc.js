@@ -20,7 +20,7 @@ const drawGridArc = (context, innerRadius, outerRadius, opt)=> {
 
     for (let i = 1; i< levels + 1; i++) {
         context.beginPath();
-        context.strokeStyle = 'grey';
+        context.strokeStyle = opt.plots.levelColor;
         gridArc(i);
         context.stroke();
     }
