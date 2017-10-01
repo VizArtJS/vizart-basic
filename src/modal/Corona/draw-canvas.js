@@ -9,7 +9,7 @@ const drawCanvas = (context, state, opt, innerRadius, outerRadius, minY, maxY)=>
 
     drawGridArc(context, opt, innerRadius, outerRadius);
     drawGridLabel(context, opt, innerRadius, outerRadius, minY, maxY);
-    drawAxisLabel(context, state, opt, innerRadius, outerRadius);
+    drawAxisLabel(context, opt, innerRadius, outerRadius);
 
     if (opt.plots.isArea === true) {
         drawArea(context, state, opt, innerRadius, outerRadius)

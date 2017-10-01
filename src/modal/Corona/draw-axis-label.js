@@ -25,9 +25,9 @@ const drawAxisLabel = (context, opt, innerRadius, outerRadius)=> {
         //     centroidPoint[1],
         //     30);
         //
-        // drawCircularText(context, opt.data.x.values[i], 14, 'arial',
-        //     0, 0, outerRadius,
-        //     axisScale(i), 5, 1);
+        drawCircularText(context, opt.data.x.values[i] + '', 14, 'Oswald',
+            opt.chart.width / 2, opt.chart.height / 2, outerRadius,
+            axisScale(i), 5, 1);
     }
 }
 

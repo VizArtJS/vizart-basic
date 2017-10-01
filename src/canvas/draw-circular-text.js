@@ -17,7 +17,7 @@ const drawCircularText = (ctx, text, fontSize, titleFont, centerX, centerY, radi
     ctx.textBaseline = 'alphabetic';
     ctx.textAlign = 'center'; // Ensure we draw in exact center
     ctx.font = fontSize + "px " + titleFont;
-    ctx.fillStyle = "rgba(255,255,255," + textAlpha + ")";
+    ctx.fillStyle = "rgba(0,0,0," + textAlpha + ")";
 
     startAngle = startAngle * (Math.PI / 180); // convert to radians
     text = text.split("").reverse().join(""); // Reverse letters
