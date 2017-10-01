@@ -21,6 +21,8 @@ const CoronaOptions = {
         axisLabelOffset: 10,
         strokeOpacity: 0,
         strokeWidth: 4, 		//The width of the stroke around each blob
+        highlightStrokeColor: '#000000',
+        highlightNodeColor: 'green',
         areaOpacity: 0.35, 	//The opacity of the area of the blob
         maxValue: 0, 			//What is the value that the biggest circle will represent
         labelFactor: 1.15, 	//How much farther than the radius of the outer circle should the labels be placed

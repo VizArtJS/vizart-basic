@@ -16,6 +16,7 @@ import { easeCubic } from 'd3-ease';
 
 import drawCanvas from './draw-canvas';
 import applyVoronoi from '../../canvas/voronoi/apply';
+import highlight from './highlight';
 
 class Corona extends AbstractStackedCartesianChart {
     constructor(canvasId, _userOptions) {
@@ -101,6 +102,7 @@ class Corona extends AbstractStackedCartesianChart {
                                 x: d.r * Math.sin(d.angle) + that._options.chart.width / 2,
                                 y: d.r * Math.cos(d.angle) + that._options.chart.height / 2,
                                 c: p.c,
+                                d: d,
                                 data: d.data
                             }
                         }));
@@ -139,6 +141,8 @@ class Corona extends AbstractStackedCartesianChart {
                             outerRadius,
                             that._data.minY,
                             that._data.maxY);
+
+                        highlight(that._frontContext, that._options, closest.data);
                         that._tooltip.style("opacity", 1);
                     } else {
                         that._tooltip.style("opacity", 0);
