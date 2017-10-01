@@ -19,7 +19,7 @@ const drawCircularText = (ctx, text, fontSize, titleFont, centerX, centerY, radi
     ctx.font = fontSize + "px " + titleFont;
     ctx.fillStyle = "rgba(0,0,0," + textAlpha + ")";
 
-    startAngle = startAngle * (Math.PI / 180); // convert to radians
+    // startAngle = startAngle * (Math.PI / 180); // convert to radians
     text = text.split("").reverse().join(""); // Reverse letters
 
     //Rotate 50% of total angle for center alignment
