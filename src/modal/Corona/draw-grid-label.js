@@ -1,5 +1,7 @@
 import { scaleLinear } from 'd3-scale';
 import getLevels from './grid-levels';
+import isFunction from 'lodash-es/isFunction';
+
 
 const drawGridLabel = (context, opt, innerRadius, outerRadius, minY, maxY)=> {
     context.save();
@@ -11,6 +13,13 @@ const drawGridLabel = (context, opt, innerRadius, outerRadius, minY, maxY)=> {
         .range([minY, maxY])
         .nice();
 
+    const getLabel = i=> {
+        return (opt.plots.levelLabel && isFunction(opt.plots.levelLabel))
+            ? opt.plots.levelLabel(labelScale(i))
+            : labelScale(i);
+    }
+
+
     switch (opt.plots.levelLabelPosition) {
         case 'bottom':
             for (let i = 0; i<= levels; i++) {
@@ -18,10 +27,10 @@ const drawGridLabel = (context, opt, innerRadius, outerRadius, minY, maxY)=> {
                 context.textBaseline = 'top';
                 context.fillStyle = opt.plots.levelLabelColor;
                 context.fillText(
-                    labelScale(i),
+                    getLabel(i),
                     0,
                     i * ((outerRadius - innerRadius) / levels) + innerRadius,
-                    30);
+                    60);
             }
 
             break;
@@ -33,10 +42,10 @@ const drawGridLabel = (context, opt, innerRadius, outerRadius, minY, maxY)=> {
                 context.textBaseline = 'ideographic';
                 context.fillStyle = opt.plots.levelLabelColor;
                 context.fillText(
-                    labelScale(i),
+                    getLabel(i),
                     0,
                     -i * ((outerRadius - innerRadius) / levels) - innerRadius,
-                    30);
+                    60);
             }
 
             break;
