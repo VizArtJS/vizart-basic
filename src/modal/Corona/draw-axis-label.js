@@ -1,12 +1,6 @@
 import { scaleLinear } from 'd3-scale';
-import isFunction from 'lodash-es/isFunction';
 import drawCircularText from '../../canvas/draw-circular-text';
-
-const getLabel = (opt, d, i)=> {
-    return opt.plots.axisLabel && isFunction(opt.plots.axisLabel)
-        ? opt.plots.axisLabel(d, i)
-        : d;
-}
+import getAxisLabel from './get-axis-label';
 
 const drawAxisLabel = (context, opt, innerRadius, outerRadius)=> {
     let axisNum = 6;
@@ -23,7 +17,7 @@ const drawAxisLabel = (context, opt, innerRadius, outerRadius)=> {
 
     for (let i = 0; i < axisNum; i++) {
         drawCircularText(context,
-            getLabel(opt, axes[mapToAxis(i)], mapToAxis(i)) + '',
+            getAxisLabel(opt, axes[mapToAxis(i)], mapToAxis(i)) + '',
             14,
             'Oswald',
             opt.plots.axisLabelColor,

@@ -101,8 +101,9 @@ class Corona extends AbstractStackedCartesianChart {
                         acc = acc.concat(p.values.map(d=>{
                             return {
                                 s: p.key,
+                                label: that._getDimensionVal(d.data),
                                 x: d.r * Math.sin(d.angle) + that._options.chart.width / 2,
-                                y: d.r * Math.cos(d.angle) + that._options.chart.height / 2,
+                                y: that._options.chart.height - (d.r * Math.cos(d.angle) + that._options.chart.height / 2),
                                 c: p.c,
                                 d: d,
                                 data: d.data

@@ -1,5 +1,5 @@
-
-
+import drawCircularText from '../../canvas/draw-circular-text';
+import getAxisLabel from './get-axis-label';
 const highlight = (context, opt, datum)=> {
     context.save();
     context.translate(opt.chart.width / 2, opt.chart.height / 2);
@@ -24,6 +24,21 @@ const highlight = (context, opt, datum)=> {
     context.stroke();
 
     context.closePath();
+
+    context.restore();
+
+    context.save();
+    context.beginPath();
+    context.fillStyle = opt.plots.axisLabelColor;
+    drawCircularText(context,
+        getAxisLabel(opt, datum.label, 1) + '',
+        14,
+        'Oswald',
+        opt.plots.highlightLabelColor,
+        opt.chart.width / 2,
+        opt.chart.height / 2,
+        datum.d.r + opt.plots.axisLabelOffset,
+        datum.d.angle, 5);
 
     context.restore();
 

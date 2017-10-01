@@ -12,7 +12,7 @@
  * @param kerning 0 for normal gap between letters. Positive or negative number to expand/compact gap in pixels
  * @param textAlpha
  */
-const drawCircularText = (ctx, text, fontSize, titleFont, color, centerX, centerY, radius, startAngle, kerning, textAlpha)=> {
+const drawCircularText = (ctx, text, fontSize, titleFont, color, centerX, centerY, radius, startAngle, kerning)=> {
     //Setup letters and positioning
     ctx.textBaseline = 'alphabetic';
     ctx.textAlign = 'center'; // Ensure we draw in exact center
