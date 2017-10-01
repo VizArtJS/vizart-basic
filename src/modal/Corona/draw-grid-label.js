@@ -8,7 +8,7 @@ const drawGridLabel = (context, opt, innerRadius, outerRadius, minY, maxY)=> {
     const levels = getLevels(opt);
 
     const labelScale = scaleLinear().domain([0, levels])
-        .range([ maxY, minY])
+        .range([minY, maxY])
         .nice();
 
     switch (opt.plots.levelLabelPosition) {

@@ -93,8 +93,8 @@ class Corona extends AbstractStackedCartesianChart {
                 that._options,
                 innerRadius,
                 outerRadius,
-                radiusScale.domain()[0],
-                radiusScale.domain()[1]);
+                this._data.minY,
+                this._data.maxY);
 
             if (t === 1) {
                 batchRendering.stop();
