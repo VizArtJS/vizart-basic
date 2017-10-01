@@ -2,6 +2,9 @@ import { scaleLinear } from 'd3-scale';
 import getLevels from './grid-levels';
 
 const drawGridLabel = (context, opt, innerRadius, outerRadius, minY, maxY)=> {
+    context.save();
+    context.translate(opt.chart.width / 2, opt.chart.height / 2);
+
     const levels = getLevels(opt);
 
     const labelScale = scaleLinear().domain([0, levels])
@@ -39,6 +42,7 @@ const drawGridLabel = (context, opt, innerRadius, outerRadius, minY, maxY)=> {
             break;
     }
 
+    context.restore();
 }
 
 export default drawGridLabel;

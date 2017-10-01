@@ -1,19 +1,33 @@
 import { arc } from 'd3-shape';
-import getLevels from './grid-levels';
+import { scaleLinear } from 'd3-scale';
+import drawCircularText from '../../canvas/draw-circular-text';
 
-const drawAxisLabel = (context, state, opt, innerRadius, outerRadius)=> {
-    const gridArc = arc()
+const drawAxisLabel = (context, opt, innerRadius, outerRadius)=> {
+    const axisArc = arc()
         .innerRadius(outerRadius)
-        .outerRadius(outerRadius)
-        .startAngle(0)
-        .endAngle(2 * Math.PI)
-        .context(context);
+        .outerRadius(outerRadius);
 
-    for (let i = 1; i < levels + 1; i++) {
-        context.beginPath();
-        context.strokeStyle = opt.plots.levelColor;
-        gridArc(i);
-        context.stroke();
+    const axisNum = 6;
+    const axisScale = scaleLinear().domain([0, axisNum]).range([0, 2 * Math.PI]);
+
+    for (let i = 0; i < axisNum; i++) {
+        const centroidPoint = axisArc.centroid({
+            startAngle: axisScale(i),
+            endAngle: axisScale(i + 1)
+        });
+
+        // context.textAlign = "center";
+        // context.textBaseline = 'top';
+        // context.fillStyle = opt.plots.axisLabelColor;
+        // context.fillText(
+        //     opt.data.x.values[i],
+        //     centroidPoint[0],
+        //     centroidPoint[1],
+        //     30);
+        //
+        // drawCircularText(context, opt.data.x.values[i], 14, 'arial',
+        //     0, 0, outerRadius,
+        //     axisScale(i), 5, 1);
     }
 }
 

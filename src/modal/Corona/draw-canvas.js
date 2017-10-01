@@ -7,9 +7,6 @@ import drawLine from './draw-line';
 const drawCanvas = (context, state, opt, innerRadius, outerRadius, minY, maxY)=> {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
-    context.save();
-    context.translate(opt.chart.width / 2, opt.chart.height / 2);
-
     drawGridArc(context, opt, innerRadius, outerRadius);
     drawGridLabel(context, opt, innerRadius, outerRadius, minY, maxY);
     drawAxisLabel(context, state, opt, innerRadius, outerRadius);

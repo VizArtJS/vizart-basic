@@ -6,6 +6,9 @@ import {
 import transparentColor from './transparent-color';
 
 const drawArea = (context, state, opt, innerRadius, outerRadius)=> {
+    context.save();
+    context.translate(opt.chart.width / 2, opt.chart.height / 2);
+
     for (const n of state) {
         const shape = opt.plots.stackLayout === true
             ? radialArea()
@@ -30,6 +33,8 @@ const drawArea = (context, state, opt, innerRadius, outerRadius)=> {
         context.strokeStyle = transparentColor(n.c, opt.plots.strokeOpacity);
         context.stroke();
     }
+
+    context.restore();
 }
 
 export default drawArea;

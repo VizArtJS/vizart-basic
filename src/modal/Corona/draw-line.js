@@ -4,6 +4,9 @@ import {
 } from 'd3-shape';
 
 const drawLine = (context, state, opt, innerRadius, outerRadius)=> {
+    context.save();
+    context.translate(opt.chart.width / 2, opt.chart.height / 2);
+
     for (const n of state) {
         const shape = opt.plots.stackLayout === true
             ? radialLine()
@@ -22,6 +25,8 @@ const drawLine = (context, state, opt, innerRadius, outerRadius)=> {
         shape(n.values);
         context.stroke();
     }
+
+    context.restore();
 }
 
 export default drawLine;
