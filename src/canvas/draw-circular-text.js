@@ -12,12 +12,12 @@
  * @param kerning 0 for normal gap between letters. Positive or negative number to expand/compact gap in pixels
  * @param textAlpha
  */
-const drawCircularText = (ctx, text, fontSize, titleFont, centerX, centerY, radius, startAngle, kerning, textAlpha)=> {
+const drawCircularText = (ctx, text, fontSize, titleFont, color, centerX, centerY, radius, startAngle, kerning, textAlpha)=> {
     //Setup letters and positioning
     ctx.textBaseline = 'alphabetic';
     ctx.textAlign = 'center'; // Ensure we draw in exact center
     ctx.font = fontSize + "px " + titleFont;
-    ctx.fillStyle = "rgba(0,0,0," + textAlpha + ")";
+    ctx.fillStyle = color;
 
     // startAngle = startAngle * (Math.PI / 180); // convert to radians
     text = text.split("").reverse().join(""); // Reverse letters

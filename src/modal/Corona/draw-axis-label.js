@@ -1,4 +1,3 @@
-import { arc } from 'd3-shape';
 import { scaleLinear } from 'd3-scale';
 import isFunction from 'lodash-es/isFunction';
 import drawCircularText from '../../canvas/draw-circular-text';
@@ -20,12 +19,18 @@ const drawAxisLabel = (context, opt, innerRadius, outerRadius)=> {
         axisNum = axesLength;
     }
 
-    const mapToAxis = scaleLinear().domain([0, axisNum]).range([0, axesLength]);
+    const mapToAxis = scaleLinear().domain([0, axisNum]).range([0, axesLength]).nice();
 
     for (let i = 0; i < axisNum; i++) {
-        drawCircularText(context, getLabel(opt, axes[mapToAxis(i)], mapToAxis(i)) + '', 14, 'Oswald',
-            opt.chart.width / 2, opt.chart.height / 2, outerRadius + opt.plots.axisLabelOffset,
-            axisScale(i), 5, 1);
+        drawCircularText(context,
+            getLabel(opt, axes[mapToAxis(i)], mapToAxis(i)) + '',
+            14,
+            'Oswald',
+            opt.plots.axisLabelColor,
+            opt.chart.width / 2,
+            opt.chart.height / 2,
+            outerRadius + opt.plots.axisLabelOffset,
+            axisScale(i), 5);
     }
 }
 

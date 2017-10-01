@@ -14,10 +14,12 @@ const drawGridLabel = (context, opt, innerRadius, outerRadius, minY, maxY)=> {
         .nice();
 
     const getLabel = i=> {
+        const label = Math.round(labelScale(i));
         return (opt.plots.levelLabel && isFunction(opt.plots.levelLabel))
-            ? opt.plots.levelLabel(labelScale(i))
-            : labelScale(i);
+            ? opt.plots.levelLabel(label)
+            : label;
     }
+
 
 
     switch (opt.plots.levelLabelPosition) {
@@ -29,8 +31,7 @@ const drawGridLabel = (context, opt, innerRadius, outerRadius, minY, maxY)=> {
                 context.fillText(
                     getLabel(i),
                     0,
-                    i * ((outerRadius - innerRadius) / levels) + innerRadius,
-                    60);
+                    i * ((outerRadius - innerRadius) / levels) + innerRadius);
             }
 
             break;
@@ -44,8 +45,7 @@ const drawGridLabel = (context, opt, innerRadius, outerRadius, minY, maxY)=> {
                 context.fillText(
                     getLabel(i),
                     0,
-                    -i * ((outerRadius - innerRadius) / levels) - innerRadius,
-                    60);
+                    -i * ((outerRadius - innerRadius) / levels) - innerRadius);
             }
 
             break;

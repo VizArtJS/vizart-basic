@@ -17,7 +17,7 @@ body {
 }
 
 .ocean {
-    background-image: url(assets/vz-skin-galaxy_2.jpg);
+    background-image: url(../assets/vz-skin-galaxy_2.jpg);
     background-repeat: no-repeat;
     background-size: cover;
 

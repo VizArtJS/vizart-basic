@@ -27,7 +27,7 @@
 </div>
 
 
-<div id="chart" class="chart-container"></div>
+<div id="chart" class="ocean chart-container"></div>
 
 <script>
     $(document).ready(function () {
@@ -40,16 +40,16 @@
                 ],
             },
             plots: {
-                levels: 0,				//How many levels or inner circles should there be drawn
-                levelColor: '#CDCDCD',
-                levelLabelColor: '#737373',
+                levels: 6,				//How many levels or inner circles should there be drawn
+                levelColor: 'rgba(255, 255, 255, 0.4)',
+                levelLabelColor: 'rgba(255, 255, 255, 0.8)',
                 levelLabelPosition: 'top', //'top', 'bottom', 'right'
                 levelLabel: function(d){ return d + ' views'},
                 axisLabel: function(d, i){ return i===0 ? '' : d + 'am'},
                 axisLabelOffset: 10,
-                axisLabelColor: '#737373',
+                axisLabelColor: 'rgba(255, 255, 255, 0.8)',
                 strokeOpacity: 0,
-                highlightStrokeColor: '#000000',
+                highlightStrokeColor: 'rgba(255, 255, 255, 0.7)',
                 highlightNodeColor: 'green',
                 strokeWidth: 4, 		//The width of the stroke around each blob
                 opacityArea: 0.6, 	//The opacity of the area of the blob
