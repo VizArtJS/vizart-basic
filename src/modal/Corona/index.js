@@ -102,6 +102,7 @@ class Corona extends AbstractStackedCartesianChart {
                             return {
                                 s: p.key,
                                 label: that._getDimensionVal(d.data),
+                                metric: d.data[p.key],
                                 x: d.r * Math.sin(d.angle) + that._options.chart.width / 2,
                                 y: that._options.chart.height - (d.r * Math.cos(d.angle) + that._options.chart.height / 2),
                                 c: p.c,
@@ -126,9 +127,9 @@ class Corona extends AbstractStackedCartesianChart {
                     // closest to the mouse, limited by max distance voronoiRadius
                     const closest = that._voronoi.find(mx, my, QuadtreeRadius);
                     if (closest) {
-                        that._tooltip.style("left", closest[0] + 5 + "px")
-                            .style("top", closest[1] + 5+ "px")
-                            .html( that.tooltip(closest.data.data));
+                        // that._tooltip.style("left", closest[0] + 5 + "px")
+                        //     .style("top", closest[1] + 5+ "px")
+                        //     .html( that.tooltip(closest.data.data));
 
                         const fadeOpacity = 0.1;
 

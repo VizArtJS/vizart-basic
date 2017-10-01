@@ -1,5 +1,12 @@
 import drawCircularText from '../../canvas/draw-circular-text';
 import getAxisLabel from './get-axis-label';
+import isFunction from 'lodash-es/isFunction';
+
+const getLevelLabel = (opt, label)=> (opt.plots.levelLabel && isFunction(opt.plots.levelLabel))
+    ? opt.plots.levelLabel(label)
+    : label;
+
+
 const highlight = (context, opt, datum)=> {
     context.save();
     context.translate(opt.chart.width / 2, opt.chart.height / 2);
@@ -40,6 +47,16 @@ const highlight = (context, opt, datum)=> {
         datum.d.r + opt.plots.axisLabelOffset,
         datum.d.angle, 5);
 
+    context.restore();
+
+    const lineOffset = 8;
+    context.save();
+    context.beginPath();
+    context.textBaseline = 'alphabetic';
+    context.textAlign = 'center'; // Ensure we draw in exact center
+    context.fillStyle = 'white';
+    context.fillText(getLevelLabel(opt, datum.metric), opt.chart.width / 2, opt.chart.height / 2 - lineOffset);
+    context.fillText(datum.s, opt.chart.width / 2, opt.chart.height / 2 + lineOffset);
     context.restore();
 
 }
