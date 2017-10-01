@@ -16,25 +16,14 @@ const drawAxisLabel = (context, opt, innerRadius, outerRadius)=> {
     const axes = opt.data.x.values;
     const axesLength = axes.length;
 
-    if (axesLength >= axisNum) {
-    } else {
+    if (axesLength < axisNum) {
         axisNum = axesLength;
     }
 
-    const s1 = scaleLinear().domain([0, axisNum]).range([0, axesLength]);
+    const mapToAxis = scaleLinear().domain([0, axisNum]).range([0, axesLength]);
 
     for (let i = 0; i < axisNum; i++) {
-
-        // context.textAlign = "center";
-        // context.textBaseline = 'top';
-        // context.fillStyle = opt.plots.axisLabelColor;
-        // context.fillText(
-        //     opt.data.x.values[i],
-        //     centroidPoint[0],
-        //     centroidPoint[1],
-        //     30);
-        //
-        drawCircularText(context, getLabel(opt, axes[s1(i)], s1(i)) + '', 14, 'Oswald',
+        drawCircularText(context, getLabel(opt, axes[mapToAxis(i)], mapToAxis(i)) + '', 14, 'Oswald',
             opt.chart.width / 2, opt.chart.height / 2, outerRadius + opt.plots.axisLabelOffset,
             axisScale(i), 5, 1);
     }
