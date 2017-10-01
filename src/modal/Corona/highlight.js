@@ -6,7 +6,7 @@ const highlight = (context, opt, datum)=> {
 
     context.beginPath();
     context.setLineDash([5, 5]);
-    context.storkeStyle = opt.plots.highlightStrokeColor;
+    context.strokeStyle = opt.plots.highlightStrokeColor;
 
     context.arc(0, 0, datum.d.r, 0, 2 * Math.PI, false);
 

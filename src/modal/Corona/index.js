@@ -17,6 +17,8 @@ import { easeCubic } from 'd3-ease';
 import drawCanvas from './draw-canvas';
 import applyVoronoi from '../../canvas/voronoi/apply';
 import highlight from './highlight';
+import transparentColor from "./transparent-color";
+import cloneDeep from 'lodash-es/cloneDeep';
 
 class Corona extends AbstractStackedCartesianChart {
     constructor(canvasId, _userOptions) {
@@ -123,20 +125,24 @@ class Corona extends AbstractStackedCartesianChart {
                     // closest to the mouse, limited by max distance voronoiRadius
                     const closest = that._voronoi.find(mx, my, QuadtreeRadius);
                     if (closest) {
-                        that._tooltip.style("left", closest[0] + "px")
-                            .style("top", closest[1]+ "px")
+                        that._tooltip.style("left", closest[0] + 5 + "px")
+                            .style("top", closest[1] + 5+ "px")
                             .html( that.tooltip(closest.data.data));
 
+                        const fadeOpacity = 0.1;
+
+                        const optCopy = cloneDeep(that._options);
+                        optCopy.plots.levelColor = transparentColor(optCopy.plots.levelColor, fadeOpacity);
                         drawCanvas(that._frontContext,
                             finalState.map(d=>{
                                 const p = d;
                                 p.alpha = d.key === closest.data.s
                                     ? 0.6
-                                    : 0.15;
+                                    : fadeOpacity;
 
                                 return p;
                             }),
-                            that._options,
+                            optCopy,
                             innerRadius,
                             outerRadius,
                             that._data.minY,
