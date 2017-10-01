@@ -2,7 +2,7 @@ import {
     radialLine,
     curveLinearClosed
 } from 'd3-shape';
-
+import transparentColor from './transparent-color';
 const drawLine = (context, state, opt, innerRadius, outerRadius)=> {
     context.save();
     context.translate(opt.chart.width / 2, opt.chart.height / 2);
@@ -12,16 +12,16 @@ const drawLine = (context, state, opt, innerRadius, outerRadius)=> {
             ? radialLine()
                 .curve(curveLinearClosed)
                 .angle(d=>d.angle)
-                .radius(d=> d.r)
+                .radius(d=> d.r1)
                 .context(context)
             : radialLine()
                 .curve(curveLinearClosed)
                 .angle(d=>d.angle)
-                .radius(d=> d.r1)
+                .radius(d=> d.r)
                 .context(context);
 
         context.beginPath();
-        context.strokeStyle = n.c;
+        context.strokeStyle = transparentColor(n.c, n.strokeAlpha);
         shape(n.values);
         context.stroke();
     }
