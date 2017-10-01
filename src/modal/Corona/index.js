@@ -8,20 +8,14 @@ import labelPrecision from './label-precision';
 import { Stacks } from '../../data';
 
 
-import { select } from 'd3-selection';
 import { scaleLinear } from 'd3-scale';
-import { range, extent } from 'd3-array';
-
-
-import isNumber from 'lodash-es/isNumber';
-
 import { interpolateArray } from 'd3-interpolate';
 import { timer } from 'd3-timer';
-import { hsl } from 'd3-color';
 import { mouse } from 'd3-selection';
 import { easeCubic } from 'd3-ease';
 
 import drawCanvas from './draw-canvas';
+import applyVoronoi from '../../canvas/voronoi/apply';
 
 class Corona extends AbstractStackedCartesianChart {
     constructor(canvasId, _userOptions) {
@@ -99,56 +93,82 @@ class Corona extends AbstractStackedCartesianChart {
             if (t === 1) {
                 batchRendering.stop();
 
-                // that._voronoi = applyVoronoi(that._frontContext,
-                //     that._options, finalState.reduce((acc, p)=>{
-                //         acc = acc.concat(p.values);
-                //         return acc;
-                //     }, []));
-                //
-                // // that._quadtree = applyQuadtree(that._frontContext,
-                // //     that._options, finalState);
-                //
-                // /**
-                //  * callback for when the mouse moves across the overlay
-                //  */
-                // function mouseMoveHandler() {
-                //     // get the current mouse position
-                //     const [mx, my] = mouse(this);
-                //     const QuadtreeRadius = 100;
-                //     // use the new diagram.find() function to find the Voronoi site
-                //     // closest to the mouse, limited by max distance voronoiRadius
-                //     const closest = that._voronoi.find(mx, my, QuadtreeRadius);
-                //     if (closest) {
-                //         that._tooltip.style("left", closest[0] + "px")
-                //             .style("top", closest[1] + "px")
-                //             .html( that.tooltip(closest.data.data));
-                //
-                //         highlightLine(that._frontContext,
-                //             interpolateParticles(t),
-                //             that._options,
-                //             closest.data);
-                //         that._tooltip.style("opacity", 1);
-                //     } else {
-                //         that._tooltip.style("opacity", 0);
-                //
-                //         drawCanvas(that._frontContext,
-                //             interpolateParticles(t),
-                //             that._options);
-                //     }
-                // }
-                //
-                // function mouseOutHandler() {
-                //     that._tooltip.style("opacity", 0);
-                //
-                //     drawCanvas(that._frontContext,
-                //         interpolateParticles(t),
-                //         that._options);
-                // }
-                //
-                // that._frontCanvas.on('mousemove', mouseMoveHandler);
-                // that._frontCanvas.on('mouseout', mouseOutHandler);
-                //
-                // that._listeners.call('rendered');
+                that._voronoi = applyVoronoi(that._frontContext,
+                    that._options, finalState.reduce((acc, p)=>{
+                        acc = acc.concat(p.values.map(d=>{
+                            return {
+                                s: p.key,
+                                x: d.r * Math.sin(d.angle) + that._options.chart.width / 2,
+                                y: d.r * Math.cos(d.angle) + that._options.chart.height / 2,
+                                c: p.c,
+                                data: d.data
+                            }
+                        }));
+                        return acc;
+                    }, []));
+
+                // that._quadtree = applyQuadtree(that._frontContext,
+                //     that._options, finalState);
+
+                /**
+                 * callback for when the mouse moves across the overlay
+                 */
+                function mouseMoveHandler() {
+                    // get the current mouse position
+                    const [mx, my] = mouse(this);
+                    const QuadtreeRadius = 100;
+                    // use the new diagram.find() function to find the Voronoi site
+                    // closest to the mouse, limited by max distance voronoiRadius
+                    const closest = that._voronoi.find(mx, my, QuadtreeRadius);
+                    if (closest) {
+                        that._tooltip.style("left", closest[0] + "px")
+                            .style("top", closest[1]+ "px")
+                            .html( that.tooltip(closest.data.data));
+
+                        drawCanvas(that._frontContext,
+                            finalState.map(d=>{
+                                const p = d;
+                                p.alpha = d.key === closest.data.s
+                                    ? 0.6
+                                    : 0.15;
+
+                                return p;
+                            }),
+                            that._options,
+                            innerRadius,
+                            outerRadius,
+                            that._data.minY,
+                            that._data.maxY);
+                        that._tooltip.style("opacity", 1);
+                    } else {
+                        that._tooltip.style("opacity", 0);
+
+                        drawCanvas(that._frontContext,
+                            interpolateParticles(t),
+                            that._options,
+                            innerRadius,
+                            outerRadius,
+                            that._data.minY,
+                            that._data.maxY);
+                    }
+                }
+
+                function mouseOutHandler() {
+                    that._tooltip.style("opacity", 0);
+
+                    drawCanvas(that._frontContext,
+                        interpolateParticles(t),
+                        that._options,
+                        innerRadius,
+                        outerRadius,
+                        that._data.minY,
+                        that._data.maxY);
+                }
+
+                that._frontCanvas.on('mousemove', mouseMoveHandler);
+                that._frontCanvas.on('mouseout', mouseOutHandler);
+
+                that._listeners.call('rendered');
             }
         });
 
