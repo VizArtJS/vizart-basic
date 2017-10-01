@@ -3,21 +3,25 @@ import { scaleLinear } from 'd3-scale';
 import isFunction from 'lodash-es/isFunction';
 import drawCircularText from '../../canvas/draw-circular-text';
 
-const getLabel = (opt, i)=> {
+const getLabel = (opt, d, i)=> {
     return opt.plots.axisLabel && isFunction(opt.plots.axisLabel)
-        ? opt.plots.axisLabel(opt.data.x.values[i])
-        : opt.data.x.values[i];
+        ? opt.plots.axisLabel(d, i)
+        : d;
 }
 
 const drawAxisLabel = (context, opt, innerRadius, outerRadius)=> {
-    const axisArc = arc()
-        .innerRadius(outerRadius)
-        .outerRadius(outerRadius);
-
-    const axisNum = 6;
+    let axisNum = 6;
     const axisScale = scaleLinear().domain([0, axisNum]).range([0, 2 * Math.PI]);
 
+    const axes = opt.data.x.values;
+    const axesLength = axes.length;
 
+    if (axesLength >= axisNum) {
+    } else {
+        axisNum = axesLength;
+    }
+
+    const s1 = scaleLinear().domain([0, axisNum]).range([0, axesLength]);
 
     for (let i = 0; i < axisNum; i++) {
 
@@ -30,7 +34,7 @@ const drawAxisLabel = (context, opt, innerRadius, outerRadius)=> {
         //     centroidPoint[1],
         //     30);
         //
-        drawCircularText(context, getLabel(opt, i) + '', 14, 'Oswald',
+        drawCircularText(context, getLabel(opt, axes[s1(i)], s1(i)) + '', 14, 'Oswald',
             opt.chart.width / 2, opt.chart.height / 2, outerRadius + opt.plots.axisLabelOffset,
             axisScale(i), 5, 1);
     }
