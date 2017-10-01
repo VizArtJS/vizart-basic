@@ -19,13 +19,11 @@ const drawGridLabel = (context, opt, innerRadius, outerRadius, minY, maxY)=> {
         const label = (labelScale(i) > 0 && labelScale(i) < 1 )
             ? formatter(labelScale(i))
             : Math.round(labelScale(i));
-        
+
         return (opt.plots.levelLabel && isFunction(opt.plots.levelLabel))
             ? opt.plots.levelLabel(label)
             : label;
     }
-
-
 
     switch (opt.plots.levelLabelPosition) {
         case 'bottom':
