@@ -30,7 +30,7 @@ const drawArea = (context, state, opt, innerRadius, outerRadius)=> {
         context.fill();
 
         context.lineWidth = opt.plots.strokeWidth;
-        context.strokeStyle = transparentColor(n.c, opt.plots.strokeOpacity);
+        context.strokeStyle = transparentColor(n.c, n.strokeAlpha);
         context.stroke();
     }
 

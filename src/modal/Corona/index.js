@@ -45,6 +45,7 @@ class Corona extends AbstractStackedCartesianChart {
                     c: this._c(d),
                     s: d.key,
                     alpha: 0,
+                    strokeAlpha: this._options.plots.strokeOpacity,
                     values: d.values.map((e, i) => {
                         return {
                             key: d.key,
@@ -64,6 +65,7 @@ class Corona extends AbstractStackedCartesianChart {
                 c: this._c(d),
                 s: d.key,
                 alpha: this._options.plots.areaOpacity,
+                strokeAlpha: this._options.plots.strokeOpacity,
                 values: d.values.map((e, i) => {
                     return {
                         key: d.key,
@@ -135,12 +137,17 @@ class Corona extends AbstractStackedCartesianChart {
 
                         const optCopy = cloneDeep(that._options);
                         optCopy.plots.levelColor = transparentColor(optCopy.plots.levelColor, fadeOpacity);
+                        optCopy.plots.strokeOpacity = 0;
                         drawCanvas(that._frontContext,
                             finalState.map(d=>{
                                 const p = d;
                                 p.alpha = d.key === closest.data.s
-                                    ? 0.6
+                                    ? 0.4
                                     : fadeOpacity;
+
+                                p.strokeAlpha = d.key === closest.data.s
+                                    ? 1
+                                    : 0;
 
                                 return p;
                             }),
