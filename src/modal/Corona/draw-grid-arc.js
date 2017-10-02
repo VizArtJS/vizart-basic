@@ -1,7 +1,10 @@
 import { arc } from 'd3-shape';
 import getLevels from './get-grid-levels';
+import getRadius from "./get-radius";
 
-const drawGridArc = (context, opt, innerRadius, outerRadius)=> {
+const drawGridArc = (context, opt)=> {
+    const [innerRadius, outerRadius] = getRadius(opt);
+
     context.save();
     context.translate(opt.chart.width / 2, opt.chart.height / 2);
     const levels = getLevels(opt);

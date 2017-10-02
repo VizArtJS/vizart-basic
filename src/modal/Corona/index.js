@@ -15,6 +15,7 @@ import drawCanvas from './draw-canvas';
 import highlight from './highlight';
 import transparentColor from "./get-transparent-color";
 import getRadius from './get-radius';
+import animateStates from "./tween-states";
 
 class Corona extends AbstractStackedCartesianChart {
     constructor(canvasId, _userOptions) {
@@ -23,11 +24,12 @@ class Corona extends AbstractStackedCartesianChart {
 
     _animate() {
         const [innerRadius, outerRadius] = getRadius(this._options);
+        const dataRange = [this._data.minY, this._data.maxY];
         const radiusScale = scaleLinear()
-            .domain([this._getMetric().scale(this._data.minY), this._getMetric().scale(this._data.maxY)])
+            .domain(dataRange.map(d=>this._getMetric().scale(d)))
             .range([innerRadius, outerRadius]);
 
-        const rawRadiusScale = radiusScale.copy().domain([this._data.minY, this._data.maxY]);
+        const rawRadiusScale = radiusScale.copy().domain(dataRange);
 
         const initialState = this.previousState
             ? this.previousState
@@ -36,6 +38,7 @@ class Corona extends AbstractStackedCartesianChart {
                     key: d.key,
                     c: this._c(d),
                     s: d.key,
+                    range: dataRange,
                     alpha: 0,
                     strokeAlpha: this._options.plots.strokeOpacity,
                     values: d.values.map((e, i) => {
@@ -56,6 +59,7 @@ class Corona extends AbstractStackedCartesianChart {
                 key: d.key,
                 c: this._c(d),
                 s: d.key,
+                range: dataRange,
                 alpha: this._options.plots.areaOpacity,
                 strokeAlpha: this._options.plots.strokeOpacity,
                 values: d.values.map((e, i) => {
@@ -73,99 +77,81 @@ class Corona extends AbstractStackedCartesianChart {
         // cache finalState as the initial state of next animation call
         this.previousState = finalState;
 
-        const interpolateParticles = interpolateArray(initialState, finalState);
-        const Duration = this._options.animation.duration.update;
-
         let that = this;
         const ctx = that._frontContext;
         const opt = that._options;
 
-        const batchRendering = timer((elapsed) => {
-            const t = Math.min(1, easeCubic(elapsed / Duration));
-
-            drawCanvas(ctx,
-                interpolateParticles(t),
-                opt,
-                this._data.minY,
-                this._data.maxY);
-
-            if (t === 1) {
-                batchRendering.stop();
-
-                that._voronoi = applyVoronoi(ctx, opt, finalState.reduce((acc, p)=>{
-                        acc = acc.concat(p.values.map(d=>{
-                            return {
-                                s: p.key,
-                                label: that._getDimensionVal(d.data),
-                                metric: d.data[p.key],
-                                x: d.r * Math.sin(d.angle) + opt.chart.width / 2,
-                                y: opt.chart.height - (d.r * Math.cos(d.angle) + opt.chart.height / 2),
-                                c: p.c,
-                                d: d,
-                                data: d.data
-                            }
-                        }));
-                        return acc;
-                    }, []));
-
-                /**
-                 * callback for when the mouse moves across the overlay
-                 */
-                function mouseMoveHandler() {
-                    // get the current mouse position
-                    const [mx, my] = mouse(this);
-                    const QuadtreeRadius = 100;
-                    // use the new diagram.find() function to find the Voronoi site
-                    // closest to the mouse, limited by max distance voronoiRadius
-                    const closest = that._voronoi.find(mx, my, QuadtreeRadius);
-                    if (closest) {
-                        const fadeOpacity = 0.1;
-
-                        const optCopy = cloneDeep(opt);
-                        optCopy.plots.levelColor = transparentColor(optCopy.plots.levelColor, fadeOpacity);
-                        optCopy.plots.strokeOpacity = 0;
-
-                        drawCanvas(ctx,
-                            finalState.map(d=>{
-                                const p = d;
-                                p.alpha = d.key === closest.data.s
-                                    ? 0.4
-                                    : fadeOpacity;
-
-                                p.strokeAlpha = d.key === closest.data.s
-                                    ? 1
-                                    : 0;
-
-                                return p;
-                            }),
-                            optCopy,
-                            that._data.minY,
-                            that._data.maxY);
-
-                        highlight(ctx, opt, closest.data);
-                    } else {
-                        drawCanvas(ctx,
-                            interpolateParticles(t),
-                            that._options,
-                            that._data.minY,
-                            that._data.maxY);
+        animateStates(initialState,
+            finalState,
+            opt.animation.duration.update,
+            ctx,
+            opt).then(res=>{
+            that._voronoi = applyVoronoi(ctx, opt, finalState.reduce((acc, p)=>{
+                acc = acc.concat(p.values.map(d=>{
+                    return {
+                        s: p.key,
+                        label: that._getDimensionVal(d.data),
+                        metric: d.data[p.key],
+                        x: d.r * Math.sin(d.angle) + opt.chart.width / 2,
+                        y: opt.chart.height - (d.r * Math.cos(d.angle) + opt.chart.height / 2),
+                        c: p.c,
+                        d: d,
+                        data: d.data
                     }
-                }
+                }));
+                return acc;
+            }, []));
 
-                function mouseOutHandler() {
+            /**
+             * callback for when the mouse moves across the overlay
+             */
+            function mouseMoveHandler() {
+                // get the current mouse position
+                const [mx, my] = mouse(this);
+                const QuadtreeRadius = 100;
+                // use the new diagram.find() function to find the Voronoi site
+                // closest to the mouse, limited by max distance voronoiRadius
+                const closest = that._voronoi.find(mx, my, QuadtreeRadius);
+                if (closest) {
+                    const fadeOpacity = 0.1;
+
+                    const optCopy = cloneDeep(opt);
+                    optCopy.plots.levelColor = transparentColor(optCopy.plots.levelColor, fadeOpacity);
+                    optCopy.plots.strokeOpacity = 0;
+
                     drawCanvas(ctx,
-                        interpolateParticles(t),
-                        opt,
-                        that._data.minY,
-                        that._data.maxY);
+                        finalState.map(d=>{
+                            const p = d;
+                            p.alpha = d.key === closest.data.s
+                                ? 0.4
+                                : fadeOpacity;
+
+                            p.strokeAlpha = d.key === closest.data.s
+                                ? 1
+                                : 0;
+
+                            return p;
+                        }),
+                        optCopy);
+
+                    highlight(ctx, opt, closest.data);
+                } else {
+                    drawCanvas(ctx, res, opt);
                 }
-
-                that._frontCanvas.on('mousemove', mouseMoveHandler);
-                that._frontCanvas.on('mouseout', mouseOutHandler);
-
-                that._listeners.call('rendered');
             }
+
+            function mouseOutHandler() {
+                drawCanvas(ctx, res, opt);
+            }
+
+            that._frontCanvas.on('mousemove', mouseMoveHandler);
+            that._frontCanvas.on('mouseout', mouseOutHandler);
+
+            that._listeners.call('rendered');
         });
+
+
+
 
     }
 

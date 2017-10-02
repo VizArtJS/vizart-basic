@@ -4,20 +4,18 @@ import { easeCubic } from 'd3-ease';
 
 import drawCanvas from './draw-canvas';
 
-const animateStates = (initialState, finalState, duration, context, opt)=> {
+const animateStates = (initialState, finalState, duration, context, opt, dataRange)=> {
     return new Promise((resolve, reject)=> {
         const interpolateParticles = interpolateArray(initialState, finalState);
 
         const batchRendering = timer( (elapsed)=> {
             const t = Math.min(1, easeCubic(elapsed / duration));
 
-            drawCanvas(context,
-                interpolateParticles(t),
-                opt);
+            drawCanvas(context, interpolateParticles(t), opt, dataRange);
 
             if (t === 1) {
                 batchRendering.stop();
-                resolve();
+                resolve(interpolateParticles(t));
             }
         });
     });

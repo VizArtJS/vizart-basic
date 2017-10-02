@@ -1,10 +1,13 @@
 import { scaleLinear } from 'd3-scale';
+
 import drawCircularText from '../../canvas/draw-circular-text';
 import getAxisLabel from './get-axis-label';
+import getRadius from "./get-radius";
 
-const drawAxisLabel = (context, opt, innerRadius, outerRadius)=> {
+const drawAxisLabel = (context, opt)=> {
     let axisNum = 6;
     const axisScale = scaleLinear().domain([0, axisNum]).range([0, 2 * Math.PI]);
+    const [innerRadius, outerRadius] = getRadius(opt);
 
     const axes = opt.data.x.values;
     const axesLength = axes.length;

@@ -1,18 +1,26 @@
 import { scaleLinear } from 'd3-scale';
-import getLevels from './get-grid-levels';
 import isFunction from 'lodash-es/isFunction';
 import { format } from 'd3-format';
 
+import getLevels from './get-grid-levels';
+import getRadius from "./get-radius";
+
 const formatter = format(".1f");
 
-const drawGridLabel = (context, opt, innerRadius, outerRadius, minY, maxY)=> {
+const drawGridLabel = (context, state, opt)=> {
+    if (state.length <= 0) {
+        return;
+    }
+
+    const [innerRadius, outerRadius] = getRadius(opt);
+
     context.save();
     context.translate(opt.chart.width / 2, opt.chart.height / 2);
 
     const levels = getLevels(opt);
 
     const labelScale = scaleLinear().domain([0, levels])
-        .range([minY, maxY])
+        .range(state[0].range)
         .nice();
 
     const getLabel = i=> {

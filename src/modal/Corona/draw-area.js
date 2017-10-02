@@ -4,8 +4,11 @@ import {
 } from 'd3-shape';
 
 import transparentColor from './get-transparent-color';
+import getRadius from "./get-radius";
 
-const drawArea = (context, state, opt, innerRadius)=> {
+const drawArea = (context, state, opt)=> {
+    const [innerRadius, outerRadius] = getRadius(opt);
+
     context.save();
     context.translate(opt.chart.width / 2, opt.chart.height / 2);
 
