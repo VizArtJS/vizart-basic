@@ -8,7 +8,7 @@ import { hsl } from 'd3-color';
  * @param scheme color scheme
  * @param opacity fill opacity
  */
-const linearGradient = (context, scheme, opacity = 1)=> {
+const verticalGradient = (context, scheme, opacity = 1)=> {
     let grd = context.createLinearGradient(
         context.canvas.clientWidth / 2,
         context.canvas.clientHeight,
@@ -31,4 +31,4 @@ const linearGradient = (context, scheme, opacity = 1)=> {
     return grd;
 }
 
-export default linearGradient;
+export default verticalGradient;

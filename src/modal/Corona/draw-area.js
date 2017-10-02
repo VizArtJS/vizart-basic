@@ -5,6 +5,7 @@ import {
 
 import transparentColor from './get-transparent-color';
 import getRadius from "./get-radius";
+import radialGradient from '../../canvas/radial-gradient';
 
 const drawArea = (context, state, opt)=> {
     const [innerRadius, outerRadius] = getRadius(opt);
@@ -28,7 +29,15 @@ const drawArea = (context, state, opt)=> {
                 .context(context);
 
         context.beginPath();
-        context.fillStyle = transparentColor(n.c, n.alpha);
+
+        if (opt.plots.gradientArea === true) {
+            context.fillStyle = radialGradient(context, n.c,n.alpha,
+                opt.chart.width / 2, opt.chart.height / 2,
+                innerRadius, outerRadius);
+
+        } else {
+            context.fillStyle = transparentColor(n.c, n.alpha);
+        }
         shape(n.values);
         context.fill();
 

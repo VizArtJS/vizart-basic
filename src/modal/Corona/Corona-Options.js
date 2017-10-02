@@ -29,11 +29,12 @@ const CoronaOptions = {
         strokeOpacity: 0,
         strokeWidth: 4, 		//The width of the stroke around each blob
 
-        areaOpacity: 0.35, 	//The opacity of the area of the blob
-        maxValue:500, 			//What is the value that the biggest circle will represent
-        wrapWidth: 60, 		//The number of pixels after which a label needs to be given a new line
+        areaOpacity: 0.35, 	//The opacity of the area of the blob,
+        gradientArea: true,
+
         innerRadiusRatio: 0.4,
         outerRadiusMargin: 60,
+
         stackLayout: true, // stack areas
         stackMethod: Stacks.Zero,
         isArea: true	//If true the area and stroke will follow a round path (cardinal-closed),

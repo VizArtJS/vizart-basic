@@ -45,30 +45,32 @@
                 levelLabelColor: 'rgba(255, 255, 255, 0.8)',
                 levelLabelPosition: 'top', //'top', 'bottom', 'right'
                 levelLabel: function(d){ return d + ' views'},
+
                 axisLabel: function(d, i){ return i===0 ? '' : d + 'am'},
                 axisLabelOffset: 10,
                 axisLabelColor: 'rgba(255, 255, 255, 0.8)',
-                strokeOpacity: 0,
+
                 highlightStrokeColor: 'rgba(255, 255, 255, 0.7)',
                 highlightLabelColor: 'rgba(255, 255, 255, 1)',
                 highlightNodeColor: '#000000',
+
+                strokeOpacity: 0,
                 strokeWidth: 1, 		//The width of the stroke around each blob
+
                 areaOpacity: .5, 	//The opacity of the area of the blob
-                maxValue: 0, 			//What is the value that the biggest circle will represent
-                labelFactor: 1.15,
-                wrapWidth: 60, 		//The number of pixels after which a label needs to be given a new line
+                gradientArea: false,
+
                 innerRadiusRatio: 0.4,
                 outerRadiusMargin: 60,
-                sortArea: true, // show smallest area on top
                 stackLayout: false, // stack areas
                 stackMethod: 'zero',
                 isArea: true	//If true the area and stroke will follow a round path (cardinal-closed),
             },
             color: {
                 scheme: [
-                    '#ffe100',
-                    '#ffbf00',
-                    '#ff5730',
+//                    '#ffe100',
+//                    '#ffbf00',
+//                    '#ff5730',
                     '#eb3ba6'
                 ]
             }
