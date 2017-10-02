@@ -83,12 +83,15 @@ class Corona extends AbstractStackedCartesianChart {
         const interpolateParticles = interpolateArray(initialState, finalState);
 
         let that = this;
+        const ctx = that._frontContext;
+        const opt = that._options;
+
         const batchRendering = timer((elapsed) => {
             const t = Math.min(1, easeCubic(elapsed / Duration));
 
-            drawCanvas(that._frontContext,
+            drawCanvas(ctx,
                 interpolateParticles(t),
-                that._options,
+                opt,
                 innerRadius,
                 outerRadius,
                 this._data.minY,
@@ -97,15 +100,14 @@ class Corona extends AbstractStackedCartesianChart {
             if (t === 1) {
                 batchRendering.stop();
 
-                that._voronoi = applyVoronoi(that._frontContext,
-                    that._options, finalState.reduce((acc, p)=>{
+                that._voronoi = applyVoronoi(ctx, opt, finalState.reduce((acc, p)=>{
                         acc = acc.concat(p.values.map(d=>{
                             return {
                                 s: p.key,
                                 label: that._getDimensionVal(d.data),
                                 metric: d.data[p.key],
-                                x: d.r * Math.sin(d.angle) + that._options.chart.width / 2,
-                                y: that._options.chart.height - (d.r * Math.cos(d.angle) + that._options.chart.height / 2),
+                                x: d.r * Math.sin(d.angle) + opt.chart.width / 2,
+                                y: opt.chart.height - (d.r * Math.cos(d.angle) + opt.chart.height / 2),
                                 c: p.c,
                                 d: d,
                                 data: d.data
@@ -128,16 +130,13 @@ class Corona extends AbstractStackedCartesianChart {
                     // closest to the mouse, limited by max distance voronoiRadius
                     const closest = that._voronoi.find(mx, my, QuadtreeRadius);
                     if (closest) {
-                        // that._tooltip.style("left", closest[0] + 5 + "px")
-                        //     .style("top", closest[1] + 5+ "px")
-                        //     .html( that.tooltip(closest.data.data));
-
                         const fadeOpacity = 0.1;
 
-                        const optCopy = cloneDeep(that._options);
+                        const optCopy = cloneDeep(opt);
                         optCopy.plots.levelColor = transparentColor(optCopy.plots.levelColor, fadeOpacity);
                         optCopy.plots.strokeOpacity = 0;
-                        drawCanvas(that._frontContext,
+
+                        drawCanvas(ctx,
                             finalState.map(d=>{
                                 const p = d;
                                 p.alpha = d.key === closest.data.s
@@ -156,13 +155,10 @@ class Corona extends AbstractStackedCartesianChart {
                             that._data.minY,
                             that._data.maxY);
 
-                        highlight(that._frontContext, that._options, closest.data);
-                        that._tooltip.style("opacity", 1);
+                        highlight(ctx, opt, closest.data);
                     } else {
-                        that._tooltip.style("opacity", 0);
-
-                        drawCanvas(that._frontContext,
-                            interpolateParticles(t),
+                        drawCanvas(ctx,
+                            finalState,
                             that._options,
                             innerRadius,
                             outerRadius,
@@ -172,11 +168,9 @@ class Corona extends AbstractStackedCartesianChart {
                 }
 
                 function mouseOutHandler() {
-                    that._tooltip.style("opacity", 0);
-
-                    drawCanvas(that._frontContext,
-                        interpolateParticles(t),
-                        that._options,
+                    drawCanvas(ctx,
+                        finalState,
+                        opt,
                         innerRadius,
                         outerRadius,
                         that._data.minY,
