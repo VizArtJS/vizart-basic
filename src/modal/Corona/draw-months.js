@@ -13,18 +13,28 @@ const ShortMonths = [
 const Height = 20;
 const Margin = 5;
 
-const drawMonths = (context, opt)=> {
+const drawMonths = (context, opt, onTop = false)=> {
     context.save();
     context.translate(opt.chart.width / 2, opt.chart.height / 2);
 
     const [innerRadius, outerRadius] = getRadius(opt);
 
-    const gridArc = arc()
-        .innerRadius(innerRadius - Margin - Height)
-        .outerRadius(innerRadius - Margin)
-        .cornerRadius(2)
-        .context(context);
 
+    const gridArc = onTop === true
+        ? arc()
+                .innerRadius(outerRadius + Margin)
+                .outerRadius(outerRadius + Margin + Height)
+                .cornerRadius(2)
+                .context(context)
+        : arc()
+            .innerRadius(innerRadius - Margin - Height)
+            .outerRadius(innerRadius - Margin)
+            .cornerRadius(2)
+            .context(context);
+
+    const textRadius = onTop === true
+        ? outerRadius + Margin + Height / 3 + 3
+        : innerRadius - Margin - Height / 2 - 3;
 
     context.beginPath();
 
@@ -45,6 +55,7 @@ const drawMonths = (context, opt)=> {
         context.textAlign = "center";
         context.textBaseline = 'middle';
         context.fillStyle = '#919596';
+
         drawCircularText(context,
             d,
             12,
@@ -52,7 +63,7 @@ const drawMonths = (context, opt)=> {
             '#919596',
             0,
             0,
-            innerRadius - Margin - Height / 2 - 3,
+            textRadius,
             start + slice / 2,
             0);    }
 
