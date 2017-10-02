@@ -1,23 +1,19 @@
-import { AbstractStackedCartesianChart } from '../../base';
-import { wrapSVGText } from 'vizart-core'
-import { CoronaOptions } from './Corona-Options';
-
-import createCartesianStackedOpt from '../../options/createCartesianStackedOpt';
-
-import { Stacks } from '../../data';
-
-
 import { scaleLinear } from 'd3-scale';
 import { interpolateArray } from 'd3-interpolate';
 import { timer } from 'd3-timer';
 import { mouse } from 'd3-selection';
 import { easeCubic } from 'd3-ease';
+import cloneDeep from 'lodash-es/cloneDeep';
+
+import { AbstractStackedCartesianChart } from '../../base';
+import { CoronaOptions } from './Corona-Options';
+import createCartesianStackedOpt from '../../options/createCartesianStackedOpt';
+import { Stacks } from '../../data';
+import applyVoronoi from '../../canvas/voronoi/apply';
 
 import drawCanvas from './draw-canvas';
-import applyVoronoi from '../../canvas/voronoi/apply';
 import highlight from './highlight';
 import transparentColor from "./get-transparent-color";
-import cloneDeep from 'lodash-es/cloneDeep';
 
 class Corona extends AbstractStackedCartesianChart {
     constructor(canvasId, _userOptions) {
