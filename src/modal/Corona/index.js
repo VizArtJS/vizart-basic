@@ -1,8 +1,5 @@
 import { scaleLinear } from 'd3-scale';
-import { interpolateArray } from 'd3-interpolate';
-import { timer } from 'd3-timer';
 import { mouse } from 'd3-selection';
-import { easeCubic } from 'd3-ease';
 import cloneDeep from 'lodash-es/cloneDeep';
 
 import { AbstractStackedCartesianChart } from '../../base';

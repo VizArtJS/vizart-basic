@@ -1,9 +1,9 @@
-import { Stacks } from '../../data';
-import { DefaultCategoricalColor } from 'vizart-core';
+import Corona from '../Corona';
+import createCartesianStackedOpt from '../../options/createCartesianStackedOpt';
 
-const CoronaOptions = {
+const RadarOptions = {
     chart: {
-        type: 'corona',
+        type: 'radar',
         margin: {
             top: 0,
             bottom: 0,
@@ -26,24 +26,31 @@ const CoronaOptions = {
         highlightNodeColor: 'green',
         highlightLabelColor: '#000000',
 
-        strokeOpacity: 0,
+        strokeOpacity: 1,
         strokeWidth: 4, 		//The width of the stroke around each blob
-
-        areaOpacity: 0.35, 	//The opacity of the area of the blob,
-        gradientArea: true,
 
         innerRadiusRatio: 0.4,
         outerRadiusMargin: 60,
-
-        stackLayout: true, // stack areas
-        stackMethod: Stacks.Zero,
-        isArea: true	//If true the area and stroke will follow a round path (cardinal-closed),
     }
 };
 
+class Radar extends Corona {
+    constructor(canvasId, _userOptions) {
+        super(canvasId, _userOptions);
+    }
 
+    options(_userOpt){
+        super.options(_userOpt);
 
-export {
-    CoronaOptions,
-    RadarOptions
+        this._options.plots.isArea = false;
+        this._options.plots.stackLayout = false;
+
+        return this._options;
+    }
+
+    createOptions(_userOpt) {
+        return createCartesianStackedOpt(RadarOptions, _userOpt);
+    };
 }
+
+export default Radar;

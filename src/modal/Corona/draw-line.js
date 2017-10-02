@@ -22,6 +22,7 @@ const drawLine = (context, state, opt)=> {
 
         context.beginPath();
         context.strokeStyle = transparentColor(n.c, n.strokeAlpha);
+        context.lineWidth = opt.plots.strokeWidth;
         shape(n.values);
         context.stroke();
     }
