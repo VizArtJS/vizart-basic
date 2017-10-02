@@ -18,7 +18,6 @@ const radialGradient = (context, scheme, opacity, centerX, centerY, innerRadius,
         outerRadius);
 
     const stops = linearStops(scheme, opacity);
-
     for (const {offset, color} of stops) {
         grd.addColorStop(offset, color);
     }
