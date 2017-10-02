@@ -88,8 +88,6 @@ class Corona extends AbstractStackedCartesianChart {
             drawCanvas(ctx,
                 interpolateParticles(t),
                 opt,
-                innerRadius,
-                outerRadius,
                 this._data.minY,
                 this._data.maxY);
 
@@ -111,9 +109,6 @@ class Corona extends AbstractStackedCartesianChart {
                         }));
                         return acc;
                     }, []));
-
-                // that._quadtree = applyQuadtree(that._frontContext,
-                //     that._options, finalState);
 
                 /**
                  * callback for when the mouse moves across the overlay
@@ -146,8 +141,6 @@ class Corona extends AbstractStackedCartesianChart {
                                 return p;
                             }),
                             optCopy,
-                            innerRadius,
-                            outerRadius,
                             that._data.minY,
                             that._data.maxY);
 
@@ -156,8 +149,6 @@ class Corona extends AbstractStackedCartesianChart {
                         drawCanvas(ctx,
                             finalState,
                             that._options,
-                            innerRadius,
-                            outerRadius,
                             that._data.minY,
                             that._data.maxY);
                     }
@@ -167,8 +158,6 @@ class Corona extends AbstractStackedCartesianChart {
                     drawCanvas(ctx,
                         finalState,
                         opt,
-                        innerRadius,
-                        outerRadius,
                         that._data.minY,
                         that._data.maxY);
                 }

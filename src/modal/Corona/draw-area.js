@@ -5,7 +5,7 @@ import {
 
 import transparentColor from './get-transparent-color';
 
-const drawArea = (context, state, opt, innerRadius, outerRadius)=> {
+const drawArea = (context, state, opt, innerRadius)=> {
     context.save();
     context.translate(opt.chart.width / 2, opt.chart.height / 2);
 
