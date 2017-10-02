@@ -14,6 +14,7 @@ import applyVoronoi from '../../canvas/voronoi/apply';
 import drawCanvas from './draw-canvas';
 import highlight from './highlight';
 import transparentColor from "./get-transparent-color";
+import getRadius from './get-radius';
 
 class Corona extends AbstractStackedCartesianChart {
     constructor(canvasId, _userOptions) {
@@ -21,16 +22,12 @@ class Corona extends AbstractStackedCartesianChart {
     }
 
     _animate() {
-        const outerRadius = Math.min(this._options.chart.innerWidth / 2, this._options.chart.innerHeight / 2) - this._options.plots.outerRadiusMargin;
-        const innerRadius = outerRadius * this._options.plots.innerRadiusRatio;
+        const [innerRadius, outerRadius] = getRadius(this._options);
         const radiusScale = scaleLinear()
             .domain([this._getMetric().scale(this._data.minY), this._getMetric().scale(this._data.maxY)])
             .range([innerRadius, outerRadius]);
 
         const rawRadiusScale = radiusScale.copy().domain([this._data.minY, this._data.maxY]);
-
-
-        const Duration = this._options.animation.duration.update;
 
         const initialState = this.previousState
             ? this.previousState
@@ -77,6 +74,7 @@ class Corona extends AbstractStackedCartesianChart {
         this.previousState = finalState;
 
         const interpolateParticles = interpolateArray(initialState, finalState);
+        const Duration = this._options.animation.duration.update;
 
         let that = this;
         const ctx = that._frontContext;
