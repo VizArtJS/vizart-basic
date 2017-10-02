@@ -145,7 +145,7 @@ class Corona extends AbstractStackedCartesianChart {
                         highlight(ctx, opt, closest.data);
                     } else {
                         drawCanvas(ctx,
-                            finalState,
+                            interpolateParticles(t),
                             that._options,
                             that._data.minY,
                             that._data.maxY);
@@ -154,7 +154,7 @@ class Corona extends AbstractStackedCartesianChart {
 
                 function mouseOutHandler() {
                     drawCanvas(ctx,
-                        finalState,
+                        interpolateParticles(t),
                         opt,
                         that._data.minY,
                         that._data.maxY);
