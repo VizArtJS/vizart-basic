@@ -1,7 +1,7 @@
 import isNumber from 'lodash-es/isNumber';
 import isFinite from 'lodash-es/isFinite';
 
-const getLevels = opt=> {
+const getGridLevels = opt=> {
     let levels = opt.data.y[0].ticksTier + 1;
 
     if (isNumber(opt.plots.levels)
@@ -13,4 +13,4 @@ const getLevels = opt=> {
     return levels;
 }
 
-export default getLevels;
+export default getGridLevels;

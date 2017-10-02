@@ -1,5 +1,5 @@
 import { scaleLinear } from 'd3-scale';
-import getLevels from './grid-levels';
+import getLevels from './get-grid-levels';
 import isFunction from 'lodash-es/isFunction';
 import { format } from 'd3-format';
 

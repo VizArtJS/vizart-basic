@@ -1,5 +1,5 @@
 import { arc } from 'd3-shape';
-import getLevels from './grid-levels';
+import getLevels from './get-grid-levels';
 
 const drawGridArc = (context, opt, innerRadius, outerRadius)=> {
     context.save();

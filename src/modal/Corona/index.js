@@ -16,7 +16,7 @@ import { easeCubic } from 'd3-ease';
 import drawCanvas from './draw-canvas';
 import applyVoronoi from '../../canvas/voronoi/apply';
 import highlight from './highlight';
-import transparentColor from "./transparent-color";
+import transparentColor from "./get-transparent-color";
 import cloneDeep from 'lodash-es/cloneDeep';
 
 class Corona extends AbstractStackedCartesianChart {

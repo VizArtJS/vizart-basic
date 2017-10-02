@@ -2,7 +2,7 @@ import {
     radialLine,
     curveLinearClosed
 } from 'd3-shape';
-import transparentColor from './transparent-color';
+import transparentColor from './get-transparent-color';
 const drawLine = (context, state, opt, innerRadius, outerRadius)=> {
     context.save();
     context.translate(opt.chart.width / 2, opt.chart.height / 2);
