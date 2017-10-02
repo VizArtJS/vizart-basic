@@ -10,9 +10,9 @@ import drawPolyLine from './draw-polyline-label';
 const drawCanvas = (context, state, opt)=> {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
-    const radius = Math.min(opt.chart.innerWidth, opt.chart.innerHeight) / 2;
+    const radius = Math.min(opt.chart.innerWidth, opt.chart.innerHeight) / 2 - opt.plots.outerRadiusMargin;
     const arcDiagram = arc()
-        .outerRadius(radius * 0.8)
+        .outerRadius(radius)
         .innerRadius(() => opt.plots.isDonut ? radius * opt.plots.innerRadiusRatio : 0)
         .context(context);
 
@@ -32,10 +32,10 @@ const drawCanvas = (context, state, opt)=> {
         context.fill();
 
         const outerArc = arc()
-            .innerRadius(radius * 0.8)
-            .outerRadius(radius * 0.8)
+            .innerRadius(radius)
+            .outerRadius(radius)
             .context(context);
-        const centroid = centroidOnArc(outerArc, context, radius * 0.8, s);
+        const centroid = centroidOnArc(outerArc, context, radius, s);
 
         drawControlPoint(context, s, centroid, opt);
         drawPolyLine(context, s, centroid, opt);

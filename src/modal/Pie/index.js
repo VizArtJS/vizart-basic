@@ -21,6 +21,7 @@ const DefaultOptions = {
         othersTitle: 'Others',
         isDonut: false,
         innerRadiusRatio: 0.4,
+        outerRadiusMargin: 80,
         labelOffset: 30,
         labelControlPointRadius: 6,
         labelPosition: 'auto',
