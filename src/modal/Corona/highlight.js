@@ -44,7 +44,7 @@ const highlight = (context, opt, datum)=> {
         opt.plots.highlightLabelColor,
         opt.chart.width / 2,
         opt.chart.height / 2,
-        datum.d.r + opt.plots.axisLabelOffset,
+        datum.d.r + 10,
         datum.d.angle, 5);
 
     context.restore();

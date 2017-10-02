@@ -32,6 +32,11 @@ const CoronaOptions = {
         areaOpacity: 0.35, 	//The opacity of the area of the blob,
         gradientArea: true,
 
+        drawBoundary: true,
+        boundaryOffset: 10,
+        boundaryOpacity: 0.5,
+        boundaryGradient: ['white', '#eb3ba6'],
+
         innerRadiusRatio: 0.4,
         outerRadiusMargin: 60,
 

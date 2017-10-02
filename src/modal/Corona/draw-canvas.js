@@ -1,6 +1,7 @@
 import drawGridArc from "./draw-grid-arc";
 import drawGridLabel from "./draw-grid-label";
 import drawAxisLabel from './draw-axis-label';
+import drawGradientBoundary from './draw-gradient-bundary';
 import drawArea from './draw-area';
 import drawLine from './draw-line';
 
@@ -17,8 +18,7 @@ const drawCanvas = (context, state, opt)=> {
         drawLine(context, state, opt)
     }
 
-    context.restore();
-
+    drawGradientBoundary(context, state, opt);
 }
 
 export default drawCanvas;
