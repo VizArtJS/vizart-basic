@@ -17,19 +17,23 @@ const CoronaOptions = {
         levelLabelColor: '#737373',
         levelLabelPosition: 'top', //'top', 'bottom', 'right'
         levelLabel: null,
+
         axisLabel: null,
-        axisLabelOffset: 10,
-        strokeOpacity: 0,
-        strokeWidth: 4, 		//The width of the stroke around each blob
+        axisLabelColor:'#737373',
+        axisLabelOffset: 10, //How much farther than the radius of the outer circle should the labels be placed
+
         highlightStrokeColor: '#000000',
         highlightNodeColor: 'green',
+        highlightLabelColor: '#000000',
+
+        strokeOpacity: 0,
+        strokeWidth: 4, 		//The width of the stroke around each blob
+
         areaOpacity: 0.35, 	//The opacity of the area of the blob
-        maxValue: 0, 			//What is the value that the biggest circle will represent
-        labelFactor: 1.15, 	//How much farther than the radius of the outer circle should the labels be placed
+        maxValue:500, 			//What is the value that the biggest circle will represent
         wrapWidth: 60, 		//The number of pixels after which a label needs to be given a new line
         innerRadiusRatio: 0.4,
         outerRadiusMargin: 60,
-        sortArea: true, // show smallest area on top
         stackLayout: true, // stack areas
         stackMethod: Stacks.Zero,
         isArea: true	//If true the area and stroke will follow a round path (cardinal-closed),

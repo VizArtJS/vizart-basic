@@ -3,7 +3,6 @@ import { wrapSVGText } from 'vizart-core'
 import { CoronaOptions } from './Corona-Options';
 
 import createCartesianStackedOpt from '../../options/createCartesianStackedOpt';
-import labelPrecision from './label-precision';
 
 import { Stacks } from '../../data';
 

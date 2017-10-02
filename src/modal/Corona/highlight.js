@@ -54,7 +54,7 @@ const highlight = (context, opt, datum)=> {
     context.beginPath();
     context.textBaseline = 'alphabetic';
     context.textAlign = 'center'; // Ensure we draw in exact center
-    context.fillStyle = 'white';
+    context.fillStyle = opt.plots.highlightLabelColor;
     context.fillText(getLevelLabel(opt, datum.metric), opt.chart.width / 2, opt.chart.height / 2 - lineOffset);
     context.fillText(datum.s, opt.chart.width / 2, opt.chart.height / 2 + lineOffset);
     context.restore();
