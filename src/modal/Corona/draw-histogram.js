@@ -1,4 +1,5 @@
 import { randomUniform } from 'd3-random';
+import { arc } from 'd3-shape';
 import getRadius from './get-radius';
 const SliceNum = 144;
 
@@ -14,10 +15,27 @@ const limitLine = (length, start, radius)=> {
 const drawHistogram = (context, state, opt)=> {
     const [innerRadius, outerRadius] = getRadius(opt);
 
-    const arcRadius = innerRadius - 30;
+    const arcRadius = innerRadius - 35;
     const slice = 2 * Math.PI / SliceNum;
 
-    const random = randomUniform(20, 50);
+    const random = randomUniform(10, 30);
+
+    const shape = arc()
+        .innerRadius(arcRadius + 3)
+        .outerRadius(arcRadius + 3)
+        .startAngle(0)
+        .endAngle(Math.PI / 2)
+        .context(context);
+
+    context.save();
+    context.translate(opt.chart.width / 2, opt.chart.height / 2);
+
+    context.lineWidth = 2;
+    context.lineCap = 'round';
+    context.strokeStyle = '#BFBFBF';
+    shape();
+    context.stroke();
+    context.restore();
 
     for (let i = 0; i < SliceNum; i++) {
         const start = slice * i;
@@ -39,6 +57,8 @@ const drawHistogram = (context, state, opt)=> {
         context.lineTo(newX, newY);
 
         context.stroke();
+
+
         // context.closePath();
         context.restore();
     }
