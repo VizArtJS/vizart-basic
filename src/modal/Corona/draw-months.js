@@ -10,6 +10,7 @@ const ShortMonths = [
     'Jan', 'Feb', 'March', 'April', 'May', 'June',
     'July', 'Aug', 'September', 'October', 'November', 'December'
 ];
+
 const Height = 20;
 const Margin = 5;
 
@@ -22,10 +23,10 @@ const drawMonths = (context, opt, onTop = false)=> {
 
     const gridArc = onTop === true
         ? arc()
-                .innerRadius(outerRadius + Margin)
-                .outerRadius(outerRadius + Margin + Height)
-                .cornerRadius(2)
-                .context(context)
+            .innerRadius(outerRadius + Margin)
+            .outerRadius(outerRadius + Margin + Height)
+            .cornerRadius(2)
+            .context(context)
         : arc()
             .innerRadius(innerRadius - Margin - Height)
             .outerRadius(innerRadius - Margin)

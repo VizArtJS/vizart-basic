@@ -45,7 +45,8 @@ class Corona extends AbstractStackedCartesianChart {
                             r: innerRadius,
                             r0: innerRadius,
                             r1: innerRadius,
-                            data: e.data
+                            data: e.data,
+                            d: e
                         }
                     })
                 }
@@ -66,7 +67,8 @@ class Corona extends AbstractStackedCartesianChart {
                         r: radiusScale(e.y),
                         r0: rawRadiusScale(e.y0),
                         r1: rawRadiusScale(e.y1),
-                        data: e.data
+                        data: e.data,
+                        d: e
                     }
                 })
             }

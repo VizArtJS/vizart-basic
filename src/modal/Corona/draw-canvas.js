@@ -5,6 +5,8 @@ import drawGradientBoundary from './draw-gradient-bundary';
 import drawMonths from './draw-months';
 import drawArea from './draw-area';
 import drawLine from './draw-line';
+import drawHeat from './draw-heat';
+import drawHistogram from './draw-histogram';
 
 const drawCanvas = (context, state, opt)=> {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
@@ -13,6 +15,8 @@ const drawCanvas = (context, state, opt)=> {
     drawGridLabel(context, state, opt);
     drawAxisLabel(context, opt);
     drawMonths(context, opt);
+    drawHistogram(context, state, opt);
+    // drawHeat(context, state, opt);
 
     if (opt.plots.isArea === true) {
         drawArea(context, state, opt)
