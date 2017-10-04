@@ -66,7 +66,8 @@ const drawMonths = (context, opt, onTop = false)=> {
             0,
             textRadius,
             start + slice / 2,
-            0);    }
+            0);
+    }
 
 
     context.restore();

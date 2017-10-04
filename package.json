@@ -24,6 +24,7 @@
   "dependencies": {
     "d3-array": "^1.2.1",
     "d3-axis": "^1.0.8",
+    "d3-chord": "^1.0.4",
     "d3-cloud": "^1.2.4",
     "d3-collection": "^1.0.4",
     "d3-color": "^1.0.3",
