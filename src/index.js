@@ -12,6 +12,7 @@ export { default as MultiLine } from './modal/MultiLine';
 export { default as StackedBar } from './modal/StackedBar';
 export { default as Corona } from './modal/Corona';
 export { default as Radar } from './modal/Radar';
+export { default as Rose } from './modal/Rose';
 
 export { default as WordCloud } from './modal/WordCloud'
 
