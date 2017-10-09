@@ -1,4 +1,6 @@
 import { mouse } from 'd3-selection';
+import { sum } from 'd3-array';
+import isArray from 'lodash-es/isArray';
 import {
     check,
     Globals
@@ -17,6 +19,7 @@ const DefaultOptions = {
     plots: {
         othersTitle: 'Others',
         isDonut: false,
+        opacity: 0.8,
         innerRadiusRatio: 0.4,
         outerRadiusMargin: 80,
         labelOffset: 30,
@@ -87,14 +90,23 @@ class Pie extends AbstractBasicCartesianChart {
                     const node = colorMap.get(colString);
 
                     if (node) {
+                        let html;
+                        if (isArray(node.data.data)) {
+                            let n = {};
+                            n[that._getDimension().accessor] = node.data.label;
+                            n[that._getMetric().accessor] = sum(node.data.data.map(d=>d.data), that._getMetricVal);
+                            html = that.tooltip(n);
+                        } else {
+                            html = that.tooltip(node.data.data);
+                        }
+
                         that._tooltip
-                            .html( that.tooltip(node.data.data))
+                            .html(html)
                             .transition()
                             .duration(that._options.animation.tooltip)
                             .style("opacity", 1)
                             .style("left", mx + "px")
                             .style("top", my + "px");
-
                     } else {
                         that._tooltip
                             .transition()
