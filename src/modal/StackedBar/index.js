@@ -6,7 +6,7 @@ import {
     GroupedOptions,
     StackedOptions,
     ExpandedOptions
-} from './StackedBar-Options';
+} from './options';
 import animateStates from './tween-states';
 
 

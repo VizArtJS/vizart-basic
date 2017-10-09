@@ -48,7 +48,4 @@ const CoronaOptions = {
 
 
 
-export {
-    CoronaOptions,
-    RadarOptions
-}
+export default CoronaOptions;

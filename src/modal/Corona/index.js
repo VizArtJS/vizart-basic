@@ -3,7 +3,7 @@ import { mouse } from 'd3-selection';
 import cloneDeep from 'lodash-es/cloneDeep';
 
 import { AbstractStackedCartesianChart } from '../../base';
-import { CoronaOptions } from './Corona-Options';
+import CoronaOptions from './options';
 import createCartesianStackedOpt from '../../options/createCartesianStackedOpt';
 import { Stacks } from '../../data';
 import applyVoronoi from '../../canvas/voronoi/apply';

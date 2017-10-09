@@ -9,7 +9,7 @@ import {
     StackedOptions,
     AreaMultiOptions,
     ExpandedOptions
-} from './StackedArea-Options';
+} from './options';
 
 
 class StackedArea extends AbstractStackedCartesianChartWithAxes {
