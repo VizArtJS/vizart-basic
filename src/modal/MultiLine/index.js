@@ -1,15 +1,11 @@
-import { line } from 'd3-shape';
-import { interpolateArray } from 'd3-interpolate';
-import { timer } from 'd3-timer';
-import { hsl } from 'd3-color';
 import { mouse } from 'd3-selection';
-import { easeCubic } from 'd3-ease';
 
 import { AbstractStackedCartesianChartWithAxes } from '../../base';
 import createCartesianStackedOpt from '../../options/createCartesianStackedOpt';
-import interpolateCurve from '../../util/curve';
-import applyQuadtree from '../../canvas/quadtree/apply';
 import applyVoronoi from '../../canvas/voronoi/apply';
+import drawCanvas from './draw-canvas';
+import highlightLine from './highlight-line';
+import animateStates from './tween-states';
 
 const DefaultOptions = {
     chart: {
@@ -22,55 +18,6 @@ const DefaultOptions = {
         dotRadius: 4
     }
 };
-
-const drawCanvas = (context, state, opt)=> {
-    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-
-    const curve = line()
-            .x(d => d.x)
-            .y(d => d.y)
-            .context(context);
-
-    for (const n of state) {
-        context.save();
-        const color = n.c;
-        const hslColorSpace = hsl(color);
-        hslColorSpace.opacity = n.alpha;
-
-        interpolateCurve(opt.plots.curve, [curve]);
-        context.beginPath();
-        curve(n.values);
-        context.lineWidth = opt.plots.strokeWidth;
-        context.strokeStyle = color;
-        context.stroke();
-        context.restore();
-    }
-}
-
-const highlightLine = (context, state, opt, highlighted)=> {
-    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-    const curve = line()
-        .x(d => d.x)
-        .y(d => d.y)
-        .context(context);
-
-    for (const n of state) {
-        context.save();
-
-        const color = n.c;
-        const hslColorSpace = hsl(color);
-        hslColorSpace.opacity = n.key === highlighted.key ? n.alpha : 0.2;
-        context.strokeStyle = hslColorSpace;
-
-        interpolateCurve(opt.plots.curve, [curve]);
-        context.beginPath();
-        curve(n.values);
-        context.lineWidth = opt.plots.strokeWidth;
-        context.stroke();
-        context.restore();
-    }
-}
-
 
 
 class MultiLine extends AbstractStackedCartesianChartWithAxes {
@@ -119,70 +66,56 @@ class MultiLine extends AbstractStackedCartesianChartWithAxes {
         // cache finalState as the initial state of next animation call
         this.previousState = finalState;
 
-        const interpolateParticles = interpolateArray(initialState, finalState);
-
         let that = this;
-        const batchRendering = timer((elapsed) => {
-            const t = Math.min(1, easeCubic(elapsed / Duration));
+        const ctx = that._frontContext;
+        const opt = that._options;
 
-            drawCanvas(that._frontContext,
-                interpolateParticles(t),
-                that._options);
+        animateStates(initialState,
+            finalState,
+            opt.animation.duration.update,
+            ctx,
+            opt).then(res=> {
+            that._voronoi = applyVoronoi(ctx, opt, res.reduce((acc, p)=>{
+                    acc = acc.concat(p.values);
+                    return acc;
+                }, []));
 
-            if (t === 1) {
-                batchRendering.stop();
+            // that._quadtree = applyQuadtree(that._frontContext,
+            //     that._options, finalState);
 
-                that._voronoi = applyVoronoi(that._frontContext,
-                    that._options, finalState.reduce((acc, p)=>{
-                        acc = acc.concat(p.values);
-                        return acc;
-                    }, []));
+            /**
+             * callback for when the mouse moves across the overlay
+             */
+            function mouseMoveHandler() {
+                // get the current mouse position
+                const [mx, my] = mouse(this);
+                const QuadtreeRadius = 100;
+                // use the new diagram.find() function to find the Voronoi site
+                // closest to the mouse, limited by max distance voronoiRadius
+                const closest = that._voronoi.find(mx, my, QuadtreeRadius);
+                if (closest) {
+                    that._tooltip.style("left", closest[0] + "px")
+                        .style("top", closest[1] + "px")
+                        .html( that.tooltip(closest.data.data));
 
-                // that._quadtree = applyQuadtree(that._frontContext,
-                //     that._options, finalState);
-
-                /**
-                 * callback for when the mouse moves across the overlay
-                 */
-                function mouseMoveHandler() {
-                    // get the current mouse position
-                    const [mx, my] = mouse(this);
-                    const QuadtreeRadius = 100;
-                    // use the new diagram.find() function to find the Voronoi site
-                    // closest to the mouse, limited by max distance voronoiRadius
-                    const closest = that._voronoi.find(mx, my, QuadtreeRadius);
-                    if (closest) {
-                        that._tooltip.style("left", closest[0] + "px")
-                            .style("top", closest[1] + "px")
-                            .html( that.tooltip(closest.data.data));
-
-                        highlightLine(that._frontContext,
-                            interpolateParticles(t),
-                            that._options,
-                            closest.data);
-                        that._tooltip.style("opacity", 1);
-                    } else {
-                        that._tooltip.style("opacity", 0);
-
-                        drawCanvas(that._frontContext,
-                            interpolateParticles(t),
-                            that._options);
-                    }
-                }
-
-                function mouseOutHandler() {
+                    highlightLine(ctx, res, opt, closest.data);
+                    that._tooltip.style("opacity", 1);
+                } else {
                     that._tooltip.style("opacity", 0);
 
-                    drawCanvas(that._frontContext,
-                        interpolateParticles(t),
-                        that._options);
+                    drawCanvas(ctx, res, opt);
                 }
-
-                that._frontCanvas.on('mousemove', mouseMoveHandler);
-                that._frontCanvas.on('mouseout', mouseOutHandler);
-
-                that._listeners.call('rendered');
             }
+
+            function mouseOutHandler() {
+                that._tooltip.style("opacity", 0);
+                drawCanvas(ctx, res, opt);
+            }
+
+            that._frontCanvas.on('mousemove', mouseMoveHandler);
+            that._frontCanvas.on('mouseout', mouseOutHandler);
+
+            that._listeners.call('rendered');
         });
     }
 
