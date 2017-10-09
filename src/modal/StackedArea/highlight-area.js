@@ -18,6 +18,7 @@ const highlightArea = (context, state, opt, highlighted)=> {
             .context(context);
 
     for (const n of state) {
+        context.save();
         const color = n.c;
         const hslColorSpace = hsl(color);
         hslColorSpace.opacity = (n.key === highlighted.key) ? 0.6 : 0.2;
@@ -33,6 +34,7 @@ const highlightArea = (context, state, opt, highlighted)=> {
 
         context.fill();
         context.closePath();
+        context.restore();
     }
 }
 

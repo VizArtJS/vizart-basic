@@ -3,6 +3,9 @@ import { applyVoronoi } from 'vizart-core';
 import { AbstractStackedCartesianChartWithAxes } from '../../base';
 import createCartesianStackedOpt from '../../options/createCartesianStackedOpt';
 import animateStates from './tween-states';
+import highlightArea from './highlight-area';
+import highlightNode from './highlight-node';
+import drawCanvas from './draw-canvas';
 
 import {
     StackedOptions,
@@ -23,11 +26,11 @@ class StackedArea extends AbstractStackedCartesianChartWithAxes {
                 return {
                     key: d.key,
                     c: this._c(d),
-                    s: d.key,
                     alpha: 0,
                     values: d.values.map(e=> {
                         return {
                             key: d.key,
+                            c: this._c(d),
                             x: this._x(e.data),
                             y: this._options.chart.innerHeight,
                             y0: this._y0(e),
@@ -46,6 +49,7 @@ class StackedArea extends AbstractStackedCartesianChartWithAxes {
                 values: d.values.map(e=> {
                     return {
                         key: d.key,
+                        c: this._c(d),
                         x: this._x(e.data),
                         y: e.y,
                         y0: this._y0(e),
@@ -91,15 +95,19 @@ class StackedArea extends AbstractStackedCartesianChartWithAxes {
                             .style("left", mx + opt.tooltip.offset[0] + "px")
                             .style("top", my + opt.tooltip.offset[0] + "px");
 
-                        that._tooltip.style("opacity", 1)
+                        that._tooltip.style("opacity", 1);
+                        drawCanvas(ctx, res, opt);
+                        highlightArea(ctx, res, opt, closest.data);
+                        highlightNode(ctx, opt, closest.data.c, closest[0], closest[1]);
                     } else {
-
-                        that._tooltip.style("opacity", 0)
+                        drawCanvas(ctx, res, opt);
+                        that._tooltip.style("opacity", 0);
                     }
                 }
 
                 function mouseOutHandler() {
-                    that._tooltip.style("opacity", 0)
+                    drawCanvas(ctx, res, opt);
+                    that._tooltip.style("opacity", 0);
                 }
 
                 that._frontCanvas.on('mousemove', mouseMoveHandler);

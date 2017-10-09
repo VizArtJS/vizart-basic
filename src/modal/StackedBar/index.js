@@ -167,10 +167,7 @@ class StackedBar extends AbstractStackedCartesianChartWithAxes {
                     .then(res=>{
                         this.colorMap = drawHiddenCanvas(this._hiddenContext, res);
 
-                        console.log(this.colorMap);
-
                         let that = this;
-
 
                         // shadow color?
                         /**

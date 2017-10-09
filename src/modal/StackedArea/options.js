@@ -15,6 +15,7 @@ const StackedOptions = {
         showDots: false,
         curve: 'basis',
         strokeWidth: 2,
+        highlightNodeColor: '#F03E1E',
         opacityArea: 0.7
     }
 };
@@ -32,6 +33,7 @@ const AreaMultiOptions = {
         stackLayout: false,
         stackMethod: Stacks.Zero,
         showDots: false,
+        highlightNodeColor: '#F03E1E',
         curve: 'basis',
         strokeWidth: 2,
         opacityArea: 0.7
@@ -51,6 +53,7 @@ const ExpandedOptions = {
     plots: {
         stackLayout: true,
         stackMethod: Stacks.Expand,
+        highlightNodeColor: '#F03E1E',
         showDots: false,
         curve: 'basis',
         strokeWidth: 2,
