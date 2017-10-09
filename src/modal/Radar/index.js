@@ -29,6 +29,11 @@ const RadarOptions = {
         strokeOpacity: 1,
         strokeWidth: 4, 		//The width of the stroke around each blob
 
+        drawBoundary: true,
+        boundaryOffset: 10,
+        boundaryOpacity: 0.5,
+        boundaryGradient: ['white', '#eb3ba6'],
+
         innerRadiusRatio: 0.4,
         outerRadiusMargin: 60,
     }
