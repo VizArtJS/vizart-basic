@@ -1,7 +1,4 @@
-import { interpolateArray } from 'd3-interpolate';
-import { timer } from 'd3-timer';
 import { mouse } from 'd3-selection';
-import { easeCubic } from 'd3-ease';
 import {
     uuid,
     linearStops
@@ -12,6 +9,7 @@ import createCartesianOpt from '../../options/createCartesianOpt';
 import applyQuadtree from '../../canvas/quadtree/apply';
 import applyVoronoi from '../../canvas/voronoi/apply';
 import drawCanvas from './draw-canvas';
+import animateStates from './tween-states';
 
 const AreaOpt = {
     chart: {
@@ -34,7 +32,6 @@ class Area extends AbstractBasicCartesianChartWithAxes {
     }
 
     _animate() {
-        const Duration = this._options.animation.duration.update;
         const stops = linearStops(this._options.color.scheme);
         const nodeColor = stops[stops.length - 1].color;
 
@@ -65,24 +62,18 @@ class Area extends AbstractBasicCartesianChartWithAxes {
         // cache finalState as the initial state of next animation call
         this.previousState = finalState;
 
-        const interpolateParticles = interpolateArray(initialState, finalState);
-
         let that = this;
-        const batchRendering = timer( (elapsed)=> {
-            const t = Math.min(1, easeCubic(elapsed / Duration));
+        const ctx = that._frontContext;
+        const opt = that._options;
 
-            drawCanvas(that._frontContext,
-                interpolateParticles(t),
-                that._options);
-
-            if (t === 1) {
-                batchRendering.stop();
-
-                that._voronoi = applyVoronoi(that._frontContext,
-                    that._options, finalState);
-
-                that._quadtree = applyQuadtree(that._frontContext,
-                    that._options, finalState);
+        animateStates(initialState,
+            finalState,
+            opt.animation.duration.update,
+            ctx,
+            opt).then(
+            res => {
+                this._voronoi = applyVoronoi(ctx, opt, res);
+                this._quadtree = applyQuadtree(ctx, opt, res);
 
                 /**
                  * callback for when the mouse moves across the overlay
@@ -114,13 +105,11 @@ class Area extends AbstractBasicCartesianChartWithAxes {
                 that._frontCanvas.on('mouseout', mouseOutHandler);
 
                 // draw hidden in parallel;
-                drawCanvas(that._hiddenContext,
-                    interpolateParticles(t),
-                    that._options, true);
+                drawCanvas(that._hiddenContext, res, opt, true);
 
                 that._listeners.call('rendered');
             }
-        });
+        );
     }
 
     createOptions(_userOpt) {
