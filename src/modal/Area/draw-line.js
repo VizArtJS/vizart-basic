@@ -3,6 +3,8 @@ import interpolateCurve from '../../util/curve';
 import linearGradient from '../../canvas/helper/vertical-gradiet';
 
 const drawLine = (context, particles, opt)=> {
+    context.save();
+
     const curve = line()
         .x(d=>d.x)
         .y(d=>d.y)
@@ -17,6 +19,7 @@ const drawLine = (context, particles, opt)=> {
 
     context.stroke();
     context.closePath();
+    context.restore();
 }
 
 export default drawLine;

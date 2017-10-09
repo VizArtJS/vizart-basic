@@ -4,6 +4,8 @@ import linearGradient from '../../canvas/helper/vertical-gradiet';
 import nodeColor from './node-color';
 
 const drawArea = (context, particles, opt)=> {
+    context.save();
+
     const curve = area()
         .x(d=>d.x)
         .y0(context.canvas.height)
@@ -21,6 +23,8 @@ const drawArea = (context, particles, opt)=> {
 
     context.fill();
     context.closePath();
+
+    context.restore();
 }
 
 export default drawArea;
