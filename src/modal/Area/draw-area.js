@@ -1,6 +1,7 @@
+import { verticalGradient } from 'vizart-core';
 import { area } from 'd3-shape';
+
 import interpolateCurve from '../../util/curve';
-import linearGradient from '../../canvas/helper/vertical-gradiet';
 import nodeColor from './node-color';
 
 const drawArea = (context, particles, opt)=> {
@@ -16,7 +17,7 @@ const drawArea = (context, particles, opt)=> {
     context.beginPath();
     curve(particles);
     context.lineWidth = opt.plots.strokeWidth;
-    const gradientStyle = linearGradient(context, opt.color.scheme, opt.plots.areaOpacity);
+    const gradientStyle = verticalGradient(context, opt.color.scheme, opt.plots.areaOpacity);
     context.fillStyle = gradientStyle;
     context.strokeStyle = nodeColor(opt);
     context.stroke();

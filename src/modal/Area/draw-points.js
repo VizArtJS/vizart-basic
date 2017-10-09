@@ -1,4 +1,4 @@
-import genColorByIndex from '../../canvas/helper/generate-color';
+import { genColorByIndex } from 'vizart-core';
 import nodeColor from './node-color';
 
 const drawPoints = (context, particles, opt, hidden)=> {

@@ -2,8 +2,7 @@ import {
     pie,
     arc
 } from 'd3-shape';
-
-import genColorByIndex from '../../canvas/helper/generate-color';
+import { genColorByIndex } from 'vizart-core';
 
 
 const drawHiddenCanvas = (context, state, opt)=> {

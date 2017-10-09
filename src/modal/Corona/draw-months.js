@@ -1,6 +1,6 @@
 import { arc } from 'd3-shape';
+import { drawCircularText } from 'vizart-core';
 import getRadius from './get-radius';
-import drawCircularText from '../../canvas/helper/draw-circular-text';
 
 const Months = [
     'January', 'February', 'March', 'April', 'May', 'June',

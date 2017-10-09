@@ -1,6 +1,6 @@
 import { scaleLinear } from 'd3-scale';
+import { drawCircularText } from 'vizart-core';
 
-import drawCircularText from '../../canvas/helper/draw-circular-text';
 import getAxisLabel from './get-axis-label';
 import getRadius from "./get-radius";
 

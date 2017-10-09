@@ -1,10 +1,10 @@
 import { mouse } from 'd3-selection';
 import isNull from 'lodash-es/isNull';
-
-import { Globals } from 'vizart-core';
+import {
+    Globals,
+    applyVoronoi
+} from 'vizart-core';
 import AbstractBasicCartesianChartWithAxes from '../../base/AbstractBasicCartesianChartWithAxes';
-import applyQuadtree from '../../canvas/quadtree/apply';
-import applyVoronoi from '../../canvas/voronoi/apply';
 import createCartesianOpt from '../../options/createCartesianOpt';
 import updateRadiusScale from './update-radius-scale';
 import animateStates from './tween-states';
@@ -86,7 +86,6 @@ class Scatter extends AbstractBasicCartesianChartWithAxes {
             ctx,
             opt).then(res=> {
                 that._voronoi = applyVoronoi(ctx, opt, res);
-                that._quadtree = applyQuadtree(ctx, opt, res);
 
                 /**
                  * callback for when the mouse moves across the overlay

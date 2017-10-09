@@ -1,6 +1,5 @@
 import { mouse } from 'd3-selection';
-
-import applyVoronoi from '../../canvas/voronoi/apply';
+import { applyVoronoi } from 'vizart-core';
 import { AbstractStackedCartesianChartWithAxes } from '../../base';
 import createCartesianStackedOpt from '../../options/createCartesianStackedOpt';
 import animateStates from './tween-states';

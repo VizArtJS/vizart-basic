@@ -1,12 +1,12 @@
 import {
     mergeBase,
     Globals,
-    uuid
+    uuid,
+    AbstractCanvasChart
 } from 'vizart-core';
 import './tooltip.css';
 import { select } from 'd3-selection';
 import tooltipMarkup from './tooltip';
-import AbstractCanvasChart from '../canvas/AbstractCanvasChart';
 
 class AbstractCartesianChart extends AbstractCanvasChart {
     constructor(canvasId, _userOptions) {

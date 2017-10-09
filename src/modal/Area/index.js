@@ -1,13 +1,12 @@
 import { mouse } from 'd3-selection';
 import {
     uuid,
-    linearStops
+    linearStops,
+    applyVoronoi
 } from 'vizart-core';
 
 import AbstractBasicCartesianChartWithAxes from '../../base/AbstractBasicCartesianChartWithAxes';
 import createCartesianOpt from '../../options/createCartesianOpt';
-import applyVoronoi from '../../canvas/voronoi/apply';
-import drawCanvas from './draw-canvas';
 import animateStates from './tween-states';
 
 const AreaOpt = {

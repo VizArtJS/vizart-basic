@@ -1,12 +1,12 @@
 import { scaleLinear } from 'd3-scale';
 import { mouse } from 'd3-selection';
+import { applyVoronoi } from 'vizart-core';
 import cloneDeep from 'lodash-es/cloneDeep';
 
 import { AbstractStackedCartesianChart } from '../../base';
 import CoronaOptions from './options';
 import createCartesianStackedOpt from '../../options/createCartesianStackedOpt';
 import { Stacks } from '../../data';
-import applyVoronoi from '../../canvas/voronoi/apply';
 
 import drawCanvas from './draw-canvas';
 import highlight from './highlight';

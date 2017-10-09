@@ -1,5 +1,5 @@
 import { select } from 'd3-selection';
-import genColorByIndex from '../../canvas/helper/generate-color';
+import { genColorByIndex } from 'vizart-core';
 
 const drawHiddenRects =  (context, selection)=> {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);

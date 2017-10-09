@@ -2,10 +2,9 @@ import {
     radialArea,
     curveCardinalClosed
 } from 'd3-shape';
-
+import { radialGradient } from 'vizart-core';
 import transparentColor from './get-transparent-color';
 import getRadius from "./get-radius";
-import radialGradient from '../../canvas/helper/radial-gradient';
 
 const drawArea = (context, state, opt)=> {
     const [innerRadius, outerRadius] = getRadius(opt);

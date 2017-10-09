@@ -1,11 +1,11 @@
 import { check } from 'vizart-core';
 import { min } from 'd3-array';
 import { mouse } from 'd3-selection';
+import { applyVoronoi } from 'vizart-core';
 
 import { AbstractStackedCartesianChartWithAxes } from '../../base';
 import { Stacks } from '../../data';
 import createCartesianStackedOpt from '../../options/createCartesianStackedOpt';
-import applyVoronoi from '../../canvas/voronoi/apply';
 import animateStates from './tween-states';
 
 const DefaultOptions = {
