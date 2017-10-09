@@ -148,8 +148,8 @@ class Bar extends AbstractBasicCartesianChartWithAxes {
                         .transition()
                         .duration(that._options.animation.tooltip)
                         .style("opacity", 1)
-                        .style("left", mx + "px")
-                        .style("top", my + "px");
+                        .style("left", mx + that._options.tooltip.offset[0] + "px")
+                        .style("top", my + that._options.tooltip.offset[0] + "px")
 
                 } else {
                     that._tooltip
