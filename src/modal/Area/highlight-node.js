@@ -5,7 +5,7 @@ const highlightNode = (context, opt, datum, x, y)=> {
 
     context.save();
     context.beginPath();
-    context.fillStyle = opt.plots.highlightNodeColor ? opt.plots.highlightNodeColor : getTransparentColor(datum.c, 0.7);
+    context.fillStyle = opt.plots.highlightNodeColor ? opt.plots.highlightNodeColor : getTransparentColor(datum.c, 0.9);
     context.strokeStyle = 'white';
     context.lineWidth = 2;
     context.arc(x, y, 6, 2 * Math.PI, false);
