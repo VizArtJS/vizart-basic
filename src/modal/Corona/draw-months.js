@@ -1,6 +1,6 @@
 import { arc } from 'd3-shape';
 import getRadius from './get-radius';
-import drawCircularText from '../../canvas/draw-circular-text';
+import drawCircularText from '../../canvas/helper/draw-circular-text';
 
 const Months = [
     'January', 'February', 'March', 'April', 'May', 'June',

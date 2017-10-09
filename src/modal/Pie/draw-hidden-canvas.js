@@ -3,7 +3,7 @@ import {
     arc
 } from 'd3-shape';
 
-import genColorByIndex from '../../canvas/generate-color';
+import genColorByIndex from '../../canvas/helper/generate-color';
 
 
 const drawHiddenCanvas = (context, state, opt)=> {

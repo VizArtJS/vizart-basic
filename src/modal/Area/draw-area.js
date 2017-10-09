@@ -1,6 +1,6 @@
 import { area } from 'd3-shape';
 import interpolateCurve from '../../util/curve';
-import linearGradient from '../../canvas/vertical-gradiet';
+import linearGradient from '../../canvas/helper/vertical-gradiet';
 import nodeColor from './node-color';
 
 const drawArea = (context, particles, opt)=> {

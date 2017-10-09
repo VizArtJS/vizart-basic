@@ -1,6 +1,6 @@
 import { line } from 'd3-shape';
 import interpolateCurve from '../../util/curve';
-import linearGradient from '../../canvas/vertical-gradiet';
+import linearGradient from '../../canvas/helper/vertical-gradiet';
 
 const drawLine = (context, particles, opt)=> {
     const curve = line()

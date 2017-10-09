@@ -1,4 +1,4 @@
-import drawCircularText from '../../canvas/draw-circular-text';
+import drawCircularText from '../../canvas/helper/draw-circular-text';
 import getAxisLabel from './get-axis-label';
 import isFunction from 'lodash-es/isFunction';
 

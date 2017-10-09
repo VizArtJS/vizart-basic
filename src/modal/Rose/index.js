@@ -4,6 +4,7 @@ import {AbstractStackedCartesianChart} from '../../base';
 import createCartesianStackedOpt from '../../options/createCartesianStackedOpt';
 import animateStates from "./tween-states";
 import getRadius from '../Corona/get-radius';
+import { Stacks } from '../../data';
 
 const RoseOpt = {
     chart: {
@@ -11,9 +12,12 @@ const RoseOpt = {
     },
 
     plots: {
-        innerRadiusRatio: 0.4,
+        innerRadiusRatio: 0,
         outerRadiusMargin: 60,
-    }
+        stackLayout: false, // stack areas
+        stackMethod: Stacks.Zero,
+    },
+
 }
 /**
  *
@@ -40,6 +44,12 @@ class Rose extends AbstractStackedCartesianChart {
 
         const rawRadiusScale = radiusScale.copy().domain(dataRange);
 
+        const universalAngle = d=> {
+            return this._options.plots.stackLayout === true
+                ? Math.PI * 2 / d.values.length
+                : Math.PI * 2 / d.values.length / this._data.nested.length;
+        }
+
         const initialState = this.previousState
             ? this.previousState
             : this._data.nested.map(d => {
@@ -53,7 +63,7 @@ class Rose extends AbstractStackedCartesianChart {
                     values: d.values.map((e, i) => {
                         return {
                             key: d.key,
-                            angle: Math.PI * 2 * i / d.values.length,
+                            angle: universalAngle(d),
                             r: innerRadius,
                             r0: innerRadius,
                             r1: innerRadius,
@@ -75,7 +85,7 @@ class Rose extends AbstractStackedCartesianChart {
                 values: d.values.map((e, i) => {
                     return {
                         key: d.key,
-                        angle: Math.PI * 2 * i / d.values.length,
+                        angle: universalAngle(d),
                         r: radiusScale(e.y),
                         r0: rawRadiusScale(e.y0),
                         r1: rawRadiusScale(e.y1),

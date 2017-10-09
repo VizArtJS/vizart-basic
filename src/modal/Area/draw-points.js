@@ -1,4 +1,4 @@
-import genColorByIndex from '../../canvas/generate-color';
+import genColorByIndex from '../../canvas/helper/generate-color';
 import nodeColor from './node-color';
 
 const drawPoints = (context, particles, opt, hidden)=> {

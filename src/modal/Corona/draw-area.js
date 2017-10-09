@@ -5,7 +5,7 @@ import {
 
 import transparentColor from './get-transparent-color';
 import getRadius from "./get-radius";
-import radialGradient from '../../canvas/radial-gradient';
+import radialGradient from '../../canvas/helper/radial-gradient';
 
 const drawArea = (context, state, opt)=> {
     const [innerRadius, outerRadius] = getRadius(opt);
