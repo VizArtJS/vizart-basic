@@ -1,14 +1,9 @@
-import { area } from 'd3-shape';
-import { interpolateArray } from 'd3-interpolate';
-import { timer } from 'd3-timer';
-import { hsl } from 'd3-color';
 import { mouse } from 'd3-selection';
-import { easeCubic } from 'd3-ease';
-import interpolateCurve from '../../util/curve';
-import applyVoronoi from '../../canvas/voronoi/apply';
 
+import applyVoronoi from '../../canvas/voronoi/apply';
 import { AbstractStackedCartesianChartWithAxes } from '../../base';
 import createCartesianStackedOpt from '../../options/createCartesianStackedOpt';
+import animateStates from './tween-states';
 
 import {
     StackedOptions,
@@ -16,73 +11,6 @@ import {
     ExpandedOptions
 } from './StackedArea-Options';
 
-const drawCanvas = (context, state, opt)=> {
-    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-
-    const curve = opt.plots.stackLayout === true
-        ? area()
-            .x(d => d.x)
-            .y0(d => d.y0)
-            .y1(d => d.y1)
-            .context(context)
-        : area()
-            .x(d => d.x)
-            .y0(opt.chart.innerHeight)
-            .y1(d => d.y)
-            .context(context);
-
-    for (const n of state) {
-        const color = n.c;
-        const hslColorSpace = hsl(color);
-        hslColorSpace.opacity = n.alpha;
-
-        interpolateCurve(opt.plots.curve, [curve]);
-        context.beginPath();
-        curve(n.values);
-        context.lineWidth = opt.plots.strokeWidth;
-        context.strokeStyle = color;
-        context.stroke();
-
-        context.fillStyle = hslColorSpace;
-
-        context.fill();
-        context.closePath();
-    }
-}
-
-const highlightArea = (context, state, opt, highlighted)=> {
-    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-
-    const curve = opt.plots.stackLayout === true
-        ? area()
-            .x(d => d.x)
-            .y0(d => d.y0)
-            .y1(d => d.y1)
-            .context(context)
-        : area()
-            .x(d => d.x)
-            .y0(opt.chart.innerHeight)
-            .y1(d => d.y)
-            .context(context);
-
-    for (const n of state) {
-        const color = n.c;
-        const hslColorSpace = hsl(color);
-        hslColorSpace.opacity = (n.key === highlighted.key) ? 0.6 : 0.2;
-
-        interpolateCurve(opt.plots.curve, [curve]);
-        context.beginPath();
-        curve(n.values);
-        context.lineWidth = opt.plots.strokeWidth;
-        context.strokeStyle = (n.key === highlighted.key) ? color : hslColorSpace;
-        context.stroke();
-
-        context.fillStyle = hslColorSpace;
-
-        context.fill();
-        context.closePath();
-    }
-}
 
 class StackedArea extends AbstractStackedCartesianChartWithAxes {
     constructor(canvasId, _userOptions) {
@@ -90,8 +18,6 @@ class StackedArea extends AbstractStackedCartesianChartWithAxes {
     }
 
     _animate() {
-        const Duration = this._options.animation.duration.update;
-
         const initialState = this.previousState
             ? this.previousState
             : this._data.nested.map(d=>{
@@ -135,27 +61,19 @@ class StackedArea extends AbstractStackedCartesianChartWithAxes {
         // cache finalState as the initial state of next animation call
         this.previousState = finalState;
 
-        const interpolateParticles = interpolateArray(initialState, finalState);
-
         let that = this;
-        const batchRendering = timer( (elapsed)=> {
-            const t = Math.min(1, easeCubic(elapsed / Duration));
+        const ctx = that._frontContext;
+        const opt = that._options;
 
-            drawCanvas(that._frontContext,
-                interpolateParticles(t),
-                that._options);
-
-            if (t === 1) {
-                batchRendering.stop();
-
-                that._voronoi = applyVoronoi(that._frontContext,
-                    that._options, finalState.reduce((acc, p)=>{
+        animateStates(initialState,
+            finalState,
+            opt.animation.duration.update,
+            ctx,
+            opt).then(res=> {
+                that._voronoi = applyVoronoi(ctx, opt, res.reduce((acc, p)=>{
                         acc = acc.concat(p.values);
                         return acc;
                     }, []));
-
-                // that._quadtree = applyQuadtree(that._frontContext,
-                //     that._options, finalState);
 
                 /**
                  * callback for when the mouse moves across the overlay
@@ -181,7 +99,6 @@ class StackedArea extends AbstractStackedCartesianChartWithAxes {
                 }
 
                 function mouseOutHandler() {
-
                     that._tooltip.style("opacity", 0)
                 }
 
@@ -189,7 +106,6 @@ class StackedArea extends AbstractStackedCartesianChartWithAxes {
                 that._frontCanvas.on('mouseout', mouseOutHandler);
 
                 that._listeners.call('rendered');
-            }
         });
     }
 
@@ -199,29 +115,19 @@ class StackedArea extends AbstractStackedCartesianChartWithAxes {
         this._options.plots.stackLayout = _opt.plots.stackLayout;
         this._options.plots.stackMethod = _opt.plots.stackMethod;
 
-        // const Duration = 250;
-        // const batchRendering = timer( (elapsed)=> {
-        //     const t = Math.min(1, easeCubic(elapsed / Duration));
-        //
-        //     if (t === 1) {
-        //         batchRendering.stop();
-        //     }
-        // });
+        this.update();
     }
 
     stackLayout() {
         this._updateLayout(StackedOptions);
-        this.update();
     };
 
     expandLayout() {
         this._updateLayout(ExpandedOptions);
-        this.update();
     };
 
     groupedLayout() {
         this._updateLayout(AreaMultiOptions);
-        this.update();
     };
 
     createOptions(_userOpt) {
