@@ -23,7 +23,7 @@ const CoronaOptions = {
         axisLabelOffset: 10, //How much farther than the radius of the outer circle should the labels be placed
 
         highlightStrokeColor: '#000000',
-        highlightNodeColor: 'green',
+        highlightNodeColor: '#F03E1E',
         highlightLabelColor: '#000000',
 
         strokeOpacity: 0,

@@ -12,6 +12,7 @@ const DefaultOptions = {
     },
     plots: {
         curve: 'linear',
+        highlightNodeColor: '#F03E1E',
         strokeWidth: 3,
         showDots: false,
         dotRadius: 4
@@ -76,9 +77,6 @@ class MultiLine extends AbstractStackedCartesianChartWithAxes {
                     acc = acc.concat(p.values);
                     return acc;
                 }, []));
-
-            // that._quadtree = applyQuadtree(that._frontContext,
-            //     that._options, finalState);
 
             /**
              * callback for when the mouse moves across the overlay

@@ -96,7 +96,6 @@ class StackedArea extends AbstractStackedCartesianChartWithAxes {
                             .style("top", my + opt.tooltip.offset[0] + "px");
 
                         that._tooltip.style("opacity", 1);
-                        drawCanvas(ctx, res, opt);
                         highlightArea(ctx, res, opt, closest.data);
                         highlightNode(ctx, opt, closest.data.c, closest[0], closest[1]);
                     } else {

@@ -19,6 +19,7 @@ const AreaOpt = {
         areaOpacity: 0.3,
         curve: 'basis',
         strokeWidth: 2,
+        highlightNodeColor: '#F03E1E',
         nodeRadius: 4,
         drawArea: true,
         showDots: true

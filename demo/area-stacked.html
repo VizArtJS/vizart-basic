@@ -60,7 +60,7 @@
 
         var chart = new VizArtBasic.StackedArea('#chart', options);
         d3.csv('assets/profit.csv', function(err, res){
-            chart.render(res);
+            chart.render(res.slice(0, 40));
 
         });
 
