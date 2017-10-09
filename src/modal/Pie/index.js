@@ -1,7 +1,4 @@
-import { interpolateArray } from 'd3-interpolate';
-import { timer } from 'd3-timer';
 import { mouse } from 'd3-selection';
-import { easeCubic } from 'd3-ease';
 import {
     check,
     Globals
@@ -9,9 +6,9 @@ import {
 
 import createCartesianOpt from '../../options/createCartesianOpt';
 import AbstractBasicCartesianChart from '../../base/AbstractBasicCartesianChart';
-import drawCanvas from './draw-canvas';
 import drawHiddenCanvas from './draw-hidden-canvas';
 import limitSliceValues from './limit-slice-values';
+import animateStates from './tween-states';
 
 const DefaultOptions = {
     chart: {
@@ -36,8 +33,6 @@ class Pie extends AbstractBasicCartesianChart {
 
 
     _animate() {
-        const Duration = this._options.animation.duration.update;
-
         const initialState = this.previousState
             ? this.previousState
             : this._data.map(d=>{
@@ -68,22 +63,18 @@ class Pie extends AbstractBasicCartesianChart {
         const transformedInitial = limitSliceValues(initialState, this._options, this._color);
         const transformedFinal = limitSliceValues(finalState, this._options, this._color);
 
-        const interpolateParticles = interpolateArray(transformedInitial, transformedFinal);
-
         let that = this;
-        const batchRendering = timer( (elapsed)=> {
-            const t = Math.min(1, easeCubic(elapsed / Duration));
+        const ctx = that._frontContext;
+        const opt = that._options;
 
-            drawCanvas(that._frontContext,
-                interpolateParticles(t),
-                that._options);
-
-            if (t === 1) {
-                batchRendering.stop();
-
+        animateStates(transformedInitial,
+            transformedFinal,
+            opt.animation.duration.update,
+            ctx,
+            opt).then(res=> {
                 const colorMap = drawHiddenCanvas(that._hiddenContext,
-                    transformedFinal,
-                    that._options,
+                    res,
+                    opt,
                     that);
                 /**
                  * callback for when the mouse moves across the overlay
@@ -120,7 +111,6 @@ class Pie extends AbstractBasicCartesianChart {
                 that._frontCanvas.on('mouseout', mouseOutHandler);
 
                 that._listeners.call('rendered');
-            }
         });
     }
 

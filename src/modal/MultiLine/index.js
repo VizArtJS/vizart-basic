@@ -26,8 +26,6 @@ class MultiLine extends AbstractStackedCartesianChartWithAxes {
     }
 
     _animate() {
-        const Duration = this._options.animation.duration.update;
-
         const initialState = this.previousState
             ? this.previousState
             : this._data.nested.map(d => {
