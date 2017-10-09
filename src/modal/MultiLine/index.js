@@ -91,9 +91,10 @@ class MultiLine extends AbstractStackedCartesianChartWithAxes {
                 // closest to the mouse, limited by max distance voronoiRadius
                 const closest = that._voronoi.find(mx, my, QuadtreeRadius);
                 if (closest) {
-                    that._tooltip.style("left", closest[0] + "px")
-                        .style("top", closest[1] + "px")
-                        .html( that.tooltip(closest.data.data));
+                    that._tooltip
+                        .html( that.tooltip(closest.data.data))
+                        .style("left", mx + opt.tooltip.offset[0] + "px")
+                        .style("top", my + opt.tooltip.offset[0] + "px");
 
                     highlightLine(ctx, res, opt, closest.data);
                     that._tooltip.style("opacity", 1);

@@ -105,8 +105,8 @@ class Pie extends AbstractBasicCartesianChart {
                             .transition()
                             .duration(that._options.animation.tooltip)
                             .style("opacity", 1)
-                            .style("left", mx + "px")
-                            .style("top", my + "px");
+                            .style("left", mx + opt.tooltip.offset[0] + "px")
+                            .style("top", my + opt.tooltip.offset[0] + "px");
                     } else {
                         that._tooltip
                             .transition()

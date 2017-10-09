@@ -104,8 +104,8 @@ class Scatter extends AbstractBasicCartesianChartWithAxes {
                             .transition()
                             .duration(that._options.animation.tooltip)
                             .style("opacity", 1)
-                            .style("left", closest[0] + "px")
-                            .style("top", closest[1] + "px");
+                            .style("left", mx + opt.tooltip.offset[0] + "px")
+                            .style("top", my + opt.tooltip.offset[0] + "px");
 
                     } else {
                         that._tooltip
