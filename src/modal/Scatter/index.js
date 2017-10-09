@@ -1,7 +1,4 @@
-import { interpolateArray } from 'd3-interpolate';
-import { timer } from 'd3-timer';
 import { mouse } from 'd3-selection';
-import { easeCubic } from 'd3-ease';
 import isNull from 'lodash-es/isNull';
 
 import { Globals } from 'vizart-core';
@@ -10,7 +7,7 @@ import applyQuadtree from '../../canvas/quadtree/apply';
 import applyVoronoi from '../../canvas/voronoi/apply';
 import createCartesianOpt from '../../options/createCartesianOpt';
 import updateRadiusScale from './update-radius-scale';
-import hexbinLayout from './hexbin-layout';
+import animateStates from './tween-states';
 
 const ScatterOptions = {
     chart: {
@@ -36,40 +33,6 @@ const ScatterOptions = {
     }
 };
 
-const drawPoints = (context, particles, opt)=> {
-    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-
-    for (const [i, p] of particles.entries()) {
-        context.beginPath();
-        context.fillStyle = p.c;
-        context.globalAlpha = p.alpha;
-        context.arc(p.x, p.y, p.r, 0, 2 * Math.PI, false);
-        context.fill();
-    }
-}
-
-const drawHexbin = (context, particles, opt)=> {
-    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-
-    const hexLayout = hexbinLayout()
-        .x(d=>d.x)
-        .y(d=>d.y)
-        .size([context.canvas.width, context.canvas.height])
-        .radius(20);
-    hexLayout.context(context);
-    const hexagons = hexLayout(particles);
-
-    for (const h of hexagons) {
-        context.save();
-        context.fillStyle = 'red';
-        context.translate(h.x, h.y);
-        hexLayout.hexagon(20);
-        context.fill();
-        context.restore();
-    }
-
-}
-
 
 class Scatter extends AbstractBasicCartesianChartWithAxes {
     constructor(canvasId, _userOptions) {
@@ -82,12 +45,9 @@ class Scatter extends AbstractBasicCartesianChartWithAxes {
                 ? this._options.r.default
                 : this._getRadius().scale(this._getRadiusValue(d));
         }
-
     }
 
     _animate() {
-        const Duration = this._options.animation.duration.update;
-
         const initialState = this.previousState
             ? this.previousState
             : this._data.map(d=>{
@@ -116,24 +76,17 @@ class Scatter extends AbstractBasicCartesianChartWithAxes {
         // cache finalState as the initial state of next animation call
         this.previousState = finalState;
 
-        const interpolateParticles = interpolateArray(initialState, finalState);
-
         let that = this;
-        const batchRendering = timer( (elapsed)=> {
-            const t = Math.min(1, easeCubic(elapsed / Duration));
+        const ctx = that._frontContext;
+        const opt = that._options;
 
-            drawPoints(that._frontContext,
-                interpolateParticles(t),
-                that._options);
-
-            if (t === 1) {
-                batchRendering.stop();
-
-                that._voronoi = applyVoronoi(that._frontContext,
-                    that._options, finalState);
-
-                that._quadtree = applyQuadtree(that._frontContext,
-                    that._options, finalState);
+        animateStates(initialState,
+            finalState,
+            opt.animation.duration.update,
+            ctx,
+            opt).then(res=> {
+                that._voronoi = applyVoronoi(ctx, opt, res);
+                that._quadtree = applyQuadtree(ctx, opt, res);
 
                 /**
                  * callback for when the mouse moves across the overlay
@@ -176,7 +129,6 @@ class Scatter extends AbstractBasicCartesianChartWithAxes {
                 //     that._options, true);
 
                 that._listeners.call('rendered');
-            }
         });
     }
 
