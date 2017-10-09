@@ -14,8 +14,6 @@ export { default as Corona } from './modal/Corona';
 export { default as Radar } from './modal/Radar';
 export { default as Rose } from './modal/Rose';
 
-export { default as WordCloud } from './modal/WordCloud'
-
 export * from './data';
 export * from './base';
 export * from './options';
