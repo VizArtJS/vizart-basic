@@ -1,16 +1,12 @@
 import { check } from 'vizart-core';
 import { min } from 'd3-array';
-import { interpolateArray } from 'd3-interpolate';
-import { timer } from 'd3-timer';
-import { hsl } from 'd3-color';
 import { mouse } from 'd3-selection';
-import { easeCubic } from 'd3-ease';
-import { area, curveCardinal } from 'd3-shape';
 
 import { AbstractStackedCartesianChartWithAxes } from '../../base';
 import { Stacks } from '../../data';
 import createCartesianStackedOpt from '../../options/createCartesianStackedOpt';
 import applyVoronoi from '../../canvas/voronoi/apply';
+import animateStates from './tween-states';
 
 const DefaultOptions = {
     chart: {
@@ -24,42 +20,12 @@ const DefaultOptions = {
     }
 };
 
-const curve = area()
-    .x(d => d.x)
-    .y0(d => d.y0)
-    .y1(d => d.y1)
-    .curve(curveCardinal);
-
-const drawCanvas = (context, state, opt)=> {
-    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-
-    curve.context(context);
-
-    for (const n of state) {
-        const color = n.c;
-        const hslColorSpace = hsl(color);
-        hslColorSpace.opacity = n.alpha;
-
-        context.beginPath();
-        curve(n.values);
-        context.lineWidth = opt.plots.strokeWidth;
-        context.strokeStyle = color;
-        context.stroke();
-
-        context.fillStyle = hslColorSpace;
-
-        context.fill();
-        context.closePath();
-    }
-}
-
 class Stream extends AbstractStackedCartesianChartWithAxes {
     constructor(canvasId, _userOptions) {
         super(canvasId, _userOptions);
     }
 
     _animate() {
-        const Duration = this._options.animation.duration.update;
         let _min = min(this._data.nested.map(d=> min(d.values.map(e => e.y0))));
 
         this._getMetric().scale.domain([_min, this._data.maxY]);
@@ -104,21 +70,16 @@ class Stream extends AbstractStackedCartesianChartWithAxes {
         // cache finalState as the initial state of next animation call
         this.previousState = finalState;
 
-        const interpolateParticles = interpolateArray(initialState, finalState);
-
         let that = this;
-        const batchRendering = timer( (elapsed)=> {
-            const t = Math.min(1, easeCubic(elapsed / Duration));
+        const ctx = that._frontContext;
+        const opt = that._options;
 
-            drawCanvas(that._frontContext,
-                interpolateParticles(t),
-                that._options);
-
-            if (t === 1) {
-                batchRendering.stop();
-
-                that._voronoi = applyVoronoi(that._frontContext,
-                    that._options, finalState.reduce((acc, p)=>{
+        animateStates(initialState,
+            finalState,
+            opt.animation.duration.update,
+            ctx,
+            opt).then(res=> {
+                that._voronoi = applyVoronoi(ctx, opt, res.reduce((acc, p)=>{
                         acc = acc.concat(p.values);
                         return acc;
                     }, []));
@@ -154,7 +115,6 @@ class Stream extends AbstractStackedCartesianChartWithAxes {
                 that._frontCanvas.on('mouseout', mouseOutHandler);
 
                 that._listeners.call('rendered');
-            }
         });
     }
 
