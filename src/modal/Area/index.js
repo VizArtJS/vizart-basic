@@ -6,7 +6,6 @@ import {
 
 import AbstractBasicCartesianChartWithAxes from '../../base/AbstractBasicCartesianChartWithAxes';
 import createCartesianOpt from '../../options/createCartesianOpt';
-import applyQuadtree from '../../canvas/quadtree/apply';
 import applyVoronoi from '../../canvas/voronoi/apply';
 import drawCanvas from './draw-canvas';
 import animateStates from './tween-states';
@@ -73,7 +72,7 @@ class Area extends AbstractBasicCartesianChartWithAxes {
             opt).then(
             res => {
                 this._voronoi = applyVoronoi(ctx, opt, res);
-                this._quadtree = applyQuadtree(ctx, opt, res);
+                // this._quadtree = applyQuadtree(ctx, opt, res);
 
                 /**
                  * callback for when the mouse moves across the overlay
@@ -103,9 +102,6 @@ class Area extends AbstractBasicCartesianChartWithAxes {
 
                 that._frontCanvas.on('mousemove', mouseMoveHandler);
                 that._frontCanvas.on('mouseout', mouseOutHandler);
-
-                // draw hidden in parallel;
-                drawCanvas(that._hiddenContext, res, opt, true);
 
                 that._listeners.call('rendered');
             }
