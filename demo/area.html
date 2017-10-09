@@ -78,10 +78,10 @@
         };
 
         var area = new VizArtBasic.Area('#bar', options);
-        area.on('rendered', function(){
-            area.revealVoronoi();
-            area.revealQuadtree();
-        })
+//        area.on('rendered', function(){
+//            area.revealVoronoi();
+//            area.revealQuadtree();
+//        })
         var data;
         d3.csv('assets/nasdaq1985-2012.csv', function(err, res){
             data = res;
