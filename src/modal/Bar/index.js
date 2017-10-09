@@ -1,11 +1,12 @@
-import { mouse, select } from 'd3-selection';
+import { mouse } from 'd3-selection';
 import { transition } from 'd3-transition';
+import isUndefined from 'lodash-es/isUndefined';
+import isFunction from 'lodash-es/isFunction';
+
 import {
     Globals,
     mergeOptions
 } from 'vizart-core';
-import isUndefined from 'lodash-es/isUndefined';
-import isFunction from 'lodash-es/isFunction';
 
 import AbstractBasicCartesianChartWithAxes from '../../base/AbstractBasicCartesianChartWithAxes';
 import createCartesianOpt from '../../options/createCartesianOpt';
@@ -30,14 +31,7 @@ const BarOpt = {
     }
 };
 
-const withinRect = (d, x, y)=> {
-    return this.x <= x && x <= this.x + this.width
-        && this.y <= y && y <= this.y + this.height;
-}
-
-
 class Bar extends AbstractBasicCartesianChartWithAxes {
-
     constructor(canvasId, _userOptions) {
         super(canvasId, _userOptions);
 
@@ -59,11 +53,6 @@ class Bar extends AbstractBasicCartesianChartWithAxes {
     }
 
     _animate() {
-        this.drawDetachedBars();
-    }
-
-
-    drawDetachedBars() {
         const _hasNegative = hasNegativeValue(this._data, this._options);
 
         const drawCanvasInTransition = ()=> {
