@@ -1,10 +1,11 @@
-import { descending, range } from 'd3-array';
+import { descending } from 'd3-array';
 import { formatPrefix } from 'd3-format';
 import { chord, ribbon} from 'd3-chord';
 import { arc } from 'd3-shape';
 import { scaleOrdinal } from 'd3-scale';
+import { getTransparentColor } from 'vizart-core';
+
 import getRadius from "./get-radius";
-import transparentColor from './get-transparent-color';
 
 
 const drawChord = (context, state, opt)=> {
@@ -61,7 +62,7 @@ const drawChord = (context, state, opt)=> {
         context.save();
         context.translate(opt.chart.width / 2, opt.chart.height / 2);
         context.beginPath();
-        const c = transparentColor(color(d.source.index), 0.3)
+        const c = getTransparentColor(color(d.source.index), 0.3)
         context.fillStyle = c;
         context.strokeStyle = c;
 

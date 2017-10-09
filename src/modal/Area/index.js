@@ -8,6 +8,8 @@ import {
 import AbstractBasicCartesianChartWithAxes from '../../base/AbstractBasicCartesianChartWithAxes';
 import createCartesianOpt from '../../options/createCartesianOpt';
 import animateStates from './tween-states';
+import drawCanvas from './draw-canvas';
+import highlightNode from './highlight-node';
 
 const AreaOpt = {
     chart: {
@@ -85,18 +87,23 @@ class Area extends AbstractBasicCartesianChartWithAxes {
                     const closest = that._voronoi.find(mx, my, QuadtreeRadius);
 
                     if (closest) {
-                        that._tooltip.style("left", closest[0] + "px")
-                            .style("top", closest[1] + "px")
+                        that._tooltip.style("left", closest[0] + opt.tooltip.offset[0] + "px")
+                            .style("top", closest[1] + opt.tooltip.offset[0] + "px")
                             .html( that.tooltip(closest.data.data));
 
-                        that._tooltip.style("opacity", 1)
+                        that._tooltip.style("opacity", 1);
+
+                        drawCanvas(ctx, res, opt, false);
+                        highlightNode(ctx, opt, closest.data, closest[0], closest[1]);
                     } else {
-                        that._tooltip.style("opacity", 0)
+                        that._tooltip.style("opacity", 0);
+                        drawCanvas(ctx, res, opt, false);
                     }
                 }
 
                 function mouseOutHandler() {
-                    that._tooltip.style("opacity", 0)
+                    that._tooltip.style("opacity", 0);
+                    drawCanvas(ctx, res, opt, false);
                 }
 
                 that._frontCanvas.on('mousemove', mouseMoveHandler);

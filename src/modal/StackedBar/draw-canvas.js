@@ -1,6 +1,6 @@
 import { hsl } from 'd3-color';
 
-const transparentColor = d => {
+const getTransparentColor = d => {
     const color = d.c;
     const hslColorSpace = hsl(color);
     hslColorSpace.opacity = d.alpha;
@@ -13,7 +13,7 @@ const drawCanvas = (context, state)=> {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
     for (const n of state) {
-        const color = transparentColor(n);
+        const color = getTransparentColor(n);
 
         for (const b of n.values) {
             context.beginPath();

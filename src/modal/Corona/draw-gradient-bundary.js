@@ -2,7 +2,6 @@ import { arc } from 'd3-shape';
 
 import getRadius from './get-radius';
 
-
 const drawGradientBoundary = (context, state, opt)=> {
     if (opt.plots.drawBoundary === false) {
         return;

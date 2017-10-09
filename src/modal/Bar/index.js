@@ -1,4 +1,5 @@
 import { mouse } from 'd3-selection';
+import { scaleLinear } from 'd3-scale';
 import { transition } from 'd3-transition';
 import isUndefined from 'lodash-es/isUndefined';
 import isFunction from 'lodash-es/isFunction';
@@ -75,6 +76,11 @@ class Bar extends AbstractBasicCartesianChartWithAxes {
 
                 dataRemove.remove();
             });
+
+        let durationScale = scaleLinear()
+            .domain([0, this._options.animation.duration.update])
+            .range([0, 1]);
+        let delayed = d=>d.i;
 
         const updateTransition = exitTransition.transition()
             .duration(this._options.animation.duration.update)

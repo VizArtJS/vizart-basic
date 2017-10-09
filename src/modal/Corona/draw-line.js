@@ -2,7 +2,9 @@ import {
     radialLine,
     curveLinearClosed
 } from 'd3-shape';
-import transparentColor from './get-transparent-color';
+
+import { getTransparentColor } from 'vizart-core';
+
 const drawLine = (context, state, opt)=> {
     context.save();
     context.translate(opt.chart.width / 2, opt.chart.height / 2);
@@ -21,7 +23,7 @@ const drawLine = (context, state, opt)=> {
                 .context(context);
 
         context.beginPath();
-        context.strokeStyle = transparentColor(n.c, n.strokeAlpha);
+        context.strokeStyle = getTransparentColor(n.c, n.strokeAlpha);
         context.lineWidth = opt.plots.strokeWidth;
         shape(n.values);
         context.stroke();

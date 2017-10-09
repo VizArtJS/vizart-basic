@@ -1,6 +1,6 @@
 import { scaleLinear } from 'd3-scale';
-import isFunction from 'lodash-es/isFunction';
 import { format } from 'd3-format';
+import isFunction from 'lodash-es/isFunction';
 
 import getLevels from './get-grid-levels';
 import getRadius from "./get-radius";

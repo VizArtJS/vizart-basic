@@ -2,8 +2,12 @@ import {
     radialArea,
     curveCardinalClosed
 } from 'd3-shape';
-import { radialGradient } from 'vizart-core';
-import transparentColor from './get-transparent-color';
+
+import {
+    radialGradient,
+    getTransparentColor
+} from 'vizart-core';
+
 import getRadius from "./get-radius";
 
 const drawArea = (context, state, opt)=> {
@@ -35,13 +39,13 @@ const drawArea = (context, state, opt)=> {
                 innerRadius, outerRadius);
 
         } else {
-            context.fillStyle = transparentColor(n.c, n.alpha);
+            context.fillStyle = getTransparentColor(n.c, n.alpha);
         }
         shape(n.values);
         context.fill();
 
         context.lineWidth = opt.plots.strokeWidth;
-        context.strokeStyle = transparentColor(n.c, n.strokeAlpha);
+        context.strokeStyle = getTransparentColor(n.c, n.strokeAlpha);
         context.stroke();
     }
 

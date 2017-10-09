@@ -1,7 +1,10 @@
 import { scaleLinear } from 'd3-scale';
 import { mouse } from 'd3-selection';
-import { applyVoronoi } from 'vizart-core';
 import cloneDeep from 'lodash-es/cloneDeep';
+import {
+    applyVoronoi,
+    getTransparentColor
+} from 'vizart-core';
 
 import { AbstractStackedCartesianChart } from '../../base';
 import CoronaOptions from './options';
@@ -10,7 +13,6 @@ import { Stacks } from '../../data';
 
 import drawCanvas from './draw-canvas';
 import highlight from './highlight';
-import transparentColor from "./get-transparent-color";
 import getRadius from './get-radius';
 import animateStates from "./tween-states";
 
@@ -115,7 +117,7 @@ class Corona extends AbstractStackedCartesianChart {
                     const fadeOpacity = 0.1;
 
                     const optCopy = cloneDeep(opt);
-                    optCopy.plots.levelColor = transparentColor(optCopy.plots.levelColor, fadeOpacity);
+                    optCopy.plots.levelColor = getTransparentColor(optCopy.plots.levelColor, fadeOpacity);
                     optCopy.plots.strokeOpacity = 0;
 
                     drawCanvas(ctx,

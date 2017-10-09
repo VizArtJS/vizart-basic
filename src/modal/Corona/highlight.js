@@ -1,6 +1,7 @@
 import { drawCircularText } from 'vizart-core';
-import getAxisLabel from './get-axis-label';
 import isFunction from 'lodash-es/isFunction';
+
+import getAxisLabel from './get-axis-label';
 
 const getLevelLabel = (opt, label)=> (opt.plots.levelLabel && isFunction(opt.plots.levelLabel))
     ? opt.plots.levelLabel(label)
