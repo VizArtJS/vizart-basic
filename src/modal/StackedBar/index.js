@@ -8,6 +8,7 @@ import {
     ExpandedOptions
 } from './options';
 import animateStates from './tween-states';
+import drawHiddenCanvas from './draw-hidden-canvas';
 
 
 class StackedBar extends AbstractStackedCartesianChartWithAxes {
@@ -15,6 +16,7 @@ class StackedBar extends AbstractStackedCartesianChartWithAxes {
         super(canvasId, _userOptions);
 
         this.stackSwitched = false;
+        this.colorMap;
     }
 
     _animate() {
@@ -161,7 +163,54 @@ class StackedBar extends AbstractStackedCartesianChartWithAxes {
                 finalState,
                 this._options.animation.duration.update,
                 this._frontContext,
-                this._options);
+                this._options)
+                    .then(res=>{
+                        this.colorMap = drawHiddenCanvas(this._hiddenContext, res);
+
+                        console.log(this.colorMap);
+
+                        let that = this;
+
+
+                        // shadow color?
+                        /**
+                         * callback for when the mouse moves across the overlay
+                         */
+                        function mouseMoveHandler() {
+                            // get the current mouse position
+                            const [mx, my] = mouse(this);
+                            // This will return that pixel's color
+                            const col = that._hiddenContext.getImageData(mx * that._canvasScale, my * that._canvasScale, 1, 1).data;
+                            //Our map uses these rgb strings as keys to nodes.
+                            const colString = "rgb(" + col[0] + "," + col[1] + ","+ col[2] + ")";
+                            const node = that.colorMap.get(colString);
+
+                            if (node) {
+                                that._tooltip
+                                    .html(that.tooltip(node.data))
+                                    .transition()
+                                    .duration(that._options.animation.tooltip)
+                                    .style("opacity", 1)
+                                    .style("left", mx + that._options.tooltip.offset[0] + "px")
+                                    .style("top", my + that._options.tooltip.offset[0] + "px")
+
+                            } else {
+                                that._tooltip
+                                    .transition()
+                                    .duration(that._options.animation.tooltip)
+                                    .style("opacity", 0)
+                            }
+                        }
+
+                        function mouseOutHandler() {
+                            that._tooltip.style("opacity", 0)
+                        }
+
+                        that._frontCanvas.on('mousemove', mouseMoveHandler);
+                        that._frontCanvas.on('mouseout', mouseOutHandler);
+
+                    }
+                );
 
             // cache finalState as the initial state of next animation call
             this.previousState = finalState;

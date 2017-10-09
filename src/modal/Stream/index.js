@@ -42,6 +42,7 @@ class Stream extends AbstractStackedCartesianChartWithAxes {
                         return {
                             key: d.key,
                             x: this._x(e.data),
+                            y: e.y,
                             y0: this._options.chart.innerHeight / 2,
                             y1: this._options.chart.innerHeight / 2,
                             data: e.data
@@ -59,6 +60,7 @@ class Stream extends AbstractStackedCartesianChartWithAxes {
                     return {
                         key: d.key,
                         x: this._x(e.data),
+                        y: e.y,
                         y0: this._y0(e),
                         y1: this._y1(e),
                         data: e.data
@@ -96,9 +98,11 @@ class Stream extends AbstractStackedCartesianChartWithAxes {
                     const closest = that._voronoi.find(mx, my, QuadtreeRadius);
 
                     if (closest) {
-                        that._tooltip.style("left", closest[0] + "px")
-                            .style("top", closest[1] + "px")
-                            .html( that.tooltip(closest.data.data));
+                        closest.data.data[that._getMetric().accessor] = closest.data.data[closest.data.key];
+                        that._tooltip
+                            .html( that.tooltip(closest.data.data))
+                            .style("left", mx + opt.tooltip.offset[0] + "px")
+                            .style("top", my + opt.tooltip.offset[0] + "px");
 
                         that._tooltip.style("opacity", 1)
                     } else {
