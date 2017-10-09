@@ -85,7 +85,7 @@ class Corona extends AbstractStackedCartesianChart {
             opt.animation.duration.update,
             ctx,
             opt).then(res=>{
-            that._voronoi = applyVoronoi(ctx, opt, finalState.reduce((acc, p)=>{
+            that._voronoi = applyVoronoi(ctx, opt, res.reduce((acc, p)=>{
                 acc = acc.concat(p.values.map(d=>{
                     return {
                         s: p.key,
@@ -119,7 +119,7 @@ class Corona extends AbstractStackedCartesianChart {
                     optCopy.plots.strokeOpacity = 0;
 
                     drawCanvas(ctx,
-                        finalState.map(d=>{
+                        res.map(d=>{
                             const p = d;
                             p.alpha = d.key === closest.data.s
                                 ? 0.4
