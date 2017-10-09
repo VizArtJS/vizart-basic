@@ -14,9 +14,9 @@ const drawCanvas = (context, state, opt)=> {
     drawGridArc(context, opt);
     drawGridLabel(context, state, opt);
     drawAxisLabel(context, opt);
-    drawMonths(context, opt);
+    // drawMonths(context, opt);
     // drawHistogram(context, state, opt);
-    drawChord(context, state, opt);
+    // drawChord(context, state, opt);
 
     if (opt.plots.isArea === true) {
         drawArea(context, state, opt)
