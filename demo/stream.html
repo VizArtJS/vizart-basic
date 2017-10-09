@@ -21,7 +21,9 @@
     </button>
     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
         <li id="wiggle"><a href="#">Wiggle</a></li>
-        <li id="silhouette"><a href="#">silhouette: Zero</a></li>
+        <li id="silhouette"><a href="#">silhouette</a></li>
+        <li id="divergent"><a href="#">Divergent</a></li>
+
     </ul>
 </div>
 
@@ -93,7 +95,11 @@
             chart.update();
         });
 
-        var options2 = chart.options();
+        $('#divergent').click(function(){
+            options2.plots.stackMethod = "divergent";
+            chart.options(options2);
+            chart.update();
+        });
 
         // change color
         $('#color1').click(function(){
