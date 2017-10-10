@@ -15,14 +15,14 @@ const drawCanvas = (context, particles, opt, hidden = false)=> {
     if (hidden === true) {
         drawPoints(context, particles, opt, true);
     } else {
-        if (opt.plots.showDots === true) {
-            drawPoints(context, particles, opt, false);
-        }
-
         if (opt.plots.drawArea === true) {
             drawArea(context, particles, opt);
         } else {
             drawLine(context, particles, opt);
+        }
+
+        if (opt.plots.showDots === true) {
+            drawPoints(context, particles, opt, false);
         }
     }
 }
