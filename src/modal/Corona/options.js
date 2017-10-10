@@ -1,5 +1,4 @@
 import { Stacks } from '../../data';
-import { DefaultCategoricalColor } from 'vizart-core';
 
 const CoronaOptions = {
     chart: {

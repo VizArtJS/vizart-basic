@@ -21,13 +21,14 @@ const RoseOpt = {
 }
 /**
  *
- *
  *"Death is a great price to pay for a red rose," cried the Nightingale,
  * "and Life is very dear to all. It is pleasant to sit in the green wood,
  * and to watch the Sun in his chariot of gold, and the Moon in her chariot of pearl.
  * Sweet is the scent of the hawthorn, and sweet are the bluebells that hide in the valley,
  * and the heather that blows on the hill. Yet love is better than Life, and what is the heart
  * of a bird compared to the heart of a man?"
+ *
+ * @author Oscar Wilde <The Nightingale And The Rose>
  */
 class Rose extends AbstractStackedCartesianChart {
     constructor(canvasId, _userOptions) {
@@ -44,12 +45,6 @@ class Rose extends AbstractStackedCartesianChart {
 
         const rawRadiusScale = radiusScale.copy().domain(dataRange);
 
-        const universalAngle = d=> {
-            return this._options.plots.stackLayout === true
-                ? Math.PI * 2 / d.values.length
-                : Math.PI * 2 / d.values.length / this._data.nested.length;
-        }
-
         const initialState = this.previousState
             ? this.previousState
             : this._data.nested.map(d => {
@@ -57,18 +52,21 @@ class Rose extends AbstractStackedCartesianChart {
                     key: d.key,
                     c: this._c(d),
                     s: d.key,
-                    range: dataRange,
                     alpha: 0,
                     strokeAlpha: this._options.plots.strokeOpacity,
                     values: d.values.map((e, i) => {
+                        const angleScale = scaleLinear()
+                            .domain([0, d.values.length])
+                            .range([0, 2 * Math.PI]);
+
                         return {
                             key: d.key,
-                            angle: universalAngle(d),
+                            startAngle: angleScale(i),
+                            endAngle: angleScale(i + 1),
                             r: innerRadius,
                             r0: innerRadius,
                             r1: innerRadius,
                             data: e.data,
-                            d: e
                         }
                     })
                 }
@@ -79,18 +77,21 @@ class Rose extends AbstractStackedCartesianChart {
                 key: d.key,
                 c: this._c(d),
                 s: d.key,
-                range: dataRange,
                 alpha: this._options.plots.areaOpacity,
                 strokeAlpha: this._options.plots.strokeOpacity,
                 values: d.values.map((e, i) => {
+                    const angleScale = scaleLinear()
+                        .domain([0, d.values.length])
+                        .range([0, 2 * Math.PI]);
+
                     return {
                         key: d.key,
-                        angle: universalAngle(d),
+                        startAngle: angleScale(i),
+                        endAngle: angleScale(i + 1),
                         r: radiusScale(e.y),
                         r0: rawRadiusScale(e.y0),
                         r1: rawRadiusScale(e.y1),
                         data: e.data,
-                        d: e
                     }
                 })
             }
