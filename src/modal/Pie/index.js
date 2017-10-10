@@ -16,10 +16,10 @@ const DefaultOptions = {
     chart: {
         type: 'pie',
         margin: {
-            left: 0,
-            bottom: 0,
-            right: 0,
-            top: 0
+            left: 10,
+            bottom: 5,
+            right: 10,
+            top: 5
         }
     },
     plots: {
