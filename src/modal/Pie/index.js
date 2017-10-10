@@ -14,15 +14,21 @@ import animateStates from './tween-states';
 
 const DefaultOptions = {
     chart: {
-        type: 'pie'
+        type: 'pie',
+        margin: {
+            left: 0,
+            bottom: 0,
+            right: 0,
+            top: 0
+        }
     },
     plots: {
         othersTitle: 'Others',
         isDonut: false,
         opacity: 0.8,
         innerRadiusRatio: 0.4,
-        outerRadiusMargin: 80,
-        labelOffset: 30,
+        outerRadiusMargin: 70,
+        labelOffset: 20,
         labelControlPointRadius: 6,
         labelPosition: 'auto',
         labelMinPercentage: 0.01

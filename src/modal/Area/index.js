@@ -22,7 +22,7 @@ const AreaOpt = {
         highlightNodeColor: '#F03E1E',
         nodeRadius: 4,
         drawArea: true,
-        showDots: true
+        showDots: false
     }
 };
 

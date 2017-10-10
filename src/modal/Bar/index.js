@@ -21,11 +21,11 @@ const BarOpt = {
     chart: { type: 'bar_horizontal'},
     plots: {
         barLabel: {
-            enabled: true,
+            enabled: false,
             color: 'black'
         },
         metricLabel: {
-            enabled: true,
+            enabled: false,
             color: 'black',
             offset: 10
         }
