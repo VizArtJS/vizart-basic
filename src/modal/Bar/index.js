@@ -77,11 +77,6 @@ class Bar extends AbstractBasicCartesianChartWithAxes {
                 dataRemove.remove();
             });
 
-        let durationScale = scaleLinear()
-            .domain([0, this._options.animation.duration.update])
-            .range([0, 1]);
-        let delayed = d=>d.i;
-
         const updateTransition = exitTransition.transition()
             .duration(this._options.animation.duration.update)
             .each(()=> {
@@ -109,8 +104,8 @@ class Bar extends AbstractBasicCartesianChartWithAxes {
                     .attr('opacity', 1)
                     .attr("x", this._x)
                     .attr('width', this._w)
-                    .attr('dimension', '')
-                    .attr('metric', '')
+                    .attr('dimension', this._getDimensionVal)
+                    .attr('metric', this._getMetricVal)
                     .attr("y", _hasNegative ? this._zero(0) : this._options.chart.innerHeight)
                     .attr("height", 0)
                     .transition()
@@ -120,8 +115,6 @@ class Bar extends AbstractBasicCartesianChartWithAxes {
                     .attr("height", d=> _hasNegative
                         ? Math.abs( this._y(d) - this._zero() )
                         : this._h(d))
-                    .attr('dimension', this._getDimensionVal)
-                    .attr('metric', this._getMetricVal)
                     .tween("append.rects", drawCanvasInTransition);
             });
 
