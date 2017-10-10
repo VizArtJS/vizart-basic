@@ -91,7 +91,7 @@ class MultiLine extends AbstractStackedCartesianChartWithAxes {
                 const closest = that._voronoi.find(mx, my, QuadtreeRadius);
                 if (closest) {
                     that._tooltip
-                        .html(that.tooltip(node))
+                        .html(that.tooltip(closest.data.data))
                         .transition()
                         .duration(that._options.animation.tooltip)
                         .style("left", mx + that._options.tooltip.offset[0] + "px")

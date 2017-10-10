@@ -105,7 +105,7 @@ class Stream extends AbstractStackedCartesianChartWithAxes {
                             .duration(that._options.animation.tooltip)
                             .style("left", mx + opt.tooltip.offset[0] + "px")
                             .style("top", my + opt.tooltip.offset[1] + "px")
-                            .style("opacity", 1；
+                            .style("opacity", 1);
                     } else {
                         that._tooltip
                             .transition()
