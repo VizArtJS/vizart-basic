@@ -88,8 +88,8 @@ class Area extends AbstractBasicCartesianChartWithAxes {
                     const closest = that._voronoi.find(mx, my, QuadtreeRadius);
 
                     if (closest) {
-                        that._tooltip.style("left", closest[0] + opt.tooltip.offset[0] + "px")
-                            .style("top", closest[1] + opt.tooltip.offset[0] + "px")
+                        that._tooltip.style("left", mx + opt.tooltip.offset[0] + "px")
+                            .style("top", my + opt.tooltip.offset[1] + "px")
                             .html( that.tooltip(closest.data.data));
 
                         that._tooltip.style("opacity", 1);
