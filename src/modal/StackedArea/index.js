@@ -92,21 +92,31 @@ class StackedArea extends AbstractStackedCartesianChartWithAxes {
                     if (closest) {
                         that._tooltip
                             .html( that.tooltip(closest.data.data))
+                            .transition()
+                            .duration(that._options.animation.tooltip)
                             .style("left", mx + opt.tooltip.offset[0] + "px")
-                            .style("top", my + opt.tooltip.offset[0] + "px");
+                            .style("top", my + opt.tooltip.offset[1] + "px")
+                            .style("opacity", 1);
 
-                        that._tooltip.style("opacity", 1);
                         highlightArea(ctx, res, opt, closest.data);
                         highlightNode(ctx, opt, closest.data.c, closest[0], closest[1]);
                     } else {
                         drawCanvas(ctx, res, opt);
-                        that._tooltip.style("opacity", 0);
+
+                        that._tooltip
+                            .transition()
+                            .duration(that._options.animation.tooltip)
+                            .style("opacity", 0);
                     }
                 }
 
                 function mouseOutHandler() {
                     drawCanvas(ctx, res, opt);
-                    that._tooltip.style("opacity", 0);
+
+                    that._tooltip
+                        .transition()
+                        .duration(that._options.animation.tooltip)
+                        .style("opacity", 0);
                 }
 
                 that._frontCanvas.on('mousemove', mouseMoveHandler);

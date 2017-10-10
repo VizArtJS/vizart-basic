@@ -147,24 +147,28 @@ class Bar extends AbstractBasicCartesianChartWithAxes {
                         .html(that.tooltip(node))
                         .transition()
                         .duration(that._options.animation.tooltip)
-                        .style("opacity", 1)
                         .style("left", mx + that._options.tooltip.offset[0] + "px")
                         .style("top", my + that._options.tooltip.offset[1] + "px")
-
+                        .style("opacity", 1);
                 } else {
                     that._tooltip
                         .transition()
                         .duration(that._options.animation.tooltip)
-                        .style("opacity", 0)
+                        .style("opacity", 0);
                 }
             }
 
             function mouseOutHandler() {
-                that._tooltip.style("opacity", 0)
+                that._tooltip
+                    .transition()
+                    .duration(that._options.animation.tooltip)
+                    .style("opacity", 0);
             }
 
             that._frontCanvas.on('mousemove', mouseMoveHandler);
             that._frontCanvas.on('mouseout', mouseOutHandler);
+            that._listeners.call('rendered');
+
         })
     }
 

@@ -91,23 +91,31 @@ class MultiLine extends AbstractStackedCartesianChartWithAxes {
                 const closest = that._voronoi.find(mx, my, QuadtreeRadius);
                 if (closest) {
                     that._tooltip
-                        .html( that.tooltip(closest.data.data))
-                        .style("left", mx + opt.tooltip.offset[0] + "px")
-                        .style("top", my + opt.tooltip.offset[1] + "px");
+                        .html(that.tooltip(node))
+                        .transition()
+                        .duration(that._options.animation.tooltip)
+                        .style("left", mx + that._options.tooltip.offset[0] + "px")
+                        .style("top", my + that._options.tooltip.offset[1] + "px")
+                        .style("opacity", 1);
 
                     highlightLine(ctx, res, opt, closest.data);
                     highlightNode(ctx, opt, closest.data.c, closest[0], closest[1]);
-
-                    that._tooltip.style("opacity", 1);
                 } else {
-                    that._tooltip.style("opacity", 0);
+                    that._tooltip
+                        .transition()
+                        .duration(that._options.animation.tooltip)
+                        .style("opacity", 0);
 
                     drawCanvas(ctx, res, opt);
                 }
             }
 
             function mouseOutHandler() {
-                that._tooltip.style("opacity", 0);
+                that._tooltip
+                    .transition()
+                    .duration(that._options.animation.tooltip)
+                    .style("opacity", 0);
+
                 drawCanvas(ctx, res, opt);
             }
 

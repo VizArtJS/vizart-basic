@@ -150,9 +150,7 @@ class Corona extends AbstractStackedCartesianChart {
 
             that._listeners.call('rendered');
         });
-
     }
-
 
     stackLayout() {
         this._options.plots.stackLayout = true;

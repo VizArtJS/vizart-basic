@@ -103,29 +103,26 @@ class Scatter extends AbstractBasicCartesianChartWithAxes {
                             .html( that.tooltip(closest.data.data))
                             .transition()
                             .duration(that._options.animation.tooltip)
-                            .style("opacity", 1)
                             .style("left", mx + opt.tooltip.offset[0] + "px")
-                            .style("top", my + opt.tooltip.offset[0] + "px");
-
+                            .style("top", my + opt.tooltip.offset[1] + "px")
+                            .style("opacity", 1);
                     } else {
                         that._tooltip
                             .transition()
                             .duration(that._options.animation.tooltip)
-                            .style("opacity", 0)
+                            .style("opacity", 0);
                     }
                 }
 
                 function mouseOutHandler() {
-                    that._tooltip.style("opacity", 0)
+                    that._tooltip
+                        .transition()
+                        .duration(that._options.animation.tooltip)
+                        .style("opacity", 0);
                 }
 
                 that._frontCanvas.on('mousemove', mouseMoveHandler);
                 that._frontCanvas.on('mouseout', mouseOutHandler);
-
-                // draw hidden in parallel;
-                // drawPoints(that._hiddenContext,
-                //     interpolateParticles(t),
-                //     that._options, true);
 
                 that._listeners.call('rendered');
         });
