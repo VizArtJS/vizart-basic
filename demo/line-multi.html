@@ -20,14 +20,13 @@
     $(document).ready(function () {
         var options = {
             data: {
-                x:   { name: 'Director', type: 'string', accessor: 'Director'},
+                x:
+                    { name: 'Date', type: 'date', accessor: 'date', format: '%Y-%m-%d'}
+                ,
                 y: [
-                    { name: 'Total', type: 'number', accessor: 'Total', yAxis: 0},
-                    { name: 'Pan', type: 'number', accessor: 'Pan', yAxis: 0},
-                    { name: 'Track', type: 'number', accessor: 'Track', yAxis: 0},
-                    { name: 'Tilt', type: 'number', accessor: 'Tilt', yAxis: 0},
-                    { name: 'Track w Pan', type: 'number', accessor: 'Track w Pan', yAxis: 0}
-
+                    { name: 'Sales', type: 'number', accessor: 'sales'},
+                    { name: 'Volume', type: 'number', accessor: 'volume'},
+                    { name: 'Complaint', type: 'number', accessor: 'complaint'}
                 ],
             },
 
@@ -41,15 +40,9 @@
 
         var chart = new VizArtBasic.MultiLine('#chart', options);
 
-        d3.csv('assets/movies.csv', function(err, res){
-            var data = _.uniqWith(res, function(a, b) {
-                return a.Director === b.Director;
-            });
-
-            chart.render(data);
-
+        d3.csv('assets/profit.csv', function(err, res){
+            chart.render(res);
         });
-
     });
 </script>
 </body>
