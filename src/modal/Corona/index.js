@@ -109,7 +109,7 @@ class Corona extends AbstractStackedCartesianChart {
             function mouseMoveHandler() {
                 // get the current mouse position
                 const [mx, my] = mouse(this);
-                const QuadtreeRadius = 100;
+                const QuadtreeRadius = 30;
                 // use the new diagram.find() function to find the Voronoi site
                 // closest to the mouse, limited by max distance voronoiRadius
                 const closest = that._voronoi.find(mx, my, QuadtreeRadius);
@@ -137,12 +137,12 @@ class Corona extends AbstractStackedCartesianChart {
 
                     highlight(ctx, opt, closest.data);
                 } else {
-                    drawCanvas(ctx, res, opt);
+                    drawCanvas(ctx, finalState, opt);
                 }
             }
 
             function mouseOutHandler() {
-                drawCanvas(ctx, res, opt);
+                drawCanvas(ctx, finalState, opt);
             }
 
             that._frontCanvas.on('mousemove', mouseMoveHandler);
