@@ -18,9 +18,11 @@ const drawAxisLabel = (context, opt)=> {
 
     const mapToAxis = scaleLinear().domain([0, axisNum]).range([0, axesLength]).nice();
 
-    for (let i = 0; i < axisNum; i++) {
+    const toText = i=> Math.ceil(mapToAxis(i));
+
+    for (let i = 1; i < axisNum; i++) {
         drawCircularText(context,
-            getAxisLabel(opt, axes[mapToAxis(i)], mapToAxis(i)) + '',
+            getAxisLabel(opt, axes[toText(i)], toText(i)) + '',
             14,
             'Oswald',
             opt.plots.axisLabelColor,

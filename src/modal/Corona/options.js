@@ -4,10 +4,10 @@ const CoronaOptions = {
     chart: {
         type: 'corona',
         margin: {
-            top: 0,
-            bottom: 0,
-            left: 0,
-            right: 0
+            top: 10,
+            bottom: 10,
+            left: 10,
+            right: 10
         }
     },
     plots: {
@@ -19,7 +19,7 @@ const CoronaOptions = {
 
         axisLabel: null,
         axisLabelColor:'#737373',
-        axisLabelOffset: 10, //How much farther than the radius of the outer circle should the labels be placed
+        axisLabelOffset: 15, //How much farther than the radius of the outer circle should the labels be placed
 
         highlightStrokeColor: '#000000',
         highlightNodeColor: '#F03E1E',
@@ -37,9 +37,9 @@ const CoronaOptions = {
         boundaryGradient: ['white', '#eb3ba6'],
 
         innerRadiusRatio: 0.4,
-        outerRadiusMargin: 60,
+        outerRadiusMargin: 10,
 
-        stackLayout: true, // stack areas
+        stackLayout: false, // stack areas
         stackMethod: Stacks.Zero,
         isArea: true	//If true the area and stroke will follow a round path (cardinal-closed),
     }
