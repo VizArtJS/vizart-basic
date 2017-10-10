@@ -7,6 +7,8 @@ import { AbstractStackedCartesianChartWithAxes } from '../../base';
 import { Stacks } from '../../data';
 import createCartesianStackedOpt from '../../options/createCartesianStackedOpt';
 import animateStates from './tween-states';
+import drawCanvas from './draw-canvas';
+import highlightNode from './highlight-node';
 
 const DefaultOptions = {
     chart: {
@@ -15,6 +17,7 @@ const DefaultOptions = {
     plots: {
         stackLayout: true,
         stackMethod: Stacks.Wiggle,
+        highlightNodeColor: '#F03E1E',
         opacityArea: 0.7,
         dotRadius: 8
     }
@@ -82,7 +85,11 @@ class Stream extends AbstractStackedCartesianChartWithAxes {
             ctx,
             opt).then(res=> {
                 that._voronoi = applyVoronoi(ctx, opt, res.reduce((acc, p)=>{
-                        acc = acc.concat(p.values);
+                        acc = acc.concat(p.values.map(d=> {
+                            let n = d;
+                            n.y = d.y1;
+                            return n;
+                        }));
                         return acc;
                     }, []));
 
@@ -106,11 +113,16 @@ class Stream extends AbstractStackedCartesianChartWithAxes {
                             .style("left", mx + opt.tooltip.offset[0] + "px")
                             .style("top", my + opt.tooltip.offset[1] + "px")
                             .style("opacity", 1);
+
+                        drawCanvas(ctx, res, opt);
+                        highlightNode(ctx, opt, closest.data.c, closest[0], closest[1]);
                     } else {
                         that._tooltip
                             .transition()
                             .duration(that._options.animation.tooltip)
                             .style("opacity", 0);
+                        drawCanvas(ctx, res, opt);
+
                     }
                 }
 
@@ -119,6 +131,8 @@ class Stream extends AbstractStackedCartesianChartWithAxes {
                         .transition()
                         .duration(that._options.animation.tooltip)
                         .style("opacity", 0);
+
+                    drawCanvas(ctx, res, opt);
                 }
 
                 that._frontCanvas.on('mousemove', mouseMoveHandler);
