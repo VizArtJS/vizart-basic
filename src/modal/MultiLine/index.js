@@ -4,6 +4,7 @@ import { AbstractStackedCartesianChartWithAxes } from '../../base';
 import createCartesianStackedOpt from '../../options/createCartesianStackedOpt';
 import drawCanvas from './draw-canvas';
 import highlightLine from './highlight-line';
+import highlightNode from './highlight-node';
 import animateStates from './tween-states';
 
 const DefaultOptions = {
@@ -92,9 +93,12 @@ class MultiLine extends AbstractStackedCartesianChartWithAxes {
                     that._tooltip
                         .html( that.tooltip(closest.data.data))
                         .style("left", mx + opt.tooltip.offset[0] + "px")
-                        .style("top", my + opt.tooltip.offset[0] + "px");
+                        .style("top", my + opt.tooltip.offset[1] + "px");
 
-                    highlightLine(ctx, res, opt, closest.data);
+                    // highlightLine(ctx, res, opt, closest.data);
+                    drawCanvas(ctx, res, opt);
+                    highlightNode(ctx, opt, closest.data.c, closest[0], closest[1]);
+
                     that._tooltip.style("opacity", 1);
                 } else {
                     that._tooltip.style("opacity", 0);
