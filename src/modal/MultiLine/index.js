@@ -95,8 +95,7 @@ class MultiLine extends AbstractStackedCartesianChartWithAxes {
                         .style("left", mx + opt.tooltip.offset[0] + "px")
                         .style("top", my + opt.tooltip.offset[1] + "px");
 
-                    // highlightLine(ctx, res, opt, closest.data);
-                    drawCanvas(ctx, res, opt);
+                    highlightLine(ctx, res, opt, closest.data);
                     highlightNode(ctx, opt, closest.data.c, closest[0], closest[1]);
 
                     that._tooltip.style("opacity", 1);
