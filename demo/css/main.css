@@ -1,2 +1,25 @@
+html,
+body {
+    height: 100%;
+}
 
+.chart-container {
+    position: absolute;
+    border-radius: 3px;
 
+    width: 90%;
+    left: 5%;
+    top: 60px;
+    margin: 0px auto;
+    height: calc(100% - 120px);
+    padding-top: 0px;
+    /*border-radius: 6px;*/
+    /*box-shadow: 0 12px 15px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);*/
+}
+
+.ocean {
+    background-image: url(../assets/vz-skin-galaxy_2.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+
+}

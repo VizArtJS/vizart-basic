@@ -1,4 +1,4 @@
-import { mergeBase, mergeOptions } from 'vizart-core';
+import { mergeBase } from 'vizart-core';
 import CartesianStackedOptions from './CartesianStackedOptions';
 
 const createCartesianStackedOpt = (_chartOpt, _userOpt)=> {

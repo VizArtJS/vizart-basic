@@ -8,28 +8,15 @@ class AbstractStackedCartesianChart extends AbstractCartesianChart {
     constructor(canvasId, _userOptions) {
         super(canvasId, _userOptions);
 
-        this._getSeries = ()=> {
-            return this._options.data.s;
-        };
-
-        this._getSeriesVal = (d)=>  {
-            return d[this._getSeries().accessor];
-        }
-
-        this._y1 = (d)=>  {
-            return this._getMetric().scale(d.y);
-        }
-
-        this._y0 = (d)=>  {
-            return this._getMetric().scale(d.y0);
-        }
-
-        this._c = (d) => {
+        this._getSeries = ()=> this._options.data.s;
+        this._s = d=> d[this._getSeries().accessor];
+        this._y1 = d=> this._getMetric().scale(d.y1);
+        this._y0 = d=> this._getMetric().scale(d.y0);
+        this._c = d => {
             return (has(d, 'key'))
                 ? this._color(d.key)
-                : this._color(this._getSeriesVal(d));
+                : this._color(this._s(d));
         }
-
     }
 
     render(_data) {
@@ -37,8 +24,9 @@ class AbstractStackedCartesianChart extends AbstractCartesianChart {
     }
 
     update() {
-        super.update();
         this.data(this._data.original);
+
+        super.update();
     }
 
     data(_data) {

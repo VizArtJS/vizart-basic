@@ -9,7 +9,7 @@ const DefaultOptions = {
         curve: 'linear',
         strokeWidth: 3,
         nodeRadius: 4,
-        areaOpacity: 1,
+        highlightNodeColor: '#F03E1E',
         drawArea: false,
         showDots: true
     }

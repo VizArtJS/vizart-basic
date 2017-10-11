@@ -3,12 +3,10 @@ import { check } from 'vizart-core';
 
 import getAllDataDef from './all-data-def';
 
-const getSortDef = (_options)=> {
-    let _allFields = getAllDataDef(_options);
+const getSortDef = opt=> {
+    let allFields = getAllDataDef(opt);
 
-    let _field = find(_allFields, (o)=> {
-        return o.accessor === _options.ordering.accessor;
-    });
+    let _field = find(allFields, o=> o.accessor === opt.ordering.accessor);
 
     if(!check(_field)) {
         throw new Error('ordering accessor is invalid');
