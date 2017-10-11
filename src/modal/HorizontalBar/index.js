@@ -31,8 +31,11 @@ const DefaultOpt = {
 };
 
 class HorizontalBar extends AbstractBasicCartesianChart {
-    constructor(canvasId, _userOptions) {
-        super(canvasId, _userOptions);
+    constructor(canvasId, userOpt) {
+        super(canvasId, userOpt);
+
+        this._getDimension().scale.range([0, userOpt.chart.innerHeight]);
+        this._getMetric().scale.range([0, userOpt.chart.innerWidth]);
 
         this._w = ()=>{
             if (isUndefined(this._getDimension().scale.bandwidth)

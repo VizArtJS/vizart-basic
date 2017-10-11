@@ -26,7 +26,7 @@ const updateAxis = (svg, data, opt)=>  {
 
     //scale ticks, bar is special because every column is distinct
     if (isBar(opt) === true) {
-        updateXAxisTicks(data, opt);
+        updateXAxisTicks(data, opt, xAxis);
     } else {
         if (dimension.type === Globals.DataType.DATE) {
             if (opt.xAxis.ticks > 0) { //follow user specification
