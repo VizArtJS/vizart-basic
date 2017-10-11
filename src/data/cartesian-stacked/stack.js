@@ -14,9 +14,20 @@ import {
 
 import Stacks from '../constant/stack-methods';
 
-const getSeriesOrdering = opt=> opt.ordering.direction === 'desc'
-    ? stackOrderDescending
-    : stackOrderAscending;
+const getSeriesOrdering = opt => {
+    switch(opt.ordering.direction) {
+        case 'asc':
+            return stackOrderAscending;
+        case 'desc':
+            return stackOrderDescending;
+        case 'none':
+            return stackOrderNone;
+        case 'reverse':
+            return stackOrderReverse;
+        default:
+            return stackOrderNone;
+    }
+}
 
 const getStack = opt=> {
     // nested data
