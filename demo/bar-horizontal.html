@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bar Chart Demo</title>
+    <link href="./vizart-basic.css" rel="stylesheet" type="text/css"/>
+    <link href="./css/main.css" rel="stylesheet" type="text/css"/>
+    <link href="./lib/bootstrap-3.3.7/css/bootstrap.css" rel="stylesheet" type="text/css">
+    <script src="./lib/jquery-1.12.4.min.js"></script>
+    <script src="./lib/bootstrap-3.3.7/js/bootstrap.js"></script>
+    <script src="./lib/lodash.min.js"></script>
+    <script src="./lib/d3.js"></script>
+    <script src="./vizart-basic.standalone.js" type="text/javascript"></script>
+</head>
+<body>
+
+<div id="update" class="btn btn-info" style="position: fixed;top: 10px; left: 70px; z-index: 99">Update</div>
+<div class="dropdown" style="position: fixed; top: 10px; left: 160px;z-index: 99">
+    <button  class="btn btn-info dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+        Color
+        <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+        <li id="color1"><a href="#">Dawn Distinct</a></li>
+        <li id="color2"><a href="#">Cold</a></li>
+        <li id="color3"><a href="#">Warm</a></li>
+        <li id="color4"><a href="#">Cubehelix</a></li>
+        <li id="set1"><a href="#">color 2</a></li>
+        <li id="set2"><a href="#">color 3</a></li>
+        <li id="set3"><a href="#">color 5</a></li>
+        <li id="set4"><a href="#">color 9</a></li>
+    </ul>
+</div>
+
+<div class="dropdown2" style="position: fixed; top: 10px; left: 250px; z-index: 99">
+    <button  class="btn btn-info dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+        Sort
+        <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+        <li id="a1"><a href="#">dimension asc</a></li>
+        <li id="a2"><a href="#">dim desc</a></li>
+        <li id="a3"><a href="#">metric asc</a></li>
+        <li id="a4"><a href="#">metric desc</a></li>
+    </ul>
+</div>
+<div id="bar" class="chart-container">
+
+</div>
+
+<script>
+    $(document).ready(function () {
+        var options = {
+            data: {
+                x:   { name: 'Director', type: 'string', accessor: 'Director'},
+                y: [
+                    { name: 'Total', type: 'number', accessor: 'Total', yAxis: 0}
+                ],
+            },
+            chart: {
+                margin: {
+                    left: 50,
+                    bottom: 100
+                }
+            },
+
+            yAxis: [
+                {
+                    title: {
+                        text: 'total'
+                    }
+                }
+            ],
+
+            xAxis: {
+                ticks: 160,
+                labelAngle: 30,
+                title: {
+                    text: 'Director',
+                    offset: 65
+                }
+            },
+
+            plots: {
+                barLabel: {
+                    enabled: false,
+                    color: 'black'
+                },
+                metricLabel: {
+                    enabled: true,
+                    color: 'black',
+                    offset: 10
+                }
+            }
+        };
+
+
+
+        var barChart = new VizArtBasic.HorizontalBar('#bar', options);
+
+        d3.csv('assets/movies.csv', function(err, res){
+            var data = _.uniqWith(res, function(a, b) {
+                return a.Director === b.Director;
+            });
+
+
+            for (var i = 0; i < data.length; i++) {
+                data[i].Total = +data[i].Total;
+            }
+
+
+            barChart.render(data);
+
+        });
+
+        var options2 = barChart.options();
+
+        // change color
+        $('#color1').click(function(){
+            options2.color.scheme = [
+                '#ffe100',
+                '#ffbf00',
+                '#ff5730',
+                '#eb3ba6'
+            ];
+
+            barChart.transitionColor(options2.color);
+        });
+
+        $('#color2').click(function(){
+            options2.color.scheme = "Cold";
+            barChart.transitionColor(options2.color)
+        });
+
+        $('#color3').click(function(){
+            options2.color.scheme = "Warm";
+            barChart.transitionColor(options2.color)
+        });
+
+        $('#color4').click(function(){
+            options2.color.scheme = d3.interpolateCubehelixDefault;
+            barChart.transitionColor(options2.color);
+        });
+
+        $('#set1').click(function(){
+            options2.color.scheme = [
+                '#deebf7',
+                '#3182bd'
+            ];
+            barChart.transitionColor(options2.color);
+        });
+
+
+        $('#set2').click(function(){
+            options2.color.scheme = [
+                '#deebf7',
+                '#9ecae1',
+                '#3182bd'
+            ];
+            barChart.transitionColor(options2.color);
+        });
+
+
+        $('#set3').click(function(){
+            options2.color.scheme = [
+                '#eff3ff',
+                '#bdd7e7',
+                '#6baed6',
+                '#3182bd',
+                '#08519c',
+            ];
+            barChart.transitionColor(options2.color);
+        });
+
+
+
+
+        $('#set4').click(function(){
+            options2.color.scheme = [
+                '#f7fbff',
+                '#deebf7',
+                '#c6dbef',
+                '#9ecae1',
+                '#6baed6',
+                '#4292c6',
+                '#2171b5',
+                '#08519c',
+                '#08306b'
+            ];
+            barChart.transitionColor(options2.color);
+        });
+
+        $('#a1').click(function(){
+            barChart.sort('Director', 'asc');
+        })
+        $('#a2').click(function(){
+            barChart.sort('Director', 'desc');
+        });
+        $('#a3').click(function(){
+            barChart.sort('Total', 'asc');
+        });
+        $('#a4').click(function(){
+            barChart.sort('Total', 'desc');
+        });
+
+    });
+</script>
+</body>
+</html>

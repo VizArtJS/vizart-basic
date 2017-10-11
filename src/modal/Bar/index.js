@@ -15,13 +15,6 @@ import drawRects from './draw-rects';
 import drawHiddenRects from './draw-hidden-rects';
 import hasNegativeValue from '../../util/has-negative';
 
-import {
-    renderAxis,
-    updateAxis
-} from '../../base/axis';
-
-
-
 const BarOpt = {
     chart: { type: 'bar'},
     plots: {

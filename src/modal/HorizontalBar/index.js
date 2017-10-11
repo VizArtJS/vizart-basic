@@ -1,5 +1,19 @@
+import { mouse } from 'd3-selection';
+import { transition } from 'd3-transition';
+import isUndefined from 'lodash-es/isUndefined';
+import isFunction from 'lodash-es/isFunction';
+
+import {
+    Globals,
+    mergeOptions
+} from 'vizart-core';
+
 import AbstractBasicCartesianChart from '../../base/AbstractBasicCartesianChart';
 import createCartesianOpt from '../../options/createCartesianOpt';
+import sortSelector from '../../data/helper/sort-selector';
+import drawRects from './draw-rects';
+import drawHiddenRects from './draw-hidden-rects';
+import hasNegativeValue from '../../util/has-negative';
 
 const DefaultOpt = {
     chart: { type: 'bar_horizontal'},
