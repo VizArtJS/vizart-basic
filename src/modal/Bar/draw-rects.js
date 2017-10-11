@@ -1,6 +1,6 @@
 import { select } from 'd3-selection';
 
-import drawVerticalLabel from '../HorizontalBar/draw-vertical-label';
+import drawVerticalLabel from '../HorizontalBar/draw-horizontal-label';
 import drawMetricOntTop from '../HorizontalBar/draw-metric-on-top';
 
 const drawRects =  (context, selection, opt)=> {

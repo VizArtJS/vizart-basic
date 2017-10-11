@@ -11,7 +11,7 @@ import {
 import AbstractBasicCartesianChart from '../../base/AbstractBasicCartesianChart';
 import createCartesianOpt from '../../options/createCartesianOpt';
 import sortSelector from '../../data/helper/sort-selector';
-import drawRects from './draw-rects';
+import drawCanvas from './draw-canvas';
 import drawHiddenRects from './draw-hidden-rects';
 import hasNegativeValue from '../../util/has-negative';
 
@@ -34,33 +34,31 @@ class HorizontalBar extends AbstractBasicCartesianChart {
     constructor(canvasId, userOpt) {
         super(canvasId, userOpt);
 
-        this._getDimension().scale.range([0, userOpt.chart.innerHeight]);
-        this._getMetric().scale.range([0, userOpt.chart.innerWidth]);
-
-        this._w = ()=>{
+        this._h = ()=>{
             if (isUndefined(this._getDimension().scale.bandwidth)
                 || !isFunction(this._getDimension().scale.bandwidth)) {
-                let evenWidth = Math.ceil(this._options.chart.innerWidth / this._data.length);
+                let evenWidth = Math.ceil(this._options.chart.innerHeight / this._data.length);
 
                 return evenWidth > 1 ? evenWidth - 1 : 0.1
             } else {
                 return this._getDimension().scale.bandwidth();
             }
         };
-        this._h = d=>  this._options.chart.innerHeight - this._y(d);
         this._zero = ()=> this._getMetric().scale(0);
 
         // We also make a map/dictionary to keep track of colors associated with node.
         this.colToNode;
     }
 
-
     _animate() {
+        this._getDimension().scale.range([0, this._options.chart.innerHeight]);
+        this._getMetric().scale.range([0, this._options.chart.innerWidth]);
+
         const _hasNegative = hasNegativeValue(this._data, this._options);
 
         const drawCanvasInTransition = ()=> {
             return t=> {
-                drawRects(this._frontContext, this._detachedContainer.selectAll('.bar'), this._options);
+                drawCanvas(this._frontContext, this._detachedContainer.selectAll('.bar'), this._options);
             }};
 
         const dataUpdate = this._detachedContainer.selectAll('.bar').data(this._data);
@@ -72,8 +70,7 @@ class HorizontalBar extends AbstractBasicCartesianChart {
             .each(()=>{
                 dataRemove
                     .transition()
-                    .attr("y", _hasNegative ? this._y(0) : this._options.chart.innerHeight)
-                    .attr("height", 0)
+                    .attr("width", 0)
                     .tween("remove.rects", drawCanvasInTransition);
 
                 dataRemove.remove();
@@ -88,9 +85,8 @@ class HorizontalBar extends AbstractBasicCartesianChart {
                     .transition("update-rect-transition")
                     .delay((d, i) => i / this._data.length * this._options.animation.duration.update)
                     .attr('fill', this._c)
-                    .attr("x", this._x)
-                    .attr('width', this._w)
-                    .attr("y", d=> this._getMetricVal(d) > 0 ? this._y(d) : this._zero())
+                    .attr('width', this._y)
+                    .attr("y", this._x)
                     .attr("height", d=> _hasNegative
                         ? Math.abs( this._y(d) - this._zero() )
                         : this._h(d))
@@ -104,19 +100,16 @@ class HorizontalBar extends AbstractBasicCartesianChart {
                     .attr('class', 'bar')
                     .attr('fill', this._c)
                     .attr('opacity', 1)
-                    .attr("x", this._x)
-                    .attr('width', this._w)
+                    .attr("x", 0)
+                    .attr("y", this._x)
+                    .attr('width', 0)
                     .attr('dimension', this._getDimensionVal)
                     .attr('metric', this._getMetricVal)
-                    .attr("y", _hasNegative ? this._zero(0) : this._options.chart.innerHeight)
-                    .attr("height", 0)
+                    .attr("height", this._h)
                     .transition()
                     .duration(this._options.animation.duration.add)
                     .delay((d, i) => i / this._data.length * this._options.animation.duration.add)
-                    .attr("y", d=> this._getMetricVal(d) > 0 ? this._y(d) : this._zero())
-                    .attr("height", d=> _hasNegative
-                        ? Math.abs( this._y(d) - this._zero() )
-                        : this._h(d))
+                    .attr('width', this._y)
                     .tween("append.rects", drawCanvasInTransition);
             });
 
@@ -187,7 +180,7 @@ class HorizontalBar extends AbstractBasicCartesianChart {
 
         const drawCanvasInTransition = ()=> {
             return t=> {
-                drawRects(this._frontContext, this._detachedContainer.selectAll('.bar'), this._options);
+                drawCanvas(this._frontContext, this._detachedContainer.selectAll('.bar'), this._options);
             }};
 
         this._detachedContainer.selectAll(".bar")
