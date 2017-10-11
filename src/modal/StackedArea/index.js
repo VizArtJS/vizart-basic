@@ -90,6 +90,8 @@ class StackedArea extends AbstractStackedCartesianChartWithAxes {
                     const closest = that._voronoi.find(mx, my, QuadtreeRadius);
 
                     if (closest) {
+                        closest.data.data[that._getMetric().accessor] = closest.data.data[closest.data.key];
+
                         that._tooltip
                             .html( that.tooltip(closest.data.data))
                             .transition()

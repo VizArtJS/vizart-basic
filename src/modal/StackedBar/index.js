@@ -180,11 +180,13 @@ class StackedBar extends AbstractStackedCartesianChartWithAxes {
                             const col = that._hiddenContext.getImageData(mx * that._canvasScale, my * that._canvasScale, 1, 1).data;
                             //Our map uses these rgb strings as keys to nodes.
                             const colString = "rgb(" + col[0] + "," + col[1] + ","+ col[2] + ")";
-                            const node = that.colorMap.get(colString);
+                            const closest = that.colorMap.get(colString);
 
-                            if (node) {
+                            if (closest) {
+                                closest.data[that._getMetric().accessor] = closest.data[closest.key];
+
                                 that._tooltip
-                                    .html(that.tooltip(node.data))
+                                    .html(that.tooltip(closest.data))
                                     .transition()
                                     .duration(that._options.animation.tooltip)
                                     .style("left", mx + that._options.tooltip.offset[0] + "px")
