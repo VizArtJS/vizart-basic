@@ -1,29 +1,8 @@
-import { mouse } from 'd3-selection';
-import { transition } from 'd3-transition';
-import isUndefined from 'lodash-es/isUndefined';
-import isFunction from 'lodash-es/isFunction';
-
-import {
-    Globals,
-    mergeOptions
-} from 'vizart-core';
-
-import AbstractBasicCartesianChartWithAxes from '../../base/AbstractBasicCartesianChartWithAxes';
+import AbstractBasicCartesianChart from '../../base/AbstractBasicCartesianChart';
 import createCartesianOpt from '../../options/createCartesianOpt';
-import sortSelector from '../../data/helper/sort-selector';
-import drawRects from './draw-rects';
-import drawHiddenRects from './draw-hidden-rects';
-import hasNegativeValue from '../../util/has-negative';
 
-import {
-    renderAxis,
-    updateAxis
-} from '../../base/axis';
-
-
-
-const BarOpt = {
-    chart: { type: 'bar'},
+const DefaultOpt = {
+    chart: { type: 'bar_horizontal'},
     plots: {
         barLabel: {
             enabled: false,
@@ -37,7 +16,7 @@ const BarOpt = {
     }
 };
 
-class Bar extends AbstractBasicCartesianChartWithAxes {
+class HorizontalBar extends AbstractBasicCartesianChart {
     constructor(canvasId, _userOptions) {
         super(canvasId, _userOptions);
 
@@ -57,6 +36,7 @@ class Bar extends AbstractBasicCartesianChartWithAxes {
         // We also make a map/dictionary to keep track of colors associated with node.
         this.colToNode;
     }
+
 
     _animate() {
         const _hasNegative = hasNegativeValue(this._data, this._options);
@@ -204,10 +184,8 @@ class Bar extends AbstractBasicCartesianChartWithAxes {
     }
 
     createOptions(_userOptions) {
-        return createCartesianOpt(BarOpt, _userOptions);
+        return createCartesianOpt(DefaultOpt, _userOptions);
     }
 }
 
-
-export default Bar
-
+export default HorizontalBar;

@@ -11,12 +11,10 @@ import { extent } from 'd3-array';
 import uniq from 'lodash-es/uniq';
 import map from 'lodash-es/map';
 
-import { isYSort } from '../helper/index';
-
-const isBar = options => options.chart.type === 'bar_horizontal'
-    || options.chart.type === 'bar_grouped'
-    || options.chart.type === 'bar_stacked'
-    || options.chart.type === 'bar_expanded';
+import {
+    isYSort,
+    isBar
+} from '../helper';
 
 const updateDimensionScale = (data, opt)=> {
     let dim = opt.data.x;

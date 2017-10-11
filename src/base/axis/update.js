@@ -3,17 +3,20 @@ import {
     axisLeft
 } from 'd3-axis';
 import { format } from 'd3-format';
-import cnTimeFormat from './cn-time-format';
 import isNumber from 'lodash-es/isNumber';
 import isString from 'lodash-es/isString';
 import isFinite from 'lodash-es/isFinite';
 
-import updateXAxisTicks from './update-x-ticks'
-import transitionTicks from './transition';
-
 import { Globals } from 'vizart-core';
 
-const updateAxis = (_svg, _data, opt, isBar = false)=>  {
+import updateXAxisTicks from './update-x-ticks'
+import transitionTicks from './transition';
+import cnTimeFormat from './cn-time-format';
+
+import isBar from '../../data/helper/is-bar';
+
+
+const updateAxis = (svg, data, opt)=>  {
     let dimension = opt.data.x;
     let metric = opt.data.y[0];
     let xScale = dimension.scale;
@@ -22,29 +25,29 @@ const updateAxis = (_svg, _data, opt, isBar = false)=>  {
     const yAxis = axisLeft();
 
     //scale ticks, bar is special because every column is distinct
-    if (isBar === true) {
-        updateXAxisTicks(_data, opt);
+    if (isBar(opt) === true) {
+        updateXAxisTicks(data, opt);
     } else {
         if (dimension.type === Globals.DataType.DATE) {
             if (opt.xAxis.ticks > 0) { //follow user specification
-                xAxis.ticks(Math.min(_data.length, opt.xAxis.ticks));
-            } else if (_data.length > 31) {
+                xAxis.ticks(Math.min(data.length, opt.xAxis.ticks));
+            } else if (data.length > 31) {
                 xAxis.ticks(10);
             } else {
-                xAxis.ticks(_data.length);
+                xAxis.ticks(data.length);
             }
         } else if (dimension.type === Globals.DataType.NUMBER) {
             if (opt.ordering.accessor !== opt.data.y[0].accessor) {
                 if (opt.xAxis.ticks > 0) { //follow user specification
-                    xAxis.ticks(Math.min(_data.length, opt.xAxis.ticks));
+                    xAxis.ticks(Math.min(data.length, opt.xAxis.ticks));
                 } else {
                     xAxis.ticks(null);
                 }
             } else {
-                updateXAxisTicks(_data, opt, xAxis);
+                updateXAxisTicks(data, opt, xAxis);
             }
         } else if (dimension.type === Globals.DataType.STRING) {
-            updateXAxisTicks(_data, opt, xAxis);
+            updateXAxisTicks(data, opt, xAxis);
         }
     }
 
@@ -78,12 +81,14 @@ const updateAxis = (_svg, _data, opt, isBar = false)=>  {
         yAxis.ticks(metric.ticksTier);
     }
 
-    transitionTicks(_svg, _data, opt, xAxis, yAxis);
+    transitionTicks(svg, data, opt, xAxis, yAxis);
 
     return {
         x: xAxis,
         y: yAxis
     }
 }
+
+
 
 export default updateAxis;

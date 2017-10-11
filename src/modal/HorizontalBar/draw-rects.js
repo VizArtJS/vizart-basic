@@ -10,7 +10,6 @@ const drawRects =  (context, selection, opt)=> {
         context.save();
 
         const node = select(this);
-
         context.beginPath();
         context.fillStyle = node.attr('fill');
         context.globalAlpha = node.attr('opacity');
