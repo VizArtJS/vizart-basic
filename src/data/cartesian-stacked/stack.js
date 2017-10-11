@@ -30,32 +30,31 @@ const getSeriesOrdering = opt => {
 }
 
 const getStack = opt=> {
-    // nested data
-    const _stack = stack();
-    const _ordering = getSeriesOrdering(opt);
+    const stackLayout = stack();
+    const ordering = getSeriesOrdering(opt);
 
     switch(opt.plots.stackMethod) {
         case Stacks.Expand:
-            _stack.offset(stackOffsetExpand).order(_ordering);
+            stackLayout.offset(stackOffsetExpand).order(ordering);
             break;
         case Stacks.Zero:
-            _stack.offset(stackOffsetNone).order(_ordering);
+            stackLayout.offset(stackOffsetNone).order(ordering);
             break;
         case Stacks.Silhouette:
-            _stack.offset(stackOffsetSilhouette).order(stackOrderInsideOut);
+            stackLayout.offset(stackOffsetSilhouette).order(stackOrderInsideOut);
             break;
         case Stacks.Wiggle:
-            _stack.offset(stackOffsetWiggle).order(stackOrderInsideOut);
+            stackLayout.offset(stackOffsetWiggle).order(stackOrderInsideOut);
             break;
         case Stacks.Divergent:
-            _stack.offset(stackOffsetDiverging).order(stackOrderInsideOut);
+            stackLayout.offset(stackOffsetDiverging).order(stackOrderInsideOut);
             break;
 
         default:
-            _stack.offset(stackOffsetNone);
+            stackLayout.offset(stackOffsetNone);
             break;
     }
 
-    return _stack;
+    return stackLayout;
 }
 export default getStack;
