@@ -4,36 +4,46 @@
     <meta charset="UTF-8">
     <title>Bar Chart Demo</title>
     <link href="./vizart-basic.css" rel="stylesheet" type="text/css"/>
-    <link rel="stylesheet" href="./lib/bootstrap-3.3.7/css/bootstrap.css">
+    <link href="./css/main.css" rel="stylesheet" type="text/css"/>
+    <link href="./lib/bootstrap-3.3.7/css/bootstrap.css" rel="stylesheet" type="text/css">
     <script src="./lib/jquery-1.12.4.min.js"></script>
     <script src="./lib/bootstrap-3.3.7/js/bootstrap.js"></script>
-    <script src="http://chancejs.com/chance.min.js"></script>
+    <script src="./lib/d3.js"></script>
     <script src="./vizart-basic.standalone.js" type="text/javascript"></script>
     <style>
-        html,
-        body {
-            height: 100%;
+        .y.axis .domain,
+        .x.axis .domain {
+            stroke: rgba(255, 255, 255, 0.41);
         }
 
+        .y.axis text,
+        .y.axis line,
+        .axis-label,
+        .x.axis text,
+        .x.axis line {
+            color:rgba(255, 255, 255, 0.41);;
+            fill: rgba(255, 255, 255, 0.41);;
+            stroke: rgba(255, 255, 255, 0.41);
+        }
     </style>
 </head>
 <body>
 
-<div id="update" class="btn btn-info" style="position: fixed;top: 10px; left: 70px">Update</div>
+<div id="update" class="btn btn-info" style="position: fixed;top: 10px; left: 70px;  z-index: 99">Hexbin</div>
 <div class="dropdown" style="position: fixed; top: 10px; left: 160px;">
     <button  class="btn btn-info dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
         Color
         <span class="caret"></span>
     </button>
     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-        <li id="color1"><a href="#">BuGn</a></li>
-        <li id="color2"><a href="#">Blues</a></li>
+        <li id="color1"><a href="#">Dawn</a></li>
+        <li id="color2"><a href="#">Cold</a></li>
         <li id="color3"><a href="#">Warm</a></li>
         <li id="color4"><a href="#">Cubehelix</a></li>
     </ul>
 </div>
 
-<div class="dropdown2" style="position: fixed; top: 10px; left: 250px;">
+<div class="dropdown2" style="position: fixed; top: 10px; left: 250px;  z-index: 99">
     <button  class="btn btn-info dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
         Sort
         <span class="caret"></span>
@@ -45,86 +55,120 @@
         <li id="a4"><a href="#">metric desc</a></li>
     </ul>
 </div>
-<div id="bar" style="width: 100%; height: 800px"></div>
+<div id="bar" class="ocean chart-container">
+
+</div>
 
 <script>
     $(document).ready(function () {
         var options = {
             data: {
                 x:
-                    { name: 'name', type: 'string', accessor: 'mx'}
+                    { name: 'exp_dat', type: 'date', accessor: 'exp_dat', format: '%d/%m/%y'}
                 ,
                 y: [
-                    { name: 'performance', type: 'number', accessor: 'my'}
+                    { name: 'exp_amo', type: 'number', accessor: 'exp_amo'}
                 ],
+                r:  { name: 'exp_amo', type: 'number', accessor: 'exp_amo'}
+
+            },
+
+            xAxis: {
+                title: {
+                    text: 'Expire Date'
+                }
+            },
+
+            yAxis:[
+                {
+                    ticks: 0,
+                    tier: 6,
+                    title: {
+                        text: 'Expire Amount',
+                        style: null
+                    }
+                }
+            ],
+
+            r: {
+                scale: null,
+                max: 20,
+                min: 4,
+                default: 8
             },
 
             chart: {
                 margin: {
-                    bottom:120
+                    left: 100,
+                    right: 40,
+                    top: 20,
+                    bottom: 90
                 },
             },
-            ordering: {
-                name: 'mx',
-                direction: 'asc'
+            plots: {
+                opacity: 0.7
             }
         };
 
-        var fakeData = [];
 
-        for (var i = 0; i < 100; i++) {
-            fakeData.push({
-                mx: chance.name(),
-                my: chance.integer({min: -80, max: 100})
-            })
-        }
-
-        var barChart = new VizArtBasic.Scatter('#bar', options);
-        console.log(barChart.options());
-        barChart.render(fakeData);
-
-        // live update button is clicked
-        $('#update').click(function(){
-            var ranIndex = chance.integer({min:0, max:49});
-            fakeData[ranIndex].my = chance.floating({min: 0, max: 0.00035})
-
-            barChart.update(fakeData);
+        var scatter = new VizArtBasic.Scatter('#bar', options);
+//        scatter.on('rendered', function(){
+//            scatter._revealVoronoi();
+//            scatter._revealQuadtree();
+//        });
+        var data;
+        d3.csv('assets/scatter_expenditure.csv', function(err, res){
+            for (var i = 0; i < res.length; i++) {
+                res[i].exp_amo = +res[i].exp_amo;
+            }
+            data = res;
+            scatter.render(res);
         });
 
-        var options2 = barChart.options();
+
+        var options2 = scatter.options();
+
+        $('#update').click(function(){
+            scatter.hexbinLayout();
+        });
 
         // change color
         $('#color1').click(function(){
-            options2.color.scheme = "BuGn";
-            barChart.transitionColor(options2.color);
+            options2.color.scheme = [
+                '#ffe100',
+                '#ffbf00',
+                '#ff5730',
+                '#eb3ba6'
+            ];
+            scatter.transitionColor(options2.color);
         });
 
         $('#color2').click(function(){
-            options2.color.scheme = "Blues";
-            barChart.transitionColor(options2.color)
+            options2.color.scheme = "Cold";
+            scatter.transitionColor(options2.color)
         });
 
         $('#color3').click(function(){
             options2.color.scheme = "Warm";
-            barChart.transitionColor(options2.color)
+            scatter.transitionColor(options2.color)
         });
 
         $('#color4').click(function(){
             options2.color.scheme = "Cubehelix";
-            barChart.transitionColor(options2.color);
+            scatter.transitionColor(options2.color);
         });
 
         $('#a1').click(function(){
-            barChart.sort('mx', 'asc');
+            scatter.sort('exp_dat', 'asc');
         })
         $('#a2').click(function(){
-            barChart.sort('mx', 'desc');
+            scatter.sort('exp_dat', 'desc');
         });
         $('#a3').click(function(){
-            barChart.sort('my', 'asc');
+            scatter.sort('exp_amo', 'asc');
         });
         $('#a4').click(function(){
-            barChart.sort('my', 'desc');
+            scatter.sort('exp_amo', 'desc');
         });
 
     });

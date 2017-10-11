@@ -4,24 +4,17 @@
     <meta charset="UTF-8">
     <title>Bar Chart Demo</title>
     <link href="./vizart-basic.css" rel="stylesheet" type="text/css"/>
-    <link rel="stylesheet" href="./lib/bootstrap-3.3.7/css/bootstrap.css">
+    <link href="./css/main.css" rel="stylesheet" type="text/css"/>
+    <link href="./lib/bootstrap-3.3.7/css/bootstrap.css" rel="stylesheet" type="text/css">
     <script src="./lib/jquery-1.12.4.min.js"></script>
     <script src="./lib/bootstrap-3.3.7/js/bootstrap.js"></script>
-    <script src="http://chancejs.com/chance.min.js"></script>
     <script src="./lib/lodash.min.js"></script>
-    <script src="http://chancejs.com/chance.min.js"></script>
+    <script src="./lib/d3.js"></script>
     <script src="./vizart-basic.standalone.js" type="text/javascript"></script>
-    <style>
-        html,
-        body {
-            height: 100%;
-        }
-
-    </style>
 </head>
 <body>
 
-<div class="dropdown" style="position: fixed; top: 10px; left: 50px;">
+<div class="dropdown" style="position: fixed; top: 10px; left: 50px; z-index: 99;">
     <button  class="btn btn-info dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
         Stack
         <span class="caret"></span>
@@ -33,7 +26,7 @@
     </ul>
 </div>
 
-<div class="dropdown" style="position: fixed; top: 10px; left: 150px;">
+<div class="dropdown" style="position: fixed; top: 10px; left: 150px; z-index: 99;">
 
     <button  class="btn btn-info dropdown-toggle" type="button" id="d2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
         Sort
@@ -48,47 +41,49 @@
 </div>
 
 
-<div id="chart" style="width: 100%; height: 600px"></div>
+<div id="chart" class="chart-container"></div>
 
 <script>
     $(document).ready(function () {
         var options = {
             data: {
-                s: { name: 'dep', type: 'string', accessor: 'ms'},
-                x:
-                    { name: 'name', type: 'number', accessor: 'mx'}
-                ,
+                x:   { name: 'Director', type: 'string', accessor: 'Director'},
                 y: [
-                    { name: 'performance', type: 'number', accessor: 'my'}
+                    { name: 'Total', type: 'number', accessor: 'Total', yAxis: 0},
+                    { name: 'Pan', type: 'number', accessor: 'Pan', yAxis: 0},
+                    { name: 'Track', type: 'number', accessor: 'Track', yAxis: 0},
+                    { name: 'Tilt', type: 'number', accessor: 'Tilt', yAxis: 0},
+                    { name: 'Track w Pan', type: 'number', accessor: 'Track w Pan', yAxis: 0}
+
                 ],
             },
 
             plots: {
-                stackLayout: true,
-                stackMethod: 'zero',
+                opacity: 1,
+                barLabel: {
+                    enabled: true,
+                    color: 'black'
+                },
+                metricLabel: {
+                    enabled: true,
+                    color: 'black',
+                    offset: 10
+                }
             }
         };
 
-        var fakeData = [];
-
-        var dep = ['hr', 'r&d', 'financial', 'sales'];
-
-        _.each(dep, function(d, i){
-            for (var i = 1; i < 21; i++) {
-                fakeData.push({
-                    ms: d,
-                    mx: i + '',
-                    my: chance.integer({min: 0, max: 70}),
-                    color: 'red'
-                })
-            }
-        });
-
 
         var chart = new VizArtBasic.StackedBar('#chart', options);
-        chart.render(fakeData);
 
-        var options2 = chart.options();
+        d3.csv('assets/movies.csv', function(err, res){
+            var data = _.uniqWith(res, function(a, b) {
+                return a.Director === b.Director;
+            });
+
+            chart.render(data);
+
+        });
+
 
         // change color
         $('#group').click(function(){

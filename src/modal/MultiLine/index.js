@@ -1,10 +1,11 @@
-import { transition } from 'd3-transition';
-import { easeCubicOut } from 'd3-ease';
-import { line } from 'd3-shape';
-
+import { mouse } from 'd3-selection';
+import { applyVoronoi } from 'vizart-core';
 import { AbstractStackedCartesianChartWithAxes } from '../../base';
 import createCartesianStackedOpt from '../../options/createCartesianStackedOpt';
-import interpolateCurve from '../../util/curve';
+import drawCanvas from './draw-canvas';
+import highlightLine from './highlight-line';
+import highlightNode from './highlight-node';
+import animateStates from './tween-states';
 
 const DefaultOptions = {
     chart: {
@@ -12,168 +13,120 @@ const DefaultOptions = {
     },
     plots: {
         curve: 'linear',
+        highlightNodeColor: '#F03E1E',
         strokeWidth: 3,
+        showDots: false,
         dotRadius: 4
     }
 };
 
+
 class MultiLine extends AbstractStackedCartesianChartWithAxes {
     constructor(canvasId, _userOptions) {
         super(canvasId, _userOptions);
-
-        this._curve = line()
-            .x(this._x)
-            .y(this._y);
-
-        this._baseLine = line()
-            .x(this._x)
-            .y(this._options.chart.innerHeight);
     }
 
+    _animate() {
+        const initialState = this.previousState
+            ? this.previousState
+            : this._data.nested.map(d => {
+                return {
+                    key: d.key,
+                    c: this._c(d),
+                    s: d.key,
+                    alpha: 0,
+                    values: d.values.map(e => {
+                        return {
+                            key: d.key,
+                            x: this._x(e.data),
+                            y: this._options.chart.innerHeight,
+                            data: e.data
+                        }
+                    })
+                }
+            });
 
-    render(_data) {
-        super.render(_data);
-        this.update();
+        const finalState = this._data.nested.map(d => {
+            return {
+                key: d.key,
+                c: this._c(d),
+                alpha: 1,
+                values: d.values.map(e => {
+                    return {
+                        key: d.key,
+                        x: this._x(e.data),
+                        y: e.y,
+                        data: e.data
+                    }
+                })
+            }
+        });
+
+        // cache finalState as the initial state of next animation call
+        this.previousState = finalState;
+
+        let that = this;
+        const ctx = that._frontContext;
+        const opt = that._options;
+
+        animateStates(initialState,
+            finalState,
+            opt.animation.duration.update,
+            ctx,
+            opt).then(res=> {
+            that._voronoi = applyVoronoi(ctx, opt, res.reduce((acc, p)=>{
+                    acc = acc.concat(p.values);
+                    return acc;
+                }, []));
+
+            /**
+             * callback for when the mouse moves across the overlay
+             */
+            function mouseMoveHandler() {
+                // get the current mouse position
+                const [mx, my] = mouse(this);
+                const QuadtreeRadius = 100;
+                // use the new diagram.find() function to find the Voronoi site
+                // closest to the mouse, limited by max distance voronoiRadius
+                const closest = that._voronoi.find(mx, my, QuadtreeRadius);
+                if (closest) {
+                    closest.data.data[that._getMetric().accessor] = closest.data.data[closest.data.key];
+
+                    that._tooltip
+                        .html(that.tooltip(closest.data.data))
+                        .transition()
+                        .duration(that._options.animation.tooltip)
+                        .style("left", mx + that._options.tooltip.offset[0] + "px")
+                        .style("top", my + that._options.tooltip.offset[1] + "px")
+                        .style("opacity", 1);
+
+                    highlightLine(ctx, res, opt, closest.data);
+                    highlightNode(ctx, opt, closest.data.c, closest[0], closest[1]);
+                } else {
+                    that._tooltip
+                        .transition()
+                        .duration(that._options.animation.tooltip)
+                        .style("opacity", 0);
+
+                    drawCanvas(ctx, res, opt);
+                }
+            }
+
+            function mouseOutHandler() {
+                that._tooltip
+                    .transition()
+                    .duration(that._options.animation.tooltip)
+                    .style("opacity", 0);
+
+                drawCanvas(ctx, res, opt);
+            }
+
+            that._frontCanvas.on('mousemove', mouseMoveHandler);
+            that._frontCanvas.on('mouseout', mouseOutHandler);
+
+            that._listeners.call('rendered');
+        });
     }
-
-    update() {
-        super.update();
-
-        // ease out line and link node
-        this._svg.selectAll('.curve')
-            .transition("ease-line-and-node")
-            .duration(this._options.animation.duration.remove)
-            .delay((d, i) => {
-                return i / this._getDimension().values.length * this._options.animation.duration.remove;
-            })
-            .attr("d", (d) => {
-                return this._baseLine(d.values);
-            });
-
-        this._svg.selectAll(".node")
-            .transition("ease-line-and-node")
-            .duration(this._options.animation.duration.remove)
-            .attr('opacity', 0.2)
-            .attr("cy", this._options.chart.innerHeight);
-
-        interpolateCurve(this._options.plots.curve, [this._curve, this._baseLine]);
-
-        let seriesUpdate = this._svg.selectAll(".series").data(this._data.nested);
-
-        seriesUpdate.exit().remove();
-
-        seriesUpdate.select('.curve')
-            .attr("d", (d) => {
-                return this._baseLine(d.values)
-            })
-            .transition("line-up-transition")
-            .duration(this._options.animation.duration.update)
-            .delay((d, i) => {
-                return i / this._getDimension().values.length * this._options.animation.duration.update
-            })
-            .attr("d", (d) => {
-                return this._curve(d.values)
-            })
-            .style('stroke-width', this._options.plots.strokeWidth);
-
-
-        let linkNodes = seriesUpdate.selectAll(".node")
-            .data((d) => {
-                return d.values
-            });
-
-        linkNodes.exit()
-            .transition("remove-line-node-transition")
-            .duration(this._options.animation.duration.remove)
-            .attr('opacity', 0)
-            .remove();
-
-        linkNodes
-            .attr("cx", this._x)
-            .transition("update-line-node-transition")
-            .duration(this._options.animation.duration.remove)
-            .delay((d, i) => {
-                return i * 20;
-            })
-            .attr('opacity', 1)
-            .attr("cy", this._y);
-
-        linkNodes.enter()
-            .append("circle")
-            .attr("class", "node")
-            .attr("r", this._options.plots.dotRadius)
-            .attr("cx", this._x)
-            .attr("cy", this._options.chart.innerHeight)
-            .attr('fill', this._c)
-            .attr('opacity', 0.2)
-            .transition("update-line-node-transition")
-            .duration(this._options.animation.duration.update)
-            .delay((d, i) => {
-                return i * 20;
-            })
-            .attr("cy", this._y)
-            .attr('opacity', 1);
-
-        let addedSeries = seriesUpdate
-            .enter().append("g")
-            .attr("class", "servies");
-
-        addedSeries.append("path")
-            .style('stroke', this._c)
-            .style('stroke-opacity', 1)
-            .style('stroke-width', this._options.plots.strokeWidth)
-            .style('fill', 'none')
-            .attr("d", (d) => {
-                return this._baseLine(d.values)
-            })
-            .attr('class', 'curve')
-            .transition()
-            .duration(this._options.animation.duration.update)
-            .delay((d, i) => {
-                return i / this._data.nested.length * this._options.animation.duration.update;
-            })
-            .ease(easeCubicOut)
-            .attr("d", (d) => {
-                return this._curve(d.values)
-            });
-
-        addedSeries.selectAll(".node")
-            .data((d) => {
-                return d.values;
-            })
-            .enter()
-            .append("circle")
-            .attr("class", "node")
-            .attr("r", this._options.plots.dotRadius)
-            .attr("cx", this._x)
-            .attr("cy", this._options.chart.innerHeight)
-            .attr('fill', this._c)
-            .attr('opacity', 0)
-            .transition().duration(this._options.animation.duration.update)
-            .attr("cy", this._y)
-            .attr('opacity', 1);
-
-    }
-
-
-    transitionColor (colorOptions) {
-        super.transitionColor(colorOptions);
-
-        let _trans = transition()
-            .duration(this._options.animation.duration.update)
-            .delay((d, i)=> {
-                return i / this._data.nested.length * this._options.animation.duration.update;
-            });
-
-        this._svg.selectAll('.curve')
-            .transition(_trans)
-            .style('stroke', this._c);
-
-        this._svg.selectAll(".node")
-            .transition()
-            .duration(this._options.animation.duration.remove)
-            .attr('fill', this._c);
-    };
 
     createOptions(_userOpt) {
         return createCartesianStackedOpt(DefaultOptions, _userOpt);

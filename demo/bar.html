@@ -4,33 +4,25 @@
     <meta charset="UTF-8">
     <title>Bar Chart Demo</title>
     <link href="./vizart-basic.css" rel="stylesheet" type="text/css"/>
-    <link rel="stylesheet" href="./lib/bootstrap-3.3.7/css/bootstrap.css">
+    <link href="./css/main.css" rel="stylesheet" type="text/css"/>
+    <link href="./lib/bootstrap-3.3.7/css/bootstrap.css" rel="stylesheet" type="text/css">
     <script src="./lib/jquery-1.12.4.min.js"></script>
     <script src="./lib/bootstrap-3.3.7/js/bootstrap.js"></script>
-    <script src="http://chancejs.com/chance.min.js"></script>
     <script src="./lib/lodash.min.js"></script>
     <script src="./lib/d3.js"></script>
     <script src="./vizart-basic.standalone.js" type="text/javascript"></script>
-
-    <style>
-        html,
-        body {
-            height: 100%;
-        }
-
-    </style>
 </head>
 <body>
 
-<div id="update" class="btn btn-info" style="position: fixed;top: 10px; left: 70px">Update</div>
-<div class="dropdown" style="position: fixed; top: 10px; left: 160px;">
+<div id="update" class="btn btn-info" style="position: fixed;top: 10px; left: 70px; z-index: 99">Update</div>
+<div class="dropdown" style="position: fixed; top: 10px; left: 160px;z-index: 99">
     <button  class="btn btn-info dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
         Color
         <span class="caret"></span>
     </button>
     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-        <li id="color1"><a href="#">BuGn</a></li>
-        <li id="color2"><a href="#">Blues</a></li>
+        <li id="color1"><a href="#">Dawn Distinct</a></li>
+        <li id="color2"><a href="#">Cold</a></li>
         <li id="color3"><a href="#">Warm</a></li>
         <li id="color4"><a href="#">Cubehelix</a></li>
         <li id="set1"><a href="#">color 2</a></li>
@@ -40,7 +32,7 @@
     </ul>
 </div>
 
-<div class="dropdown2" style="position: fixed; top: 10px; left: 250px;">
+<div class="dropdown2" style="position: fixed; top: 10px; left: 250px; z-index: 99">
     <button  class="btn btn-info dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
         Sort
         <span class="caret"></span>
@@ -52,233 +44,91 @@
         <li id="a4"><a href="#">metric desc</a></li>
     </ul>
 </div>
-<div id="bar" style="width: 100%; height: 700px; margin-top: 60px"></div>
+<div id="bar" class="chart-container">
+
+</div>
 
 <script>
     $(document).ready(function () {
         var options = {
             data: {
-                x:   { name: 'name', type: 'string', accessor: 'mx'},
+                x:   { name: 'Director', type: 'string', accessor: 'Director'},
                 y: [
-                    { name: 'performance', type: 'number', accessor: 'my', yAxis: 0}
+                    { name: 'Total', type: 'number', accessor: 'Total', yAxis: 0}
                 ],
             },
             chart: {
                 margin: {
                     left: 50,
-                    bottom: 120
+                    bottom: 100
                 }
             },
-            color: {
-                type: 'distinct',
-                scheme: [
-                    '#ffe100',
-                    '#ffbf00',
-                    '#ff5730'
-                ],
-                distinction: [0, 0.16, 0.77, 1]
+
+            yAxis: [
+                {
+                    title: {
+                        text: 'total'
+                    }
+                }
+            ],
+
+            xAxis: {
+                ticks: 160,
+                labelAngle: 30,
+                title: {
+                    text: 'Director',
+                    offset: 65
+                }
+            },
+
+            plots: {
+                barLabel: {
+                    enabled: false,
+                    color: 'black'
+                },
+                metricLabel: {
+                    enabled: true,
+                    color: 'black',
+                    offset: 10
+                }
             }
         };
 
-        var fakeData =  [
-            {
-                "mx" : 19,
-                "my" : 9
-            },
-            {
-                "mx" : 39,
-                "my" : 42
-            },
-            {
-                "mx" : 34,
-                "my" : 77
-            },
-            {
-                "mx" : 52,
-                "my" : 18
-            },
-            {
-                "mx" : 41,
-                "my" : 40
-            },
-            {
-                "mx" : 21,
-                "my" : 13
-            },
-            {
-                "mx" : 47,
-                "my" : 24
-            },
-            {
-                "mx" : 56,
-                "my" : 14
-            },
-            {
-                "mx" : 55,
-                "my" : 22
-            },
-            {
-                "mx" : 53,
-                "my" : 19
-            },
-            {
-                "mx" : 22,
-                "my" : 16
-            },
-            {
-                "mx" : 25,
-                "my" : 26
-            },
-            {
-                "mx" : 28,
-                "my" : 48
-            },
-            {
-                "mx" : 29,
-                "my" : 68
-            },
-            {
-                "mx" : 46,
-                "my" : 33
-            },
-            {
-                "mx" : 48,
-                "my" : 19
-            },
-            {
-                "mx" : 54,
-                "my" : 18
-            },
-            {
-                "mx" : 30,
-                "my" : 60
-            },
-            {
-                "mx" : 35,
-                "my" : 78
-            },
-            {
-                "mx" : 32,
-                "my" : 61
-            },
-            {
-                "mx" : 27,
-                "my" : 48
-            },
-            {
-                "mx" : 24,
-                "my" : 26
-            },
-            {
-                "mx" : 36,
-                "my" : 69
-            },
-            {
-                "mx" : 50,
-                "my" : 30
-            },
-            {
-                "mx" : 51,
-                "my" : 19
-            },
-            {
-                "mx" : 33,
-                "my" : 58
-            },
-            {
-                "mx" : 37,
-                "my" : 50
-            },
-            {
-                "mx" : 59,
-                "my" : 10
-            },
-            {
-                "mx" : 42,
-                "my" : 46
-            },
-            {
-                "mx" : 23,
-                "my" : 14
-            },
-            {
-                "mx" : 45,
-                "my" : 41
-            },
-            {
-                "mx" : 57,
-                "my" : 4
-            },
-            {
-                "mx" : 40,
-                "my" : 57
-            },
-            {
-                "mx" : 18,
-                "my" : 8
-            },
-            {
-                "mx" : 20,
-                "my" : 11
-            },
-            {
-                "mx" : 38,
-                "my" : 58
-            },
-            {
-                "mx" : 58,
-                "my" : 14
-            },
-            {
-                "mx" : 44,
-                "my" : 33
-            },
-            {
-                "mx" : 49,
-                "my" : 24
-            },
-            {
-                "mx" : 60,
-                "my" : 5
-            },
-            {
-                "mx" : 31,
-                "my" : 69
-            },
-            {
-                "mx" : 26,
-                "my" : 39
-            },
-            {
-                "mx" : 43,
-                "my" : 32
-            }
-        ]
 
 
         var barChart = new VizArtBasic.Bar('#bar', options);
-        barChart.render(fakeData);
+
+        d3.csv('assets/movies.csv', function(err, res){
+            var data = _.uniqWith(res, function(a, b) {
+                return a.Director === b.Director;
+            });
 
 
-        // live update button is clicked
-        $('#update').click(function(){
-            var ranIndex = chance.integer({min:0, max:49});
-            fakeData[ranIndex].my = chance.floating({min: -100, max: 800})
+            for (var i = 0; i < data.length; i++) {
+                data[i].Total = +data[i].Total;
+            }
 
-            barChart.data(fakeData);
-            barChart.update();
+
+            barChart.render(data);
+
         });
 
         var options2 = barChart.options();
 
         // change color
         $('#color1').click(function(){
-            options2.color.scheme = "BuGn";
+            options2.color.scheme = [
+                '#ffe100',
+                '#ffbf00',
+                '#ff5730',
+                '#eb3ba6'
+            ];
+
             barChart.transitionColor(options2.color);
         });
 
         $('#color2').click(function(){
-            options2.color.scheme = "Blues";
+            options2.color.scheme = "Cold";
             barChart.transitionColor(options2.color)
         });
 
@@ -341,16 +191,16 @@
         });
 
         $('#a1').click(function(){
-            barChart.sort('mx', 'asc');
+            barChart.sort('Director', 'asc');
         })
         $('#a2').click(function(){
-            barChart.sort('mx', 'desc');
+            barChart.sort('Director', 'desc');
         });
         $('#a3').click(function(){
-            barChart.sort('my', 'asc');
+            barChart.sort('Total', 'asc');
         });
         $('#a4').click(function(){
-            barChart.sort('my', 'desc');
+            barChart.sort('Total', 'desc');
         });
 
     });

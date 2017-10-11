@@ -1,23 +1,22 @@
 import AbstractBasicCartesianChart from './AbstractBasicCartesianChart';
-import Axis from './Axis';
+import {
+    renderAxis,
+    updateAxis
+} from './axis';
 
 class AbstractBasicCartesianChartWithAxes extends AbstractBasicCartesianChart {
     constructor(canvasId, _userOptions) {
         super(canvasId, _userOptions);
-        this.axes;
     }
 
     render(_data) {
         super.render(_data);
-
-        this.axes = new Axis(this._options);
-        this.axes.render(this._svg, this._data);
+        renderAxis(this._svg, this._data, this._options);
     }
 
     update() {
         super.update();
-        this.axes = new Axis(this._options);
-        this.axes.update(this._svg, this._data, this._isBar());
+        updateAxis(this._svg, this._data, this._options, this._isBar());
     }
 
     _isBar() {
