@@ -113,7 +113,7 @@ class HorizontalBar extends AbstractBasicCartesianChart {
                 dataUpdate
                     .transition("update-rect-transition")
                     .delay((d, i) => i / this._data.length * this._options.animation.duration.update)
-                    .attr('fill', 'grey')
+                    .attr('fill', '#e0e0e0')
                     .attr('width', y)
                     .attr("y", x)
                     .attr("height", h)
@@ -125,7 +125,7 @@ class HorizontalBar extends AbstractBasicCartesianChart {
             .each(()=>{
                 dataJoin.append("rect")
                     .attr('class', 'mini')
-                    .attr('fill', 'grey')
+                    .attr('fill', '#e0e0e0')
                     .attr('opacity', 1)
                     .attr("x", 0)
                     .attr("y", x)
