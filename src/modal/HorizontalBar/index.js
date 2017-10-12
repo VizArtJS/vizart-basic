@@ -1,11 +1,12 @@
-import { mouse } from 'd3-selection';
+import { mouse, select } from 'd3-selection';
 import { transition } from 'd3-transition';
 import isUndefined from 'lodash-es/isUndefined';
 import isFunction from 'lodash-es/isFunction';
 
 import {
     Globals,
-    mergeOptions
+    mergeOptions,
+    uuid
 } from 'vizart-core';
 
 import AbstractBasicCartesianChart from '../../base/AbstractBasicCartesianChart';
@@ -42,21 +43,107 @@ class HorizontalBar extends AbstractBasicCartesianChart {
 
         // We also make a map/dictionary to keep track of colors associated with node.
         this.colToNode;
+        this.miniCanvas;
+        this.miniContext;
+    }
+
+    render(data) {
+        super.render(data);
+        const devicePixelRatio = window.devicePixelRatio || 1;
+
+        const width = this._options.plots.miniBarWidth;
+        const height = this._options.chart.innerHeight;
+
+        this.miniCanvas = select(this._containerId)
+            .append("canvas")
+            .attr("id", 'mini'+ uuid())
+            .style('display', 'block')
+            .style('position', 'absolute')
+            .style('left', this._options.chart.width - width - this._options.chart.margin.right + 'px')
+            .style('top', 0)
+            .style("width", width + "px")
+            .style("height", height + "px")
+            .style('margin', this._options.chart.margin.top + 'px 0 0 ' + this._options.chart.margin.left + 'px ')
+            .attr('width', width * devicePixelRatio)
+            .attr('height', height * devicePixelRatio);
+
+        this.miniContext = this.miniCanvas.node().getContext('2d');
+        this.miniContext.scale(this._canvasScale, this._canvasScale);
     }
 
     _animate() {
         this._getDimension().scale.range([0, this._options.chart.innerHeight]);
         this._getMetric().scale.range([0, this._options.chart.innerWidth - this._options.plots.miniBarWidth]);
 
+        this.drawMainBars(this._data);
+        this.drawMiniBars(this._data);
+    }
+
+    drawMiniBars(data) {
+        const drawCanvasInTransition = ()=> {
+            return t=> {
+                drawCanvas(this.miniContext, this._detachedContainer.selectAll('.mini'), this._options);
+            }};
+
         const miniXScale = this._getDimension().scale.copy();
         const miniYScale = this._getMetric().scale.copy().range([0, this._options.plots.miniBarWidth]);
 
-        this.drawMainBars(this._data);
+        const h = miniXScale.bandwidth();
+        const y = d=> miniYScale(this._getMetricVal(d));
+        const x = this._x;
+
+        const dataUpdate = this._detachedContainer.selectAll('.mini').data(data);
+        const dataJoin = dataUpdate.enter();
+        const dataRemove = dataUpdate.exit();
+
+        const exitTransition = transition()
+            .duration(this._options.animation.duration.remove)
+            .each(()=>{
+                dataRemove
+                    .transition()
+                    .attr("width", 0)
+                    .tween("remove.mini", drawCanvasInTransition);
+
+                dataRemove.remove();
+            });
+
+        const updateTransition = exitTransition.transition()
+            .duration(this._options.animation.duration.update)
+            .each(()=> {
+                dataUpdate
+                    .transition("update-rect-transition")
+                    .delay((d, i) => i / this._data.length * this._options.animation.duration.update)
+                    .attr('fill', 'grey')
+                    .attr('width', y)
+                    .attr("y", x)
+                    .attr("height", h)
+                    .tween("update.mini", drawCanvasInTransition);
+            });
+
+        const enterTransition = updateTransition.transition()
+            .duration(this._options.animation.duration.add)
+            .each(()=>{
+                dataJoin.append("rect")
+                    .attr('class', 'mini')
+                    .attr('fill', 'grey')
+                    .attr('opacity', 1)
+                    .attr("x", 0)
+                    .attr("y", x)
+                    .attr('width', 0)
+                    .attr("height", h)
+                    .transition()
+                    .duration(this._options.animation.duration.add)
+                    .delay((d, i) => i / this._data.length * this._options.animation.duration.add)
+                    .attr('width', y)
+                    .tween("append.mini", drawCanvasInTransition);
+            });
+
+        const that = this;
+        enterTransition.on('end', ()=> {
+        });
     }
 
     drawMainBars(data) {
-        const _hasNegative = hasNegativeValue(data, this._options);
-
         const drawCanvasInTransition = ()=> {
             return t=> {
                 drawCanvas(this._frontContext, this._detachedContainer.selectAll('.bar'), this._options);
@@ -88,9 +175,7 @@ class HorizontalBar extends AbstractBasicCartesianChart {
                     .attr('fill', this._c)
                     .attr('width', this._y)
                     .attr("y", this._x)
-                    .attr("height", d=> _hasNegative
-                        ? Math.abs( this._y(d) - this._zero() )
-                        : this._h(d))
+                    .attr("height", this._h)
                     .tween("update.rects", drawCanvasInTransition);
             });
 
