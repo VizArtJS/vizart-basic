@@ -1,9 +1,8 @@
 import { select } from 'd3-selection';
 
 import drawHorizontalLabel from './draw-horizontal-label';
-import drawMetricOntTop from './draw-metric-on-top';
 
-const drawCanvas =  (context, selection, opt)=> {
+const drawCanvas = (context, selection, opt)=> {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
     selection.each(function(d){
@@ -19,7 +18,6 @@ const drawCanvas =  (context, selection, opt)=> {
         context.restore();
 
         drawHorizontalLabel(context, node, opt);
-        // if (opt.plots.metricLabel.enabled === true) drawMetricOntTop(context, node, opt);
     });
 }
 

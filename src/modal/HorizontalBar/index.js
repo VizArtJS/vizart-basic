@@ -26,7 +26,10 @@ const DefaultOpt = {
             enabled: false,
             color: 'black',
             offset: 10
-        }
+        },
+
+        miniBarWidth: 100,
+
     }
 };
 
@@ -34,16 +37,7 @@ class HorizontalBar extends AbstractBasicCartesianChart {
     constructor(canvasId, userOpt) {
         super(canvasId, userOpt);
 
-        this._h = ()=>{
-            if (isUndefined(this._getDimension().scale.bandwidth)
-                || !isFunction(this._getDimension().scale.bandwidth)) {
-                let evenWidth = Math.ceil(this._options.chart.innerHeight / this._data.length);
-
-                return evenWidth > 1 ? evenWidth - 1 : 0.1
-            } else {
-                return this._getDimension().scale.bandwidth();
-            }
-        };
+        this._h = ()=> this._getDimension().scale.bandwidth();
         this._zero = ()=> this._getMetric().scale(0);
 
         // We also make a map/dictionary to keep track of colors associated with node.
@@ -52,16 +46,23 @@ class HorizontalBar extends AbstractBasicCartesianChart {
 
     _animate() {
         this._getDimension().scale.range([0, this._options.chart.innerHeight]);
-        this._getMetric().scale.range([0, this._options.chart.innerWidth]);
+        this._getMetric().scale.range([0, this._options.chart.innerWidth - this._options.plots.miniBarWidth]);
 
-        const _hasNegative = hasNegativeValue(this._data, this._options);
+        const miniXScale = this._getDimension().scale.copy();
+        const miniYScale = this._getMetric().scale.copy().range([0, this._options.plots.miniBarWidth]);
+
+        this.drawMainBars(this._data);
+    }
+
+    drawMainBars(data) {
+        const _hasNegative = hasNegativeValue(data, this._options);
 
         const drawCanvasInTransition = ()=> {
             return t=> {
                 drawCanvas(this._frontContext, this._detachedContainer.selectAll('.bar'), this._options);
             }};
 
-        const dataUpdate = this._detachedContainer.selectAll('.bar').data(this._data);
+        const dataUpdate = this._detachedContainer.selectAll('.bar').data(data);
         const dataJoin = dataUpdate.enter();
         const dataRemove = dataUpdate.exit();
 
@@ -156,8 +157,7 @@ class HorizontalBar extends AbstractBasicCartesianChart {
             that._frontCanvas.on('mousemove', mouseMoveHandler);
             that._frontCanvas.on('mouseout', mouseOutHandler);
             that._listeners.call('rendered');
-
-        })
+        });
     }
 
     sortDetached() {
