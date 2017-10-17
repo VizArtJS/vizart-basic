@@ -1,4 +1,4 @@
-const drawCanvas = (context, particles, opt)=> {
+const drawCanvas = (context, particles)=> {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
     for (const p of particles) {
