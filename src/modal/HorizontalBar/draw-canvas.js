@@ -1,6 +1,6 @@
 import { select } from 'd3-selection';
 
-import drawHorizontalLabel from './draw-vertical-label';
+import drawHorizontalLabel from './draw-horizontal-label';
 
 const drawCanvas = (context, selection, opt)=> {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
