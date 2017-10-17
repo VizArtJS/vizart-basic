@@ -8,6 +8,8 @@ import AbstractBasicCartesianChartWithAxes from '../../base/AbstractBasicCartesi
 import createCartesianOpt from '../../options/createCartesianOpt';
 import updateRadiusScale from './update-radius-scale';
 import animateStates from './tween-states';
+import drawCanvas from './draw-canvas';
+import highlightNode from './highlight-node';
 
 const ScatterOptions = {
     chart: {
@@ -50,9 +52,9 @@ class Scatter extends AbstractBasicCartesianChartWithAxes {
     _animate() {
         const initialState = this.previousState
             ? this.previousState
-            : this._data.map(d=>{
-
+            : this._data.map((d, i)=>{
                 return {
+                    id: i,
                     x: this._x(d),
                     y: this._frontCanvas.node().height,
                     r: this._r(d),
@@ -62,8 +64,9 @@ class Scatter extends AbstractBasicCartesianChartWithAxes {
                 }
             });
 
-        const finalState = this._data.map(d=>{
+        const finalState = this._data.map((d, i)=>{
             return {
+                id: i,
                 x: this._x(d),
                 y: this._y(d),
                 r: this._r(d),
@@ -106,11 +109,16 @@ class Scatter extends AbstractBasicCartesianChartWithAxes {
                             .style("left", mx + opt.tooltip.offset[0] + "px")
                             .style("top", my + opt.tooltip.offset[1] + "px")
                             .style("opacity", 1);
+
+                        drawCanvas(ctx, finalState);
+                        highlightNode(ctx, closest.data);
                     } else {
                         that._tooltip
                             .transition()
                             .duration(that._options.animation.tooltip)
                             .style("opacity", 0);
+
+                        drawCanvas(ctx, finalState);
                     }
                 }
 
@@ -119,6 +127,8 @@ class Scatter extends AbstractBasicCartesianChartWithAxes {
                         .transition()
                         .duration(that._options.animation.tooltip)
                         .style("opacity", 0);
+
+                    drawCanvas(ctx, finalState);
                 }
 
                 that._frontCanvas.on('mousemove', mouseMoveHandler);

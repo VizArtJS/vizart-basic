@@ -1,4 +1,4 @@
-const drawVerticalLabel = (context, node, opt)=> {
+const drawHorizontalLabel = (context, node, opt)=> {
     if (node.attr('dimension')) {
         context.save();
 
@@ -17,4 +17,4 @@ const drawVerticalLabel = (context, node, opt)=> {
     }
 }
 
-export default drawVerticalLabel;
+export default drawHorizontalLabel;

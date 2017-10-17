@@ -1,5 +1,4 @@
 import { mouse } from 'd3-selection';
-import { scaleLinear } from 'd3-scale';
 import { transition } from 'd3-transition';
 import isUndefined from 'lodash-es/isUndefined';
 import isFunction from 'lodash-es/isFunction';
@@ -16,9 +15,8 @@ import drawRects from './draw-rects';
 import drawHiddenRects from './draw-hidden-rects';
 import hasNegativeValue from '../../util/has-negative';
 
-
 const BarOpt = {
-    chart: { type: 'bar_horizontal'},
+    chart: { type: 'bar'},
     plots: {
         barLabel: {
             enabled: false,
@@ -201,11 +199,6 @@ class Bar extends AbstractBasicCartesianChartWithAxes {
     createOptions(_userOptions) {
         return createCartesianOpt(BarOpt, _userOptions);
     }
-
-    _isBar() {
-        return true;
-    }
-
 }
 
 

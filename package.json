@@ -1,6 +1,6 @@
 {
   "name": "vizart-basic",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "VizArt: Basic Charts",
   "main": "dist/vizart-basic.js",
   "module": "dist/vizart-basic.mjs",
@@ -24,6 +24,7 @@
   "dependencies": {
     "d3-array": "^1.2.1",
     "d3-axis": "^1.0.8",
+    "d3-brush": "^1.0.4",
     "d3-chord": "^1.0.4",
     "d3-collection": "^1.0.4",
     "d3-color": "^1.0.3",
@@ -41,7 +42,7 @@
     "d3-transition": "^1.1.0",
     "d3-voronoi": "^1.1.2",
     "lodash-es": "^4.17.4",
-    "vizart-core": "^1.1.7"
+    "vizart-core": "^1.2.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

@@ -16,13 +16,8 @@ class AbstractBasicCartesianChartWithAxes extends AbstractBasicCartesianChart {
 
     update() {
         super.update();
-        updateAxis(this._svg, this._data, this._options, this._isBar());
+        updateAxis(this._svg, this._data, this._options);
     }
-
-    _isBar() {
-        return false;
-    }
-
 }
 
 export default AbstractBasicCartesianChartWithAxes;
