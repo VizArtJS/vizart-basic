@@ -1,7 +1,7 @@
 import { select } from 'd3-selection';
 
-import drawVerticalLabel from '../HorizontalBar/draw-horizontal-label';
-import drawMetricOntTop from '../HorizontalBar/draw-metric-on-top';
+import drawVerticalLabel from './draw-vertical-label';
+import drawMetricOntTop from './draw-metric-on-top';
 
 const drawRects =  (context, selection, opt)=> {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);

@@ -1,7 +1,10 @@
-import { mouse, select } from 'd3-selection';
+import { mouse, select, event } from 'd3-selection';
 import { transition } from 'd3-transition';
+import { symbolTriangle, symbol } from 'd3-shape';
 import isUndefined from 'lodash-es/isUndefined';
 import isFunction from 'lodash-es/isFunction';
+
+import { brushY, brushSelection } from 'd3-brush';
 
 import {
     Globals,
@@ -15,6 +18,7 @@ import sortSelector from '../../data/helper/sort-selector';
 import drawCanvas from './draw-canvas';
 import drawHiddenRects from './draw-hidden-rects';
 import hasNegativeValue from '../../util/has-negative';
+import './horizontal-bar.css';
 
 const DefaultOpt = {
     chart: { type: 'bar_horizontal'},
@@ -34,6 +38,10 @@ const DefaultOpt = {
     }
 };
 
+const miniWidth = opt=> opt.chart.width
+    - opt.plots.miniBarWidth
+    - opt.chart.margin.right;
+
 class HorizontalBar extends AbstractBasicCartesianChart {
     constructor(canvasId, userOpt) {
         super(canvasId, userOpt);
@@ -49,23 +57,32 @@ class HorizontalBar extends AbstractBasicCartesianChart {
 
     render(data) {
         super.render(data);
+
         const devicePixelRatio = window.devicePixelRatio || 1;
 
         const width = this._options.plots.miniBarWidth;
         const height = this._options.chart.innerHeight;
+
+        const miniX = miniWidth(this._options);
 
         this.miniCanvas = select(this._containerId)
             .append("canvas")
             .attr("id", 'mini'+ uuid())
             .style('display', 'block')
             .style('position', 'absolute')
-            .style('left', this._options.chart.width - width - this._options.chart.margin.right + 'px')
+            .style('left', miniX + 'px')
             .style('top', 0)
             .style("width", width + "px")
             .style("height", height + "px")
             .style('margin', this._options.chart.margin.top + 'px 0 0 ' + this._options.chart.margin.left + 'px ')
             .attr('width', width * devicePixelRatio)
             .attr('height', height * devicePixelRatio);
+
+        this.miniSvg = this._container.append('g')
+            .attr('width', width)
+            .attr('height', height)
+            .attr("transform", "translate(" + miniX + "," + this._options.chart.margin.top + ")");
+
 
         this.miniContext = this.miniCanvas.node().getContext('2d');
         this.miniContext.scale(this._canvasScale, this._canvasScale);
@@ -139,7 +156,28 @@ class HorizontalBar extends AbstractBasicCartesianChart {
             });
 
         const that = this;
+
+
+
         enterTransition.on('end', ()=> {
+            const miniX = miniWidth(that._options);
+            const mini_width = that._options.plots.miniBarWidth;
+            const brush = brushY()
+                .extent([[0, 0], [miniX, that._options.chart.innerHeight]]);
+
+            const brushMove = ()=> {
+                const selection = brushSelection(this._container.select('.brush').node());
+                console.log(selection);
+
+                // var selected = this._getMetric().scale.domain()
+                //     .filter(function(d) { return (extent[0] - mini_yScale.rangeBand() + 1e-2 <= mini_yScale(d)) && (mini_yScale(d) <= extent[1] - 1e-2); });
+                //Update the colors of the mini chart - Make everything outside the brush grey
+            }
+
+            brush.on("brush", brushMove);
+
+            that.miniSvg.call(brush);
+
         });
     }
 

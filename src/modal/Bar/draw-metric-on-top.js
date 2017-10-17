@@ -6,7 +6,7 @@ const drawMetricOntTop = (context, node, opt)=> {
     // context.textBaseline = 'middle';
 
     context.fillStyle = opt.plots.metricLabel.color;
-    context.fillText(node.attr('metric'), node.attr('width')/2, -opt.plots.metricLabel.offset, node.attr('width'));
+    context.fillText(node.attr('metric'), node.attr('width')/2, -opt.plots.metricLabel.offset);
 
     context.restore();
 }
