@@ -1,5 +1,6 @@
 import { mouse, select, event } from 'd3-selection';
 import { transition } from 'd3-transition';
+import { scaleBand } from 'd3-scale';
 import { symbolTriangle, symbol } from 'd3-shape';
 import isUndefined from 'lodash-es/isUndefined';
 import isFunction from 'lodash-es/isFunction';
@@ -142,6 +143,10 @@ class HorizontalBar extends AbstractBasicCartesianChart {
                         : '#e0e0e0';
                 })
                 .classed('selected', d=> s[0] <= (d = x(d)) && d <= s[1]);
+
+            const data = this.miniSvg.selectAll('.selected').data();
+            this.drawMainBars(data);
+
         }
 
         brush.on("brush", brushMove);
@@ -241,6 +246,15 @@ class HorizontalBar extends AbstractBasicCartesianChart {
                 drawCanvas(this._frontContext, this._detachedContainer.selectAll('.bar'), this._options);
             }};
 
+        const mainScale = scaleBand()
+            .domain(data.map(d=> this._getDimensionVal(d)))
+            .range([0, this._options.chart.innerHeight])
+            .paddingInner(.1)
+            .paddingOuter(.6);
+
+        const h = mainScale.bandwidth();
+        const x = d=> mainScale(this._getDimensionVal(d));
+
         const dataUpdate = this._detachedContainer.selectAll('.bar').data(data);
         const dataJoin = dataUpdate.enter();
         const dataRemove = dataUpdate.exit();
@@ -266,8 +280,8 @@ class HorizontalBar extends AbstractBasicCartesianChart {
                     .delay((d, i) => i / this._data.length * this._options.animation.duration.update)
                     .attr('fill', this._c)
                     .attr('width', this._y)
-                    .attr("y", this._x)
-                    .attr("height", this._h)
+                    .attr("y", x)
+                    .attr("height", h)
                     .tween("update.rects", drawCanvasInTransition);
             });
 
@@ -279,11 +293,11 @@ class HorizontalBar extends AbstractBasicCartesianChart {
                     .attr('fill', this._c)
                     .attr('opacity', 1)
                     .attr("x", 0)
-                    .attr("y", this._x)
+                    .attr("y", x)
                     .attr('width', 0)
                     .attr('dimension', this._getDimensionVal)
                     .attr('metric', this._getMetricVal)
-                    .attr("height", this._h)
+                    .attr("height", h)
                     .transition()
                     .duration(this._options.animation.duration.add)
                     .delay((d, i) => i / this._data.length * this._options.animation.duration.add)
@@ -335,15 +349,6 @@ class HorizontalBar extends AbstractBasicCartesianChart {
             that._frontCanvas.on('mouseout', mouseOutHandler);
             that._listeners.call('rendered');
         });
-    }
-
-    sortDetached() {
-        this._detachedContainer
-            .selectAll(".bar")
-            .transition()
-            .duration(this._options.animation.duration.update)
-            .delay((d, i) => i / this._data.length * this._options.animation.duration.update)
-            .attr("x", this._x);
     }
 
     sort(field, direction) {
