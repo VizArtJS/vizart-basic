@@ -2,6 +2,7 @@ import { mouse, select, event } from 'd3-selection';
 import { transition } from 'd3-transition';
 import { scaleBand, scaleLinear } from 'd3-scale';
 import { extent } from 'd3-array';
+import { axisBottom } from 'd3-axis';
 import { symbolTriangle, symbol } from 'd3-shape';
 import isUndefined from 'lodash-es/isUndefined';
 import isFunction from 'lodash-es/isFunction';
@@ -45,6 +46,7 @@ const miniWidth = opt=> opt.chart.width
     - opt.chart.margin.right;
 
 const InitialBrushHeight = 200;
+const MicroUpdateDuration = 250;
 
 class HorizontalBar extends AbstractBasicCartesianChart {
     constructor(canvasId, userOpt) {
@@ -57,6 +59,8 @@ class HorizontalBar extends AbstractBasicCartesianChart {
         this.colToNode;
         this.miniCanvas;
         this.miniContext;
+
+        this.fullData;
     }
 
     render(data) {
@@ -182,6 +186,9 @@ class HorizontalBar extends AbstractBasicCartesianChart {
         const h = xScale.bandwidth();
         const x = d=> xScale(this._getDimensionVal(d));
         const y = d=> yScale(this._getMetricVal(d));
+        const colorScale = this._color.copy()
+            .domain([tickedRange[0], tickedRange[1]]);
+        const c = d=> colorScale(this._getMetricVal(d));
 
         const dataUpdate = this._detachedContainer.selectAll('.bar').data(data);
         const dataJoin = dataUpdate.enter();
@@ -206,7 +213,7 @@ class HorizontalBar extends AbstractBasicCartesianChart {
                     .attr('metric', this._getMetricVal)
                     .transition("update-rect-transition")
                     .delay((d, i) => i / this._data.length * this._options.animation.duration.update)
-                    .attr('fill', this._c)
+                    .attr('fill', c)
                     .attr('width', y)
                     .attr("y", x)
                     .attr("height", h)
@@ -218,7 +225,7 @@ class HorizontalBar extends AbstractBasicCartesianChart {
             .each(()=>{
                 dataJoin.append("rect")
                     .attr('class', 'bar')
-                    .attr('fill', this._c)
+                    .attr('fill', c)
                     .attr('opacity', 1)
                     .attr("x", 0)
                     .attr("y", x)
@@ -227,7 +234,6 @@ class HorizontalBar extends AbstractBasicCartesianChart {
                     .attr('metric', this._getMetricVal)
                     .attr("height", h)
                     .transition()
-                    .duration(this._options.animation.duration.add)
                     .delay((d, i) => i / this._data.length * this._options.animation.duration.add)
                     .attr('width', y)
                     .tween("append.rects", drawCanvasInTransition);
