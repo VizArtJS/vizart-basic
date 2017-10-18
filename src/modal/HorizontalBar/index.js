@@ -246,7 +246,7 @@ class HorizontalBar extends AbstractBasicCartesianChart {
             });
 
         const enterTransition = updateTransition.transition()
-            .duration(this._options.animation.duration.add)
+            .duration(this._options.animation.duration.update)
             .each(()=>{
                 dataJoin.append("rect")
                     .attr('class', 'bar')
@@ -259,7 +259,7 @@ class HorizontalBar extends AbstractBasicCartesianChart {
                     .attr('metric', this._getMetricVal)
                     .attr("height", h)
                     .transition()
-                    .delay((d, i) => i / this._data.length * this._options.animation.duration.add)
+                    .delay((d, i) => i / this._data.length * this._options.animation.duration.update)
                     .attr('width', y)
                     .tween("append.rects", drawCanvasInTransition);
             });
