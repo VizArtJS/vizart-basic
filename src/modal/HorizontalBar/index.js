@@ -96,12 +96,8 @@ class HorizontalBar extends AbstractBasicCartesianChart {
         this.drawMiniSvg(this._data);
         const filteredData = this._data.filter(d=> this._x(d) < InitialBrushHeight);
         this.drawMainBars(filteredData);
-        this.drawAxis(filteredData)
     }
 
-    drawAxis(data) {
-
-    }
 
     drawMiniSvg(data) {
         const width = this._options.plots.miniBarWidth;
@@ -155,13 +151,42 @@ class HorizontalBar extends AbstractBasicCartesianChart {
 
             const data = this.miniSvg.selectAll('.selected').data();
             this.drawMainBars(data);
-
+            this.updateAxis(data);
         }
 
         brush.on("brush", brushMove);
 
         this.miniSvg.call(brush);
         this.miniSvg.call(brush.move, [0, InitialBrushHeight]);
+    }
+
+    updateAxis(data) {
+        const yExtent = extent(data, this._getMetricVal);
+        const tickedRange = tickRange(yExtent, this._options.yAxis[0].ticks, this._options.yAxis[0].tier);
+        const yScale = scaleLinear()
+            .domain([tickedRange[0], tickedRange[1]])
+            .range([0, this._options.chart.innerWidth - this._options.plots.miniBarWidth - this._options.chart.margin.left * 2]);
+
+        const bottomAxis = axisBottom()
+            .scale(yScale);
+
+        if (!this.bottomAxis) {
+            this.bottomAxis = this._container.append("g")
+                .attr("class", "x axis")
+                .attr("transform", "translate(" + this._options.chart.margin.left +  "," + (this._options.chart.innerHeight + 10) + ")");
+
+        }
+
+        this.bottomAxis.call(bottomAxis);
+        this.bottomAxis.select('.domain').style('opacity', 0);
+
+        const transition = this.bottomAxis.transition().duration(this._options.animation.duration.update);
+        const delay = (d, i) => i / data.length * this._options.animation.duration.update;
+
+        transition.select(".x.axis")
+            .delay(delay)
+            .call(bottomAxis);
+
     }
 
 
