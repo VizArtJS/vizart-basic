@@ -1,6 +1,7 @@
 import { mouse, select, event } from 'd3-selection';
 import { transition } from 'd3-transition';
-import { scaleBand } from 'd3-scale';
+import { scaleBand, scaleLinear } from 'd3-scale';
+import { extent } from 'd3-array';
 import { symbolTriangle, symbol } from 'd3-shape';
 import isUndefined from 'lodash-es/isUndefined';
 import isFunction from 'lodash-es/isFunction';
@@ -19,6 +20,7 @@ import sortSelector from '../../data/helper/sort-selector';
 import drawCanvas from './draw-canvas';
 import drawHiddenRects from './draw-hidden-rects';
 import hasNegativeValue from '../../util/has-negative';
+import tickRange from '../../data/update-scale/ticks';
 
 const DefaultOpt = {
     chart: { type: 'bar_horizontal'},
@@ -162,14 +164,21 @@ class HorizontalBar extends AbstractBasicCartesianChart {
                 drawCanvas(this._frontContext, this._detachedContainer.selectAll('.bar'), this._options);
             }};
 
-        const mainScale = scaleBand()
+        const xScale = scaleBand()
             .domain(data.map(d=> this._getDimensionVal(d)))
             .range([0, this._options.chart.innerHeight])
             .paddingInner(.1)
             .paddingOuter(.6);
 
-        const h = mainScale.bandwidth();
-        const x = d=> mainScale(this._getDimensionVal(d));
+        const yExtent = extent(data, this._getMetricVal);
+        const tickedRange = tickRange(yExtent, this._options.yAxis[0].ticks, this._options.yAxis[0].tier);
+        const yScale = scaleLinear()
+            .domain([tickedRange[0], tickedRange[1]])
+            .range([0, this._options.chart.innerWidth - this._options.plots.miniBarWidth]);
+
+        const h = xScale.bandwidth();
+        const x = d=> xScale(this._getDimensionVal(d));
+        const y = d=> yScale(this._getMetricVal(d));
 
         const dataUpdate = this._detachedContainer.selectAll('.bar').data(data);
         const dataJoin = dataUpdate.enter();
@@ -195,7 +204,7 @@ class HorizontalBar extends AbstractBasicCartesianChart {
                     .transition("update-rect-transition")
                     .delay((d, i) => i / this._data.length * this._options.animation.duration.update)
                     .attr('fill', this._c)
-                    .attr('width', this._y)
+                    .attr('width', y)
                     .attr("y", x)
                     .attr("height", h)
                     .tween("update.rects", drawCanvasInTransition);
@@ -217,7 +226,7 @@ class HorizontalBar extends AbstractBasicCartesianChart {
                     .transition()
                     .duration(this._options.animation.duration.add)
                     .delay((d, i) => i / this._data.length * this._options.animation.duration.add)
-                    .attr('width', this._y)
+                    .attr('width', y)
                     .tween("append.rects", drawCanvasInTransition);
             });
 
