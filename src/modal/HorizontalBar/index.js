@@ -18,7 +18,6 @@ import sortSelector from '../../data/helper/sort-selector';
 import drawCanvas from './draw-canvas';
 import drawHiddenRects from './draw-hidden-rects';
 import hasNegativeValue from '../../util/has-negative';
-import './horizontal-bar.css';
 
 const DefaultOpt = {
     chart: { type: 'bar_horizontal'},
@@ -33,7 +32,7 @@ const DefaultOpt = {
             offset: 10
         },
 
-        miniBarWidth: 100,
+        miniBarWidth: 50,
 
     }
 };
@@ -65,35 +64,91 @@ class HorizontalBar extends AbstractBasicCartesianChart {
 
         const miniX = miniWidth(this._options);
 
-        this.miniCanvas = select(this._containerId)
-            .append("canvas")
-            .attr("id", 'mini'+ uuid())
-            .style('display', 'block')
-            .style('position', 'absolute')
-            .style('left', miniX + 'px')
-            .style('top', 0)
-            .style("width", width + "px")
-            .style("height", height + "px")
-            .style('margin', this._options.chart.margin.top + 'px 0 0 ' + this._options.chart.margin.left + 'px ')
-            .attr('width', width * devicePixelRatio)
-            .attr('height', height * devicePixelRatio);
+        // this.miniCanvas = select(this._containerId)
+        //     .append("canvas")
+        //     .attr("id", 'mini'+ uuid())
+        //     .style('display', 'block')
+        //     .style('position', 'absolute')
+        //     .style('left', miniX + 'px')
+        //     .style('top', 0)
+        //     .style("width", width + "px")
+        //     .style("height", height + "px")
+        //     .style('margin', this._options.chart.margin.top + 'px 0 0 ' + this._options.chart.margin.left + 'px ')
+        //     .attr('width', width * devicePixelRatio)
+        //     .attr('height', height * devicePixelRatio);
+        //
+        // this.miniContext = this.miniCanvas.node().getContext('2d');
+        // this.miniContext.scale(this._canvasScale, this._canvasScale);
 
-        this.miniSvg = this._container.append('g')
-            .attr('width', width)
-            .attr('height', height)
-            .attr("transform", "translate(" + miniX + "," + this._options.chart.margin.top + ")");
-
-
-        this.miniContext = this.miniCanvas.node().getContext('2d');
-        this.miniContext.scale(this._canvasScale, this._canvasScale);
     }
 
     _animate() {
         this._getDimension().scale.range([0, this._options.chart.innerHeight]);
         this._getMetric().scale.range([0, this._options.chart.innerWidth - this._options.plots.miniBarWidth]);
 
+        // this.drawMiniBars(this._data);
+        this.drawMiniSvg(this._data);
         this.drawMainBars(this._data);
-        this.drawMiniBars(this._data);
+    }
+
+    drawMiniSvg(data) {
+        const width = this._options.plots.miniBarWidth;
+        const height = this._options.chart.innerHeight;
+
+        const miniX = miniWidth(this._options);
+
+        this.miniSvg = this._container.append('g')
+            .attr('width', width)
+            .attr('height', height)
+            .attr("transform", "translate(" + miniX + "," + this._options.chart.margin.top + ")");
+
+        const miniXScale = this._getDimension().scale.copy();
+        const miniYScale = this._getMetric().scale.copy().range([0, this._options.plots.miniBarWidth]);
+
+        const h = miniXScale.bandwidth();
+        const y = d=> miniYScale(this._getMetricVal(d));
+        const x = this._x;
+
+        const dataUpdate = this.miniSvg.selectAll('.mini').data(data);
+        const dataJoin = dataUpdate.enter();
+        const dataRemove = dataUpdate.exit();
+
+        dataRemove.remove();
+        dataUpdate
+            .attr('width', y)
+            .attr("y", x)
+            .attr("height", h);
+        dataJoin.append("rect")
+            .attr('class', 'mini')
+            .attr('fill', '#e0e0e0')
+            .attr('opacity', 1)
+            .attr("x", 0)
+            .attr("y", x)
+            .attr("height", h)
+            .attr('width', y);
+
+        const mini_width = this._options.plots.miniBarWidth;
+        const brush = brushY()
+            .extent([[0, 0], [miniX, this._options.chart.innerHeight]]);
+
+        const brushMove = ()=> {
+            const s = event.selection;
+            this.miniSvg.selectAll('.mini')
+                .attr('fill', d=> {
+                    return s[0] <= (d = x(d)) && d <= s[1]
+                        ? '#1bcebf'
+                        : '#e0e0e0';
+                });
+            // var selected = this._getMetric().scale.domain()
+            //     .filter(function(d) { return (extent[0] - mini_yScale.rangeBand() + 1e-2 <= mini_yScale(d)) && (mini_yScale(d) <= extent[1] - 1e-2); });
+            //Update the colors of the mini chart - Make everything outside the brush grey
+        }
+
+        brush.on("brush", brushMove);
+
+        this.miniSvg.call(brush);
+        this.miniSvg.call(brush.move, [0, 200]);
+
     }
 
     drawMiniBars(data) {
