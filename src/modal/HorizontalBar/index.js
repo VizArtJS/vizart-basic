@@ -41,6 +41,8 @@ const miniWidth = opt=> opt.chart.width
     - opt.plots.miniBarWidth
     - opt.chart.margin.right;
 
+const InitialBrushHeight = 200;
+
 class HorizontalBar extends AbstractBasicCartesianChart {
     constructor(canvasId, userOpt) {
         super(canvasId, userOpt);
@@ -88,7 +90,7 @@ class HorizontalBar extends AbstractBasicCartesianChart {
 
         // this.drawMiniBars(this._data);
         this.drawMiniSvg(this._data);
-        this.drawMainBars(this._data);
+        this.drawMainBars(this._data.filter(d=> this._x(d) < InitialBrushHeight));
     }
 
     drawMiniSvg(data) {
@@ -138,17 +140,14 @@ class HorizontalBar extends AbstractBasicCartesianChart {
                     return s[0] <= (d = x(d)) && d <= s[1]
                         ? '#1bcebf'
                         : '#e0e0e0';
-                });
-            // var selected = this._getMetric().scale.domain()
-            //     .filter(function(d) { return (extent[0] - mini_yScale.rangeBand() + 1e-2 <= mini_yScale(d)) && (mini_yScale(d) <= extent[1] - 1e-2); });
-            //Update the colors of the mini chart - Make everything outside the brush grey
+                })
+                .classed('selected', d=> s[0] <= (d = x(d)) && d <= s[1]);
         }
 
         brush.on("brush", brushMove);
 
         this.miniSvg.call(brush);
-        this.miniSvg.call(brush.move, [0, 200]);
-
+        this.miniSvg.call(brush.move, [0, InitialBrushHeight]);
     }
 
     drawMiniBars(data) {
