@@ -10,8 +10,6 @@ import {
 import { extent } from 'd3-array';
 import { axisBottom } from 'd3-axis';
 
-import { symbolTriangle, symbol } from 'd3-shape';
-
 import { brushY } from 'd3-brush';
 
 import {
@@ -27,6 +25,7 @@ import createCartesianOpt from '../../options/createCartesianOpt';
 import drawCanvas from './draw-canvas';
 import drawHiddenRects from './draw-hidden-rects';
 import tickRange from '../../data/update-scale/ticks';
+import './brush-handle.css';
 
 const DefaultOpt = {
     chart: { type: 'bar_horizontal'},
@@ -76,21 +75,21 @@ class HorizontalBar extends AbstractBasicCartesianChart {
 
         const miniX = miniWidth(this._options);
 
-        // this.miniCanvas = select(this._containerId)
-        //     .append("canvas")
-        //     .attr("id", 'mini'+ uuid())
-        //     .style('display', 'block')
-        //     .style('position', 'absolute')
-        //     .style('left', miniX + 'px')
-        //     .style('top', 0)
-        //     .style("width", width + "px")
-        //     .style("height", height + "px")
-        //     .style('margin', this._options.chart.margin.top + 'px 0 0 ' + this._options.chart.margin.left + 'px ')
-        //     .attr('width', width * devicePixelRatio)
-        //     .attr('height', height * devicePixelRatio);
-        //
-        // this.miniContext = this.miniCanvas.node().getContext('2d');
-        // this.miniContext.scale(this._canvasScale, this._canvasScale);
+        this.miniCanvas = select(this._containerId)
+            .append("canvas")
+            .attr("id", 'mini'+ uuid())
+            .style('display', 'block')
+            .style('position', 'absolute')
+            .style('left', miniX + 'px')
+            .style('top', 0)
+            .style("width", width + "px")
+            .style("height", height + "px")
+            .style('margin', this._options.chart.margin.top + 'px 0 0 ' + this._options.chart.margin.left + 'px ')
+            .attr('width', width * devicePixelRatio)
+            .attr('height', height * devicePixelRatio);
+
+        this.miniContext = this.miniCanvas.node().getContext('2d');
+        this.miniContext.scale(this._canvasScale, this._canvasScale);
     }
 
     _animate() {
@@ -98,8 +97,7 @@ class HorizontalBar extends AbstractBasicCartesianChart {
         this._getMetric().scale.range([0, this._options.chart.innerWidth - this._options.plots.miniBarWidth]);
 
         this.drawMiniSvg(this._data);
-        const filteredData = this._data.filter(d=> this._x(d) < InitialBrushHeight);
-        this.drawMainBars(filteredData);
+        this.drawMainBars(this._data.filter(d=> this._x(d) < InitialBrushHeight));
     }
 
 
@@ -139,11 +137,49 @@ class HorizontalBar extends AbstractBasicCartesianChart {
             .attr("height", h)
             .attr('width', y);
 
+        this.brushGroup = this.miniSvg.append('g')
+            .attr('class', 'brush');
+
         const brush = brushY()
             .extent([[0, 0], [miniX, this._options.chart.innerHeight]]);
 
+        const brushResizePath = d=> {
+            const e = +(d.type == "e"),
+                x = e ? 1 : -1,
+                y = this._options.plots.miniBarWidth;
+
+            return "M" + (.5 * x) + "," + y
+                + "A6,6 0 0 " + e + " " + (6.5 * x) + "," + (y + 6)
+                + "V" + (2 * y - 6)
+                + "A6,6 0 0 " + e + " " + (.5 * x) + "," + (2 * y)
+                + "Z"
+                + "M" + (2.5 * x) + "," + (y + 8)
+                + "V" + (2 * y - 8)
+                + "M" + (4.5 * x) + "," + (y + 8)
+                + "V" + (2 * y - 8);
+        }
+
+        const handle = this.brushGroup.selectAll(".custom-handle")
+            .data([{type: "w"}, {type: "e"}])
+            .enter()
+            .append("path")
+            .attr("class", "custom-handle")
+            .attr("stroke", "#000")
+            .attr("stroke-width", 1)
+            .attr("cursor", "ns-resize")
+            .attr("d", brushResizePath)
+            .attr('transform', 'rotate(90) translate(0,-65)');
+
         const brushMove = ()=> {
             const s = event.selection;
+
+            if (s === null) {
+                handle.attr("display", "none");
+            } else {
+                handle.attr("display", null)
+                    .attr("transform", (d, i)=>  "rotate(90) translate(" + [ s[i], -65] + ")");
+            }
+
             this.miniSvg.selectAll('.mini')
                 .attr('fill', d=> {
                     return s[0] <= (d = x(d)) && d <= s[1]
@@ -158,15 +194,14 @@ class HorizontalBar extends AbstractBasicCartesianChart {
 
         }
 
-        brush.on("brush", brushMove);
+        brush.on("start brush end", brushMove);
 
-        this.brushGroup = this.miniSvg.append('g').attr('class', 'brush');
         this.brushGroup.call(brush);
         this.brushGroup.call(brush.move, [0, InitialBrushHeight]);
 
-        this.brushGroup.selectAll('.handle')
-            .attr('x', 0)
-            .attr('height', 3);
+        // this.brushGroup.selectAll('.handle')
+        //     .attr('x', 0)
+        //     .attr('height', 3);
 
     }
 
@@ -194,7 +229,6 @@ class HorizontalBar extends AbstractBasicCartesianChart {
             .transition()
             .duration(50)
             .call(bottomAxis);
-
     }
 
 
