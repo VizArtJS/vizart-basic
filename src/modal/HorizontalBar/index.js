@@ -139,7 +139,6 @@ class HorizontalBar extends AbstractBasicCartesianChart {
             .attr("height", h)
             .attr('width', y);
 
-        const mini_width = this._options.plots.miniBarWidth;
         const brush = brushY()
             .extent([[0, 0], [miniX, this._options.chart.innerHeight]]);
 
@@ -156,12 +155,19 @@ class HorizontalBar extends AbstractBasicCartesianChart {
             const data = this.miniSvg.selectAll('.selected').data();
             this.drawMainBars(data);
             this.updateAxis(data);
+
         }
 
         brush.on("brush", brushMove);
 
-        this.miniSvg.call(brush);
-        this.miniSvg.call(brush.move, [0, InitialBrushHeight]);
+        this.brushGroup = this.miniSvg.append('g').attr('class', 'brush');
+        this.brushGroup.call(brush);
+        this.brushGroup.call(brush.move, [0, InitialBrushHeight]);
+
+        this.brushGroup.selectAll('.handle')
+            .attr('x', 0)
+            .attr('height', 3);
+
     }
 
     updateAxis(data) {
