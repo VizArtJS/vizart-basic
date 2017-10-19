@@ -53,10 +53,6 @@ const InitialBrushHeight = 200;
 class HorizontalBar extends AbstractBasicCartesianChart {
     constructor(canvasId, userOpt) {
         super(canvasId, userOpt);
-
-        this.colToNode;
-        this.miniCanvas;
-        this.miniContext;
     }
 
     _animate() {
