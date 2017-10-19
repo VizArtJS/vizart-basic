@@ -40,14 +40,12 @@ const DefaultOpt = {
             offset: 10
         },
 
-        miniBarWidth: 30,
+        miniBarWidth: 50,
 
     }
 };
 
-const miniWidth = opt=> opt.chart.width
-    - opt.plots.miniBarWidth
-    - opt.chart.margin.right;
+const miniWidth = opt=> opt.chart.width - opt.plots.miniBarWidth;
 
 const InitialBrushHeight = 200;
 
@@ -61,7 +59,7 @@ class HorizontalBar extends AbstractBasicCartesianChart {
 
         this.fullData;
     }
-    
+
     _animate() {
         this._getDimension().scale.range([0, this._options.chart.innerHeight]);
         this._getMetric().scale.range([0, this._options.chart.innerWidth - this._options.plots.miniBarWidth]);
@@ -113,6 +111,8 @@ class HorizontalBar extends AbstractBasicCartesianChart {
         const brush = brushY()
             .extent([[0, 0], [miniX, this._options.chart.innerHeight]]);
 
+        const handleOffset = -this._options.plots.miniBarWidth - this._options.plots.miniBarWidth / 4;
+
         const handle = this.brushGroup.selectAll(".custom-handle")
             .data([{type: "w"}, {type: "e"}])
             .enter()
@@ -122,7 +122,7 @@ class HorizontalBar extends AbstractBasicCartesianChart {
             .attr("stroke-width", 1)
             .attr("cursor", "ns-resize")
             .attr("d", brushResizePath(this._options.plots.miniBarWidth))
-            .attr('transform', 'rotate(90) translate(0,-65)');
+            .attr('transform', 'rotate(90) translate(0,' + handleOffset + ')');
 
         const brushMove = ()=> {
             const s = event.selection;
@@ -131,7 +131,7 @@ class HorizontalBar extends AbstractBasicCartesianChart {
                 handle.attr("display", "none");
             } else {
                 handle.attr("display", null)
-                    .attr("transform", (d, i)=>  "rotate(90) translate(" + [ s[i], -65] + ")");
+                    .attr("transform", (d, i)=>  "rotate(90) translate(" + [ s[i], handleOffset] + ")");
             }
 
             this.miniSvg.selectAll('.mini')
