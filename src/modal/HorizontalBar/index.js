@@ -1,13 +1,18 @@
-import { mouse, select, event } from 'd3-selection';
+import {
+    mouse,
+    event
+} from 'd3-selection';
 import { transition } from 'd3-transition';
-import { scaleBand, scaleLinear } from 'd3-scale';
+import {
+    scaleBand,
+    scaleLinear
+} from 'd3-scale';
 import { extent } from 'd3-array';
 import { axisBottom } from 'd3-axis';
-import { symbolTriangle, symbol } from 'd3-shape';
-import isUndefined from 'lodash-es/isUndefined';
-import isFunction from 'lodash-es/isFunction';
 
-import { brushY, brushSelection } from 'd3-brush';
+import { symbolTriangle, symbol } from 'd3-shape';
+
+import { brushY } from 'd3-brush';
 
 import {
     Globals,
@@ -15,12 +20,12 @@ import {
     uuid
 } from 'vizart-core';
 
+import hasNegativeValue from '../../util/has-negative';
+
 import AbstractBasicCartesianChart from '../../base/AbstractBasicCartesianChart';
 import createCartesianOpt from '../../options/createCartesianOpt';
-import sortSelector from '../../data/helper/sort-selector';
 import drawCanvas from './draw-canvas';
 import drawHiddenRects from './draw-hidden-rects';
-import hasNegativeValue from '../../util/has-negative';
 import tickRange from '../../data/update-scale/ticks';
 
 const DefaultOpt = {
@@ -308,30 +313,6 @@ class HorizontalBar extends AbstractBasicCartesianChart {
             that._frontCanvas.on('mouseout', mouseOutHandler);
             that._listeners.call('rendered');
         });
-    }
-
-    sort(field, direction) {
-        this._options.ordering = {
-            accessor: field,
-            direction: direction
-        };
-
-        this._data = super.data(this._data);
-        sortSelector(this._detachedContainer.selectAll('.bar'), this._options);
-
-        const drawCanvasInTransition = ()=> {
-            return t=> {
-                drawCanvas(this._frontContext, this._detachedContainer.selectAll('.bar'), this._options);
-            }};
-
-        this._detachedContainer.selectAll(".bar")
-            .transition()
-            .duration(this._options.animation.duration.update)
-            .delay((d, i)=> i / this._data.length * this._options.animation.duration.update)
-            .attr("x", this._x)
-            .tween("append.rects", drawCanvasInTransition);
-
-        this.axes.update(this._svg, this._data);
     }
 
     createOptions(_userOptions) {
