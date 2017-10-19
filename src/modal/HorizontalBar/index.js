@@ -61,32 +61,7 @@ class HorizontalBar extends AbstractBasicCartesianChart {
 
         this.fullData;
     }
-
-    render(data) {
-        super.render(data);
-        const devicePixelRatio = window.devicePixelRatio || 1;
-
-        const width = this._options.plots.miniBarWidth;
-        const height = this._options.chart.innerHeight;
-        const miniX = miniWidth(this._options);
-
-        this.miniCanvas = select(this._containerId)
-            .append("canvas")
-            .attr("id", 'mini'+ uuid())
-            .style('display', 'block')
-            .style('position', 'absolute')
-            .style('left', miniX + 'px')
-            .style('top', 0)
-            .style("width", width + "px")
-            .style("height", height + "px")
-            .style('margin', this._options.chart.margin.top + 'px 0 0 ' + this._options.chart.margin.left + 'px ')
-            .attr('width', width * devicePixelRatio)
-            .attr('height', height * devicePixelRatio);
-
-        this.miniContext = this.miniCanvas.node().getContext('2d');
-        this.miniContext.scale(this._canvasScale, this._canvasScale);
-    }
-
+    
     _animate() {
         this._getDimension().scale.range([0, this._options.chart.innerHeight]);
         this._getMetric().scale.range([0, this._options.chart.innerWidth - this._options.plots.miniBarWidth]);
