@@ -18,7 +18,6 @@ import {
     uuid
 } from 'vizart-core';
 
-import hasNegativeValue from '../../util/has-negative';
 
 import AbstractBasicCartesianChart from '../../base/AbstractBasicCartesianChart';
 import createCartesianOpt from '../../options/createCartesianOpt';
@@ -26,6 +25,7 @@ import drawCanvas from './draw-canvas';
 import drawHiddenRects from './draw-hidden-rects';
 import tickRange from '../../data/update-scale/ticks';
 import brushResizePath from '../../util/brush-handle';
+import hasNegativeValue from '../../util/has-negative';
 
 const DefaultOpt = {
     chart: { type: 'bar_horizontal'},
@@ -47,6 +47,7 @@ const DefaultOpt = {
 
 const miniWidth = opt=> opt.chart.width - opt.plots.miniBarWidth;
 
+const BottomAxisOffset = 10;
 const InitialBrushHeight = 200;
 
 class HorizontalBar extends AbstractBasicCartesianChart {
@@ -56,18 +57,13 @@ class HorizontalBar extends AbstractBasicCartesianChart {
         this.colToNode;
         this.miniCanvas;
         this.miniContext;
-
-        this.fullData;
     }
 
     _animate() {
         this._getDimension().scale.range([0, this._options.chart.innerHeight]);
-        this._getMetric().scale.range([0, this._options.chart.innerWidth - this._options.plots.miniBarWidth]);
-
         this.drawMiniSvg(this._data);
         this.drawMainBars(this._data.filter(d=> this._x(d) < InitialBrushHeight));
     }
-
 
     drawMiniSvg(data) {
         const width = this._options.plots.miniBarWidth;
@@ -81,7 +77,9 @@ class HorizontalBar extends AbstractBasicCartesianChart {
             .attr("transform", "translate(" + miniX + "," + this._options.chart.margin.top + ")");
 
         const miniXScale = this._getDimension().scale.copy();
-        const miniYScale = this._getMetric().scale.copy().range([0, this._options.plots.miniBarWidth]);
+        const miniYScale = scaleLinear()
+            .domain(extent(data, this._getMetricVal))
+            .range([0, this._options.plots.miniBarWidth]);
 
         const h = miniXScale.bandwidth();
         const y = d=> miniYScale(this._getMetricVal(d));
@@ -159,7 +157,7 @@ class HorizontalBar extends AbstractBasicCartesianChart {
         const tickedRange = tickRange(yExtent, this._options.yAxis[0].ticks, this._options.yAxis[0].tier);
         const yScale = scaleLinear()
             .domain([tickedRange[0], tickedRange[1]])
-            .range([0, this._options.chart.innerWidth - this._options.plots.miniBarWidth - this._options.chart.margin.left * 2]);
+            .range([0, this._options.chart.innerWidth - this._options.plots.miniBarWidth]);
 
         const bottomAxis = axisBottom()
             .scale(yScale);
@@ -167,7 +165,7 @@ class HorizontalBar extends AbstractBasicCartesianChart {
         if (!this.bottomAxis) {
             this.bottomAxis = this._container.append("g")
                 .attr("class", "x axis")
-                .attr("transform", "translate(" + this._options.chart.margin.left +  "," + (this._options.chart.innerHeight + 10) + ")");
+                .attr("transform", "translate(" + this._options.chart.margin.left +  "," + (this._options.chart.innerHeight + BottomAxisOffset) + ")");
 
         }
 
@@ -180,7 +178,6 @@ class HorizontalBar extends AbstractBasicCartesianChart {
             .call(bottomAxis);
     }
 
-
     drawMainBars(data) {
         const drawCanvasInTransition = ()=> {
             return t=> {
@@ -189,9 +186,8 @@ class HorizontalBar extends AbstractBasicCartesianChart {
 
         const xScale = scaleBand()
             .domain(data.map(d=> this._getDimensionVal(d)))
-            .range([0, this._options.chart.innerHeight])
-            .paddingInner(.1)
-            .paddingOuter(.6);
+            .range([0, this._options.chart.innerHeight - BottomAxisOffset - 5])
+            .paddingInner(.1);
 
         const yExtent = extent(data, this._getMetricVal);
         const tickedRange = tickRange(yExtent, this._options.yAxis[0].ticks, this._options.yAxis[0].tier);
