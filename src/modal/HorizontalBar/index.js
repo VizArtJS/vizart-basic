@@ -41,7 +41,7 @@ const DefaultOpt = {
             offset: 10
         },
 
-        miniBarWidth: 50,
+        miniBarWidth: 30,
 
     }
 };
@@ -51,7 +51,6 @@ const miniWidth = opt=> opt.chart.width
     - opt.chart.margin.right;
 
 const InitialBrushHeight = 200;
-const MicroUpdateDuration = 250;
 
 class HorizontalBar extends AbstractBasicCartesianChart {
     constructor(canvasId, userOpt) {
@@ -185,11 +184,9 @@ class HorizontalBar extends AbstractBasicCartesianChart {
         this.bottomAxis.call(bottomAxis);
         this.bottomAxis.select('.domain').style('opacity', 0);
 
-        const transition = this.bottomAxis.transition().duration(this._options.animation.duration.update);
-        const delay = (d, i) => i / data.length * this._options.animation.duration.update;
-
-        transition.select(".x.axis")
-            .delay(delay)
+        this._container.select(".x.axis")
+            .transition()
+            .duration(50)
             .call(bottomAxis);
 
     }
