@@ -25,7 +25,7 @@ import createCartesianOpt from '../../options/createCartesianOpt';
 import drawCanvas from './draw-canvas';
 import drawHiddenRects from './draw-hidden-rects';
 import tickRange from '../../data/update-scale/ticks';
-import './brush-handle.css';
+import brushResizePath from '../../util/brush-handle';
 
 const DefaultOpt = {
     chart: { type: 'bar_horizontal'},
@@ -55,10 +55,6 @@ class HorizontalBar extends AbstractBasicCartesianChart {
     constructor(canvasId, userOpt) {
         super(canvasId, userOpt);
 
-        this._h = ()=> this._getDimension().scale.bandwidth();
-        this._zero = ()=> this._getMetric().scale(0);
-
-        // We also make a map/dictionary to keep track of colors associated with node.
         this.colToNode;
         this.miniCanvas;
         this.miniContext;
@@ -72,7 +68,6 @@ class HorizontalBar extends AbstractBasicCartesianChart {
 
         const width = this._options.plots.miniBarWidth;
         const height = this._options.chart.innerHeight;
-
         const miniX = miniWidth(this._options);
 
         this.miniCanvas = select(this._containerId)
@@ -143,22 +138,6 @@ class HorizontalBar extends AbstractBasicCartesianChart {
         const brush = brushY()
             .extent([[0, 0], [miniX, this._options.chart.innerHeight]]);
 
-        const brushResizePath = d=> {
-            const e = +(d.type == "e"),
-                x = e ? 1 : -1,
-                y = this._options.plots.miniBarWidth;
-
-            return "M" + (.5 * x) + "," + y
-                + "A6,6 0 0 " + e + " " + (6.5 * x) + "," + (y + 6)
-                + "V" + (2 * y - 6)
-                + "A6,6 0 0 " + e + " " + (.5 * x) + "," + (2 * y)
-                + "Z"
-                + "M" + (2.5 * x) + "," + (y + 8)
-                + "V" + (2 * y - 8)
-                + "M" + (4.5 * x) + "," + (y + 8)
-                + "V" + (2 * y - 8);
-        }
-
         const handle = this.brushGroup.selectAll(".custom-handle")
             .data([{type: "w"}, {type: "e"}])
             .enter()
@@ -167,7 +146,7 @@ class HorizontalBar extends AbstractBasicCartesianChart {
             .attr("stroke", "#000")
             .attr("stroke-width", 1)
             .attr("cursor", "ns-resize")
-            .attr("d", brushResizePath)
+            .attr("d", brushResizePath(this._options.plots.miniBarWidth))
             .attr('transform', 'rotate(90) translate(0,-65)');
 
         const brushMove = ()=> {
@@ -198,11 +177,6 @@ class HorizontalBar extends AbstractBasicCartesianChart {
 
         this.brushGroup.call(brush);
         this.brushGroup.call(brush.move, [0, InitialBrushHeight]);
-
-        // this.brushGroup.selectAll('.handle')
-        //     .attr('x', 0)
-        //     .attr('height', 3);
-
     }
 
     updateAxis(data) {

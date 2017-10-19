@@ -2,7 +2,7 @@ const brushResizePath = height=> {
     return d=> {
         const e = +(d.type == "e"),
             x = e ? 1 : -1,
-            y = height / 2;
+            y = height;
 
         return "M" + (.5 * x) + "," + y
             + "A6,6 0 0 " + e + " " + (6.5 * x) + "," + (y + 6)
