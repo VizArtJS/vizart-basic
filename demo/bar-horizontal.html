@@ -89,6 +89,11 @@
 
             plots: {
                 miniBarWidth: 50,
+            },
+
+            color: {
+                scheme: 'RdYlGn',
+                type: 'divergent'
             }
         };
 
@@ -103,7 +108,12 @@
 
 
             for (var i = 0; i < data.length; i++) {
-                data[i].Total = +data[i].Total;
+                if (i < 30) {
+                    data[i].Total = 0 - +data[i].Total;
+                } else {
+                    data[i].Total = +data[i].Total;
+
+                }
             }
 
 
