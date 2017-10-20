@@ -129,9 +129,13 @@ class HorizontalBar extends AbstractBasicCartesianChart {
 
             this.miniSvg.selectAll('.mini')
                 .attr('fill', d => {
-                    return s[0] <= (d = x(d)) && d <= s[1]
-                        ? '#1bcebf'
-                        : '#e0e0e0';
+                    const metric = this._getMetricVal(d);
+
+                    if (s[0] <= (d = x(d)) && d <= s[1]) {
+                        return metric > 0 ? '#addd8e' : '#fdbb84';
+                    } else {
+                        return '#e0e0e0';
+                    }
                 })
                 .classed('selected', d => s[0] <= (d = x(d)) && d <= s[1]);
 
