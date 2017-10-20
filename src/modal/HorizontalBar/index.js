@@ -2,15 +2,15 @@ import {
     mouse,
     event
 } from 'd3-selection';
-import { transition } from 'd3-transition';
+import {transition} from 'd3-transition';
 import {
     scaleBand,
     scaleLinear
 } from 'd3-scale';
-import { extent } from 'd3-array';
-import { axisBottom } from 'd3-axis';
+import {extent} from 'd3-array';
+import {axisBottom} from 'd3-axis';
 
-import { brushY } from 'd3-brush';
+import {brushY} from 'd3-brush';
 
 import {
     Globals,
@@ -25,10 +25,9 @@ import drawCanvas from './draw-canvas';
 import drawHiddenRects from './draw-hidden-rects';
 import tickRange from '../../data/update-scale/ticks';
 import brushResizePath from '../../util/brush-handle';
-import hasNegativeValue from '../../util/has-negative';
 
 const DefaultOpt = {
-    chart: { type: 'bar_horizontal'},
+    chart: {type: 'bar_horizontal'},
     plots: {
         barLabel: {
             enabled: false,
@@ -45,7 +44,7 @@ const DefaultOpt = {
     }
 };
 
-const miniWidth = opt=> opt.chart.width - opt.plots.miniBarWidth;
+const miniWidth = opt => opt.chart.width - opt.plots.miniBarWidth;
 
 const BottomAxisOffset = 10;
 const InitialBrushHeight = 200;
@@ -58,7 +57,7 @@ class HorizontalBar extends AbstractBasicCartesianChart {
     _animate() {
         this._getDimension().scale.range([0, this._options.chart.innerHeight]);
         this.drawMiniSvg(this._data);
-        this.drawMainBars(this._data.filter(d=> this._x(d) < InitialBrushHeight));
+        this.drawMainBars(this._data.filter(d => this._x(d) < InitialBrushHeight));
     }
 
     drawMiniSvg(data) {
@@ -78,7 +77,7 @@ class HorizontalBar extends AbstractBasicCartesianChart {
             .range([0, this._options.plots.miniBarWidth]);
 
         const h = miniXScale.bandwidth();
-        const y = d=> miniYScale(this._getMetricVal(d));
+        const y = d => miniYScale(this._getMetricVal(d));
         const x = this._x;
 
         const dataUpdate = this.miniSvg.selectAll('.mini').data(data);
@@ -118,23 +117,23 @@ class HorizontalBar extends AbstractBasicCartesianChart {
             .attr("d", brushResizePath(this._options.plots.miniBarWidth))
             .attr('transform', 'rotate(90) translate(0,' + handleOffset + ')');
 
-        const brushMove = ()=> {
+        const brushMove = () => {
             const s = event.selection;
 
             if (s === null) {
                 handle.attr("display", "none");
             } else {
                 handle.attr("display", null)
-                    .attr("transform", (d, i)=>  "rotate(90) translate(" + [ s[i], handleOffset] + ")");
+                    .attr("transform", (d, i) => "rotate(90) translate(" + [s[i], handleOffset] + ")");
             }
 
             this.miniSvg.selectAll('.mini')
-                .attr('fill', d=> {
+                .attr('fill', d => {
                     return s[0] <= (d = x(d)) && d <= s[1]
                         ? '#1bcebf'
                         : '#e0e0e0';
                 })
-                .classed('selected', d=> s[0] <= (d = x(d)) && d <= s[1]);
+                .classed('selected', d => s[0] <= (d = x(d)) && d <= s[1]);
 
             const data = this.miniSvg.selectAll('.selected').data();
             this.drawMainBars(data);
@@ -174,7 +173,7 @@ class HorizontalBar extends AbstractBasicCartesianChart {
         if (!this.bottomAxis) {
             this.bottomAxis = this._container.append("g")
                 .attr("class", "x axis")
-                .attr("transform", "translate(" + this._options.chart.margin.left +  "," + (this._options.chart.innerHeight + BottomAxisOffset) + ")");
+                .attr("transform", "translate(" + this._options.chart.margin.left + "," + (this._options.chart.innerHeight + BottomAxisOffset) + ")");
 
         }
 
@@ -188,46 +187,55 @@ class HorizontalBar extends AbstractBasicCartesianChart {
     }
 
     drawMainBars(data) {
-        const drawCanvasInTransition = ()=> {
-            return t=> {
+        const drawCanvasInTransition = () => {
+            return t => {
                 drawCanvas(this._frontContext, this._detachedContainer.selectAll('.bar'), this._options);
-            }};
+            }
+        };
 
         const xScale = scaleBand()
-            .domain(data.map(d=> this._getDimensionVal(d)))
+            .domain(data.map(d => this._getDimensionVal(d)))
             .range([0, this._options.chart.innerHeight - BottomAxisOffset - 5])
             .paddingInner(.1);
 
-        const containsNegative = hasNegativeValue(data, this._options);
         const yScale = this._makeMetricScale(data);
         const mainWidth = this._options.chart.innerWidth - this._options.plots.miniBarWidth;
 
 
         const h = xScale.bandwidth();
-        const x = d=> xScale(this._getDimensionVal(d));
-        const w = d=> {
-            if (containsNegative) {
-                return Math.abs(mainWidth / 2 - yScale(this._getMetricVal(d)));
-            } else {
+        const x = d => xScale(this._getDimensionVal(d));
+
+        const yExtent = extent(data, this._getMetricVal);
+
+        const w = d => {
+            if (yExtent[0] >= 0) {
                 return yScale(this._getMetricVal(d));
+            } else if (yExtent[1] <= 0) {
+                return mainWidth - yScale(this._getMetricVal(d));
+
+            } else {
+                return Math.abs(mainWidth / 2 - yScale(this._getMetricVal(d)));
             }
         }
-        const y = d=> {
-            if (containsNegative) {
+
+        const y = d => {
+            if (yExtent[1] <= 0) {
+                return yScale(this._getMetricVal(d));
+            } else if (yExtent[0] >= 0) {
+                return yScale(0);
+            } else {
                 if (this._getMetricVal(d) > 0) {
                     return mainWidth / 2;
                 } else {
                     return mainWidth / 2 - w(d);
                 }
-            } else {
-                return yScale(Math.min(0, this._getMetricVal(d)));
             }
 
         };
 
 
         const colorScale = this._color.copy().domain(yScale.domain());
-        const c = d=> colorScale(this._getMetricVal(d));
+        const c = d => colorScale(this._getMetricVal(d));
 
 
         const dataUpdate = this._detachedContainer.selectAll('.bar').data(data);
@@ -236,7 +244,7 @@ class HorizontalBar extends AbstractBasicCartesianChart {
 
         const exitTransition = transition()
             .duration(this._options.animation.duration.remove)
-            .each(()=>{
+            .each(() => {
                 dataRemove
                     .transition()
                     .attr("width", 0)
@@ -247,7 +255,7 @@ class HorizontalBar extends AbstractBasicCartesianChart {
 
         const updateTransition = exitTransition.transition()
             .duration(this._options.animation.duration.update)
-            .each(()=> {
+            .each(() => {
                 dataUpdate
                     .attr('dimension', this._getDimensionVal)
                     .attr('metric', this._getMetricVal)
@@ -264,7 +272,7 @@ class HorizontalBar extends AbstractBasicCartesianChart {
 
         const enterTransition = updateTransition.transition()
             .duration(this._options.animation.duration.update)
-            .each(()=>{
+            .each(() => {
                 dataJoin.append("rect")
                     .attr('class', 'bar')
                     .attr('fill', c)
@@ -282,7 +290,7 @@ class HorizontalBar extends AbstractBasicCartesianChart {
             });
 
         const that = this;
-        enterTransition.on('end', ()=> {
+        enterTransition.on('end', () => {
             const colorMap = drawHiddenRects(this._hiddenContext, this._detachedContainer.selectAll('.bar'));
 
             // shadow color?
@@ -295,7 +303,7 @@ class HorizontalBar extends AbstractBasicCartesianChart {
                 // This will return that pixel's color
                 const col = that._hiddenContext.getImageData(mx * that._canvasScale, my * that._canvasScale, 1, 1).data;
                 //Our map uses these rgb strings as keys to nodes.
-                const colString = "rgb(" + col[0] + "," + col[1] + ","+ col[2] + ")";
+                const colString = "rgb(" + col[0] + "," + col[1] + "," + col[2] + ")";
                 const node = colorMap.get(colString);
 
                 if (node) {
