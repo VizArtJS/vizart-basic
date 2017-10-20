@@ -216,7 +216,10 @@ class HorizontalBar extends AbstractBasicCartesianChart {
         } else if (yExtent[1] <= 0) {
             w = d=> mainWidth - yScale(this._getMetricVal(d));
             y = d=> yScale(this._getMetricVal(d));
-            colorScale.domain([yScale.domain()[0], Math.abs(yScale.domain()[0])])
+
+            if (this._options.color.type === 'divergent') {
+                colorScale.domain([yScale.domain()[0], Math.abs(yScale.domain()[0])])
+            }
         } else {
             w = d=> Math.abs(mainWidth / 2 - yScale(this._getMetricVal(d)));
             y = d=> this._getMetricVal(d) > 0 ? mainWidth / 2 : mainWidth / 2 - w(d);
