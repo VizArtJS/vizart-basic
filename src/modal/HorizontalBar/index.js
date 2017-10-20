@@ -204,37 +204,24 @@ class HorizontalBar extends AbstractBasicCartesianChart {
 
         const h = xScale.bandwidth();
         const x = d => xScale(this._getDimensionVal(d));
+        let w;
+        let y;
+        let colorScale = this._color.copy().domain(yScale.domain());
 
         const yExtent = extent(data, this._getMetricVal);
 
-        const w = d => {
-            if (yExtent[0] >= 0) {
-                return yScale(this._getMetricVal(d));
-            } else if (yExtent[1] <= 0) {
-                return mainWidth - yScale(this._getMetricVal(d));
-
-            } else {
-                return Math.abs(mainWidth / 2 - yScale(this._getMetricVal(d)));
-            }
+        if (yExtent[0] >= 0) {
+            w = d=> yScale(this._getMetricVal(d));
+            y = d=> yScale(0);
+        } else if (yExtent[1] <= 0) {
+            w = d=> mainWidth - yScale(this._getMetricVal(d));
+            y = d=> yScale(this._getMetricVal(d));
+            colorScale.domain([yScale.domain()[0], Math.abs(yScale.domain()[0])])
+        } else {
+            w = d=> Math.abs(mainWidth / 2 - yScale(this._getMetricVal(d)));
+            y = d=> this._getMetricVal(d) > 0 ? mainWidth / 2 : mainWidth / 2 - w(d);
         }
 
-        const y = d => {
-            if (yExtent[1] <= 0) {
-                return yScale(this._getMetricVal(d));
-            } else if (yExtent[0] >= 0) {
-                return yScale(0);
-            } else {
-                if (this._getMetricVal(d) > 0) {
-                    return mainWidth / 2;
-                } else {
-                    return mainWidth / 2 - w(d);
-                }
-            }
-
-        };
-
-
-        const colorScale = this._color.copy().domain(yScale.domain());
         const c = d => colorScale(this._getMetricVal(d));
 
 
