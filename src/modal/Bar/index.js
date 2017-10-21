@@ -3,6 +3,8 @@ import { transition } from 'd3-transition';
 import isUndefined from 'lodash-es/isUndefined';
 import isFunction from 'lodash-es/isFunction';
 
+import { updateAxis } from '../../base/Axis';
+
 import {
     Globals,
     mergeOptions
@@ -193,7 +195,7 @@ class Bar extends AbstractBasicCartesianChartWithAxes {
             .attr("x", this._x)
             .tween("append.rects", drawCanvasInTransition);
 
-        this.axes.update(this._svg, this._data);
+        updateAxis(this._svg, this._data, this._options);
     }
 
     createOptions(_userOptions) {

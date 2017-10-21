@@ -41,9 +41,7 @@ class Rose extends AbstractStackedCartesianChart {
         const dataRange = [this._data.minY, this._data.maxY];
         const radiusScale = scaleLinear()
             .domain(dataRange.map(d=>this._getMetric().scale(d)))
-            .range([innerRadius, outerRadius]);
-
-        const rawRadiusScale = radiusScale.copy().domain(dataRange);
+            .range([20, outerRadius]);
 
         const initialState = this.previousState
             ? this.previousState
@@ -63,9 +61,7 @@ class Rose extends AbstractStackedCartesianChart {
                             key: d.key,
                             startAngle: angleScale(i),
                             endAngle: angleScale(i + 1),
-                            r: innerRadius,
-                            r0: innerRadius,
-                            r1: innerRadius,
+                            r: 0,
                             data: e.data,
                         }
                     })
@@ -89,8 +85,6 @@ class Rose extends AbstractStackedCartesianChart {
                         startAngle: angleScale(i),
                         endAngle: angleScale(i + 1),
                         r: radiusScale(e.y),
-                        r0: rawRadiusScale(e.y0),
-                        r1: rawRadiusScale(e.y1),
                         data: e.data,
                     }
                 })

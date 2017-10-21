@@ -49,7 +49,7 @@ const miniWidth = opt => opt.chart.width - opt.plots.miniBarWidth;
 const BottomAxisOffset = 10;
 const InitialBrushHeight = 200;
 
-class HorizontalBar extends AbstractBasicCartesianChart {
+class Row extends AbstractBasicCartesianChart {
     constructor(canvasId, userOpt) {
         super(canvasId, userOpt);
     }
@@ -338,4 +338,4 @@ class HorizontalBar extends AbstractBasicCartesianChart {
     }
 }
 
-export default HorizontalBar;
+export default Row;
