@@ -63,6 +63,7 @@ npm run test:cover  // run tests and view coverage report
 * [Area](#area)
 * [Line](#line)
 * [Pie](#pie)
+* [Row](#row)
 * [Scatter](#scatter)
 * [Corona](#corona)
 * [Stacked Area](#stacked-area)
@@ -93,8 +94,8 @@ const fakeData = [
 	{ age: 19, income: 9 }
 ]
 
-const _chart = new Bar('#chart', options);
-_chart.render(fakeData);
+const chart = new Bar('#chart', options);
+chart.render(fakeData);
 ```
 
 ### Area
@@ -119,8 +120,8 @@ const fakeData = [
 	{ age: 19, income: 9 }
 ]
 
-const _chart = new Area('#chart', options);
-_chart.render(fakeData);
+const chart = new Area('#chart', options);
+chart.render(fakeData);
 ```
 
 ### Line
@@ -164,7 +165,7 @@ const options = {
 	data: {
 		x: { accessor: 'age', type: 'number', name: 'Age' },
 		y: [ { accessor: 'income', type: 'number', name: 'Monthly Income' } ]
-		z: { accessor: 'companyYears', type: 'number', name: 'Years at Company' } //optional
+		r: { accessor: 'companyYears', type: 'number', name: 'Years at Company' } //optional
 	},
 };
 
@@ -199,6 +200,33 @@ const fakeData = [
 ]
 
 const _chart = new Pie('#chart', options);
+_chart.render(fakeData);
+```
+
+### Row
+[<img alt="Corona" src="https://github.com/vizartjs/vizartjs.github.io/blob/master/img/charts/row.jpg">](https://vizartjs.github.io/row.html)
+
+```javascript
+import { Row } from 'vizart-basic';
+import 'vizart-basic/dist/vizart-basic.css';
+
+const options = {
+	chart: {
+		height: 420,
+		margin: { left: 30, right: 30, top: 10, bottom: 30 }
+	},
+
+	data: {
+		x: { accessor: 'age', type: 'number', name: 'Age' },
+		y: [ { accessor: 'income', type: 'number', name: 'Monthly Income' } ]
+	},
+};
+
+const fakeData = [
+	{ age: 19, income: 9 }
+]
+
+const _chart = new Row('#chart', options);
 _chart.render(fakeData);
 ```
 
