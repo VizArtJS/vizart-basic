@@ -2,11 +2,10 @@ import { arc } from 'd3-shape';
 
 const drawCanvas = (context, state, opt)=> {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+    context.save();
 
+    context.translate(opt.chart.width / 2, opt.chart.height / 2);
     for(const d of state) {
-        context.save();
-
-        context.translate(opt.chart.width / 2, opt.chart.height / 2);
         context.fillStyle = d.c;
         context.globalAlpha = d.alpha;
         context.strokeWidth = 1;
@@ -24,10 +23,8 @@ const drawCanvas = (context, state, opt)=> {
             context.fill();
             context.stroke();
         }
-
-
-        context.restore();
     }
+    context.restore();
 
 }
 

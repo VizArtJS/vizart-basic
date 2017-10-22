@@ -46,6 +46,11 @@
 <script>
     $(document).ready(function () {
         var options = {
+            chart: {
+              margin: {
+                  bottom: 80
+              }
+            },
             data: {
                 x:   { name: 'Director', type: 'string', accessor: 'Director'},
                 y: [
@@ -58,18 +63,10 @@
                 ],
             },
 
-            plots: {
-                opacity: 1,
-                barLabel: {
-                    enabled: true,
-                    color: 'black'
-                },
-                metricLabel: {
-                    enabled: true,
-                    color: 'black',
-                    offset: 10
-                }
-            }
+            xAxis: {
+               ticks: 60,
+                labelAngle: 30,
+            },
         };
 
 

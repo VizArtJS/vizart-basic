@@ -13,7 +13,7 @@ export { default as StackedBar } from './modal/StackedBar';
 export { default as Corona } from './modal/Corona';
 export { default as Radar } from './modal/Radar';
 export { default as Rose } from './modal/Rose';
-export { default as HorizontalBar } from './modal/HorizontalBar';
+export { default as Row } from './modal/Row';
 
 export * from './data';
 export * from './base';

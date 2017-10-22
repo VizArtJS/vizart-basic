@@ -1,6 +1,7 @@
 import { select } from 'd3-selection';
 
 import drawHorizontalLabel from './draw-horizontal-label';
+import drawMetricLabel from './draw-metric-label';
 
 const drawCanvas = (context, selection, opt)=> {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
@@ -18,6 +19,7 @@ const drawCanvas = (context, selection, opt)=> {
         context.restore();
 
         drawHorizontalLabel(context, node, opt);
+        if (opt.plots.metricLabel.enabled === true) drawMetricLabel(context, node, opt);
     });
 }
 

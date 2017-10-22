@@ -60,7 +60,8 @@
             chart: {
                 margin: {
                     left: 50,
-                    bottom: 100
+                    right: 50,
+                    bottom: 10
                 }
             },
 
@@ -95,13 +96,20 @@
                     enabled: true,
                     color: 'black',
                     offset: 10
-                }
+                },
+
+                miniBarWidth: 50,
+            },
+
+            color: {
+                scheme: 'RdYlGn',
+                type: 'divergent'
             }
         };
 
 
 
-        var barChart = new VizArtBasic.HorizontalBar('#bar', options);
+        var barChart = new VizArtBasic.Row('#bar', options);
 
         d3.csv('assets/movies.csv', function(err, res){
             var data = _.uniqWith(res, function(a, b) {
@@ -110,7 +118,12 @@
 
 
             for (var i = 0; i < data.length; i++) {
-                data[i].Total = +data[i].Total;
+                if (i < 30) {
+                    data[i].Total = 0 - +data[i].Total;
+                } else {
+                    data[i].Total = +data[i].Total;
+
+                }
             }
 
 

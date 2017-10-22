@@ -14,13 +14,7 @@ import animateStates from './tween-states';
 
 const DefaultOptions = {
     chart: {
-        type: 'pie',
-        margin: {
-            left: 10,
-            bottom: 5,
-            right: 10,
-            top: 5
-        }
+        type: 'pie'
     },
     plots: {
         othersTitle: 'Others',
