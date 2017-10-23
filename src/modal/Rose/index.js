@@ -57,10 +57,8 @@ class Rose extends AbstractStackedCartesianChart {
         const initialState = this.previousState
             ? this.previousState
             : this._getDimension().values.map((d, i) => {
-            let array = new Array();
-
-            for (let d of this._data.nested) {
-                array.push({
+            let array = this._data.nested.map(e=> {
+                return {
                     key: d.key,
                     s: d.key,
                     c: c(d.key),
@@ -68,10 +66,9 @@ class Rose extends AbstractStackedCartesianChart {
                     startAngle: angleScale(i),
                     endAngle: angleScale(i + 1),
                     r: 0,
-                    data: d.values[i],
-                });
-            }
-
+                    data: e.values[i],
+                }
+            });
             // larger slice are drawn first
             array.sort((a, b) => b.data.y - a.data.y);
 
@@ -82,20 +79,18 @@ class Rose extends AbstractStackedCartesianChart {
         });
 
         const finalState = this._getDimension().values.map((d, i) => {
-            let array = new Array();
-
-            for (let d of this._data.nested) {
-                array.push({
+            let array = this._data.nested.map(e=> {
+                return {
                     key: d.key,
                     s: d.key,
                     c: c(d.key),
                     alpha: this._options.plots.opacity,
                     startAngle: angleScale(i),
                     endAngle: angleScale(i + 1),
-                    r: radiusScale(d.values[i].y),
-                    data: d.values[i],
-                });
-            }
+                    r: radiusScale(e.values[i].y),
+                    data: e.values[i],
+                }
+            });
 
             // larger slice are drawn first
             array.sort((a, b) => b.r - a.r);
