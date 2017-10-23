@@ -56,7 +56,9 @@
             data: {
                 x:   { name: 'Director', type: 'string', accessor: 'dimension'},
                 y: [
-                    { name: 'Total', type: 'number', accessor: 'metric', yAxis: 0}
+                    { name: 'Total', type: 'number', accessor: 'metric'},
+                    { name: 'm2', type: 'number', accessor: 'm2'},
+                    { name: 'm3', type: 'number', accessor: 'm3'}
                 ],
             },
             plots: {
@@ -68,13 +70,13 @@
         var pieChart = new VizArtBasic.Rose('#pie', options);
 
         var data = [
-            {"dimension": "A", "metric": 10},
-            {"dimension": "B", "metric": 15},
-            {"dimension": "C", "metric": 12},
-            {"dimension": "D", "metric": 4},
-            {"dimension": "E", "metric": 20},
-            {"dimension": "F", "metric": 21},
-            {"dimension": "G", "metric": 2}
+            {"dimension": "A", "metric": 10, m2: 4, m3: 34},
+            {"dimension": "B", "metric": 15, m2: 2, m3: 24},
+            {"dimension": "C", "metric": 12, m2: 3, m3: 25},
+            {"dimension": "D", "metric": 4, m2: 6, m3: 35},
+            {"dimension": "E", "metric": 20, m2: 7, m3: 63},
+            {"dimension": "F", "metric": 21, m2: 5, m3: 38},
+            {"dimension": "G", "metric": 2, m2: 2, m3: 33}
 
         ]
 

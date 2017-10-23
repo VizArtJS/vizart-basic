@@ -1,10 +1,12 @@
-import { scaleLinear } from 'd3-scale';
+import {scaleLinear, scaleOrdinal} from 'd3-scale';
 
 import {AbstractStackedCartesianChart} from '../../base';
 import createCartesianStackedOpt from '../../options/createCartesianStackedOpt';
 import animateStates from "./tween-states";
 import getRadius from '../Corona/get-radius';
-import { Stacks } from '../../data';
+import {Stacks} from '../../data';
+import drawCanvas from './draw-canvas';
+import groupBy from 'lodash-es/groupBy';
 
 const RoseOpt = {
     chart: {
@@ -20,6 +22,7 @@ const RoseOpt = {
     },
 
 }
+
 /**
  *
  *"Death is a great price to pay for a red rose," cried the Nightingale,
@@ -38,63 +41,83 @@ class Rose extends AbstractStackedCartesianChart {
 
 
     _animate() {
+        const colorScale = scaleOrdinal().range(this._color.range());
+        const c = d => colorScale(d);
         const [innerRadius, outerRadius] = getRadius(this._options);
         const dataRange = [this._data.minY, this._data.maxY];
         const radiusScale = scaleLinear()
-            .domain(dataRange.map(d=>this._getMetric().scale(d)))
+            .domain(dataRange.map(d => this._getMetric().scale(d)))
             .range([20, outerRadius]);
+
+        const sliceNum = this._getDimension().values.length;
+        const angleScale = scaleLinear()
+            .domain([0, sliceNum])
+            .range([0, 2 * Math.PI]);
 
         const initialState = this.previousState
             ? this.previousState
-            : this._data.nested.map(d => {
-                return {
+            : this._getDimension().values.map((d, i) => {
+            let array = new Array();
+
+            for (let d of this._data.nested) {
+                array.push({
                     key: d.key,
-                    c: this._c(d),
                     s: d.key,
+                    c: c(d.key),
                     alpha: this._options.plots.opacity,
-                    values: d.values.map((e, i) => {
-                        const angleScale = scaleLinear()
-                            .domain([0, d.values.length])
-                            .range([0, 2 * Math.PI]);
+                    startAngle: angleScale(i),
+                    endAngle: angleScale(i + 1),
+                    r: 0,
+                    data: d.values[i],
+                });
+            }
 
-                        return {
-                            key: d.key,
-                            startAngle: angleScale(i),
-                            endAngle: angleScale(i + 1),
-                            r: 0,
-                            data: e.data,
-                        }
-                    })
-                }
-            });
+            // larger slice are drawn first
+            array.sort((a, b) => b.data.y - a.data.y);
 
-        const finalState = this._data.nested.map(d => {
             return {
-                key: d.key,
-                c: this._c(d),
-                s: d.key,
-                alpha: this._options.plots.opacity,
-                values: d.values.map((e, i) => {
-                    const angleScale = scaleLinear()
-                        .domain([0, d.values.length])
-                        .range([0, 2 * Math.PI]);
-
-                    return {
-                        key: d.key,
-                        startAngle: angleScale(i),
-                        endAngle: angleScale(i + 1),
-                        r: radiusScale(e.y),
-                        data: e.data,
-                    }
-                })
+                dimension: d,
+                slice: array
             }
         });
+
+        const finalState = this._getDimension().values.map((d, i) => {
+            let array = new Array();
+
+            for (let d of this._data.nested) {
+                array.push({
+                    key: d.key,
+                    s: d.key,
+                    c: c(d.key),
+                    alpha: this._options.plots.opacity,
+                    startAngle: angleScale(i),
+                    endAngle: angleScale(i + 1),
+                    r: radiusScale(d.values[i].y),
+                    data: d.values[i],
+                });
+            }
+
+            // larger slice are drawn first
+            array.sort((a, b) => b.r - a.r);
+
+            return {
+                dimension: d,
+                slice: array
+            }
+        });
+
+
+
         // cache finalState as the initial state of next animation call
         this.previousState = finalState;
 
         let that = this;
         const ctx = that._frontContext;
         const opt = that._options;
+
+
+        // animateStates(initData, data, opt.animation.duration.update, ctx, opt);
+        // drawCanvas(ctx, finalState, opt);
 
         animateStates(initialState,
             finalState,
