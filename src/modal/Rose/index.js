@@ -12,6 +12,7 @@ const RoseOpt = {
     },
 
     plots: {
+        opacity: 0.5,
         innerRadiusRatio: 0,
         outerRadiusMargin: 60,
         stackLayout: false, // stack areas
@@ -50,8 +51,7 @@ class Rose extends AbstractStackedCartesianChart {
                     key: d.key,
                     c: this._c(d),
                     s: d.key,
-                    alpha: 0,
-                    strokeAlpha: this._options.plots.strokeOpacity,
+                    alpha: this._options.plots.opacity,
                     values: d.values.map((e, i) => {
                         const angleScale = scaleLinear()
                             .domain([0, d.values.length])
@@ -73,8 +73,7 @@ class Rose extends AbstractStackedCartesianChart {
                 key: d.key,
                 c: this._c(d),
                 s: d.key,
-                alpha: this._options.plots.areaOpacity,
-                strokeAlpha: this._options.plots.strokeOpacity,
+                alpha: this._options.plots.opacity,
                 values: d.values.map((e, i) => {
                     const angleScale = scaleLinear()
                         .domain([0, d.values.length])
