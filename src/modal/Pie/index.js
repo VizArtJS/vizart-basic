@@ -14,14 +14,14 @@ import animateStates from './tween-states';
 
 const DefaultOptions = {
     chart: {
-        type: 'pie'
+        type: 'pie',
     },
     plots: {
         othersTitle: 'Others',
         isDonut: false,
         opacity: 0.8,
         innerRadiusRatio: 0.4,
-        outerRadiusMargin: 70,
+        outerRadiusMargin: 30,
         labelOffset: 20,
         labelControlPointRadius: 6,
         labelPosition: 'auto',
