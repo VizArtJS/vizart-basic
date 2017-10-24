@@ -3,7 +3,7 @@ import { select } from 'd3-selection';
 import drawVerticalLabel from './draw-vertical-label';
 import drawMetricOntTop from './draw-metric-on-top';
 
-const drawRects =  (context, selection, opt)=> {
+const drawRects = (context, selection, opt)=> {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
     selection.each(function(d){

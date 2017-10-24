@@ -1,8 +1,6 @@
 import { arc } from 'd3-shape';
 import { getTransparentColor } from 'vizart-core';
 
-
-
 const drawCanvas = (context, state, opt)=> {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
