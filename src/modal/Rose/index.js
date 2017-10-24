@@ -1,5 +1,5 @@
 import {scaleLinear, scaleOrdinal} from 'd3-scale';
-
+import { range } from 'd3-array';
 import {AbstractStackedCartesianChart} from '../../base';
 import createCartesianStackedOpt from '../../options/createCartesianStackedOpt';
 import animateStates from "./tween-states";
@@ -104,34 +104,31 @@ class Rose extends AbstractStackedCartesianChart {
 
 
         // cache finalState as the initial state of next animation call
-        this.previousState = finalState;
+        // this.previousState = finalState;
 
         let that = this;
         const ctx = that._frontContext;
         const opt = that._options;
 
 
-        const burstSlice = i=> {
+        const bloom = i=> {
             let _init = finalState.slice(0, i+1);
             const _target = finalState.slice(0, i+1);
             _init[i] = initialState[i];
 
             return animateStates(_init,
                 _target,
-                500,
+                350,
                 ctx,
                 opt);
         }
 
-        // animateStates(initData, data, opt.animation.duration.update, ctx, opt);
-        drawCanvas(ctx, finalState, opt);
+        finalState.reduce((acc, cur, i)=> {
+                return acc = acc.then(res=> bloom(i))
+            }, Promise.resolve());
 
-        // let i = 0;
-        // burstSlice(i).then(burstSlice(1));
-        // burstSlice(i + 1);
-        // while (i < sliceNum) {
-        //     burstSlice(i).then(++i);
-        // }
+        // animateStates(initData, data, opt.animation.duration.update, ctx, opt);
+        // drawCanvas(ctx, finalState, opt);
 
 
         //
