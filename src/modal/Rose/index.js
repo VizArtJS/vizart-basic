@@ -59,9 +59,9 @@ class Rose extends AbstractStackedCartesianChart {
             : this._getDimension().values.map((d, i) => {
             let array = this._data.nested.map(e=> {
                 return {
-                    key: d.key,
-                    s: d.key,
-                    c: c(d.key),
+                    key: e.key,
+                    s: e.key,
+                    c: c(e.key),
                     alpha: this._options.plots.opacity,
                     startAngle: angleScale(i),
                     endAngle: angleScale(i + 1),
@@ -81,9 +81,9 @@ class Rose extends AbstractStackedCartesianChart {
         const finalState = this._getDimension().values.map((d, i) => {
             let array = this._data.nested.map(e=> {
                 return {
-                    key: d.key,
-                    s: d.key,
-                    c: c(d.key),
+                    key: e.key,
+                    s: e.key,
+                    c: c(e.key),
                     alpha: this._options.plots.opacity,
                     startAngle: angleScale(i),
                     endAngle: angleScale(i + 1),
@@ -111,32 +111,53 @@ class Rose extends AbstractStackedCartesianChart {
         const opt = that._options;
 
 
+        const burstSlice = i=> {
+            let _init = finalState.slice(0, i+1);
+            const _target = finalState.slice(0, i+1);
+            _init[i] = initialState[i];
+
+            return animateStates(_init,
+                _target,
+                500,
+                ctx,
+                opt);
+        }
+
         // animateStates(initData, data, opt.animation.duration.update, ctx, opt);
-        // drawCanvas(ctx, finalState, opt);
+        drawCanvas(ctx, finalState, opt);
 
-        animateStates(initialState,
-            finalState,
-            opt.animation.duration.update,
-            ctx,
-            opt).then(res=>{
-            // that._voronoi = applyVoronoi(ctx, opt, finalState.reduce((acc, p)=>{
-            //     acc = acc.concat(p.values.map(d=>{
-            //         return {
-            //             s: p.key,
-            //             label: that._getDimensionVal(d.data),
-            //             metric: d.data[p.key],
-            //             x: d.r * Math.sin(d.angle) + opt.chart.width / 2,
-            //             y: opt.chart.height - (d.r * Math.cos(d.angle) + opt.chart.height / 2),
-            //             c: p.c,
-            //             d: d,
-            //             data: d.data
-            //         }
-            //     }));
-            //     return acc;
-            // }, []));
+        // let i = 0;
+        // burstSlice(i).then(burstSlice(1));
+        // burstSlice(i + 1);
+        // while (i < sliceNum) {
+        //     burstSlice(i).then(++i);
+        // }
 
 
-        });
+        //
+        // animateStates(initialState,
+        //     finalState,
+        //     opt.animation.duration.update,
+        //     ctx,
+        //     opt).then(res=>{
+        //     // that._voronoi = applyVoronoi(ctx, opt, finalState.reduce((acc, p)=>{
+        //     //     acc = acc.concat(p.values.map(d=>{
+        //     //         return {
+        //     //             s: p.key,
+        //     //             label: that._getDimensionVal(d.data),
+        //     //             metric: d.data[p.key],
+        //     //             x: d.r * Math.sin(d.angle) + opt.chart.width / 2,
+        //     //             y: opt.chart.height - (d.r * Math.cos(d.angle) + opt.chart.height / 2),
+        //     //             c: p.c,
+        //     //             d: d,
+        //     //             data: d.data
+        //     //         }
+        //     //     }));
+        //     //     return acc;
+        //     // }, []));
+        //
+        //
+        // });
     }
 
     createOptions(_userOpt) {

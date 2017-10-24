@@ -15,7 +15,7 @@ const drawCanvas = (context, state, opt)=> {
         .context(context);
 
     for(const d of state) {
-        context.shadowBlur= 20;
+        context.shadowBlur= 10;
 
         for (let e of d.slice) {
             context.save();
@@ -23,7 +23,7 @@ const drawCanvas = (context, state, opt)=> {
             context.beginPath();
             context.fillStyle = getTransparentColor(e.c, e.alpha);
             context.strokeWidth = 1;
-            context.strokeStyle = 'white';
+            context.strokeStyle = e.c;
             context.shadowColor= e.c;
 
             gridArc(e);
