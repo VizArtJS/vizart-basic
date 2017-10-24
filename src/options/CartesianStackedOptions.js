@@ -3,9 +3,9 @@ import { Globals, MetroRain8 } from 'vizart-core';
 const CartesianStackedOptions = {
     chart: {
         margin: {
-            left: 60,
-            bottom: 50,
-            right: 10,
+            left: 20,
+            bottom: 20,
+            right: 20,
             top: 20
         }
     },
