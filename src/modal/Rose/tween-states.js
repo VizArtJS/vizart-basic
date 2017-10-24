@@ -15,7 +15,7 @@ const animateStates = (initialState, finalState, duration, context, opt)=> {
             if (t === 1) {
                 batchRendering.stop();
                 console.log('stop ani')
-                resolve(interpolateParticles(t));
+                resolve(finalState);
             }
         });
     });

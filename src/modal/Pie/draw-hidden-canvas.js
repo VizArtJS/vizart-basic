@@ -22,7 +22,7 @@ const drawHiddenCanvas = (context, state, opt)=> {
     const slices = pieDiagram(state);
 
     context.save();
-    context.translate(opt.chart.width / 2, opt.chart.height / 2);
+    context.translate(opt.chart.innerWidth / 2, opt.chart.innerHeight / 2);
 
     for (const [i, s] of slices.entries()) {
         context.beginPath();
