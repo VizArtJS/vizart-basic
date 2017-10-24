@@ -1,10 +1,11 @@
-import { scaleLinear } from 'd3-scale';
-
+import {scaleLinear, scaleOrdinal} from 'd3-scale';
 import {AbstractStackedCartesianChart} from '../../base';
 import createCartesianStackedOpt from '../../options/createCartesianStackedOpt';
 import animateStates from "./tween-states";
 import getRadius from '../Corona/get-radius';
-import { Stacks } from '../../data';
+import getInitialState from './get-initial-state';
+import drawBloomingRose from './draw-blooming-rose';
+import {Stacks} from '../../data';
 
 const RoseOpt = {
     chart: {
@@ -12,6 +13,7 @@ const RoseOpt = {
     },
 
     plots: {
+        opacity: 0.5,
         innerRadiusRatio: 0,
         outerRadiusMargin: 60,
         stackLayout: false, // stack areas
@@ -19,6 +21,7 @@ const RoseOpt = {
     },
 
 }
+
 /**
  *
  *"Death is a great price to pay for a red rose," cried the Nightingale,
@@ -37,89 +40,65 @@ class Rose extends AbstractStackedCartesianChart {
 
 
     _animate() {
+        const colorScale = scaleOrdinal().range(this._color.range());
+        const c = d => colorScale(d);
         const [innerRadius, outerRadius] = getRadius(this._options);
         const dataRange = [this._data.minY, this._data.maxY];
         const radiusScale = scaleLinear()
-            .domain(dataRange.map(d=>this._getMetric().scale(d)))
+            .domain(dataRange.map(d => this._getMetric().scale(d)))
             .range([20, outerRadius]);
 
-        const initialState = this.previousState
-            ? this.previousState
-            : this._data.nested.map(d => {
-                return {
-                    key: d.key,
-                    c: this._c(d),
-                    s: d.key,
-                    alpha: 0,
-                    strokeAlpha: this._options.plots.strokeOpacity,
-                    values: d.values.map((e, i) => {
-                        const angleScale = scaleLinear()
-                            .domain([0, d.values.length])
-                            .range([0, 2 * Math.PI]);
+        const sliceNum = this._getDimension().values.length;
+        const angleScale = scaleLinear()
+            .domain([0, sliceNum])
+            .range([0, 2 * Math.PI]);
 
-                        return {
-                            key: d.key,
-                            startAngle: angleScale(i),
-                            endAngle: angleScale(i + 1),
-                            r: 0,
-                            data: e.data,
-                        }
-                    })
+        const finalState = this._getDimension().values.map((d, i) => {
+            let array = this._data.nested.map(e=> {
+                return {
+                    key: e.key,
+                    s: e.key,
+                    c: c(e.key),
+                    alpha: this._options.plots.opacity,
+                    startAngle: angleScale(i),
+                    endAngle: angleScale(i + 1),
+                    r: radiusScale(e.values[i].y),
+                    data: e.values[i],
                 }
             });
 
-        const finalState = this._data.nested.map(d => {
-            return {
-                key: d.key,
-                c: this._c(d),
-                s: d.key,
-                alpha: this._options.plots.areaOpacity,
-                strokeAlpha: this._options.plots.strokeOpacity,
-                values: d.values.map((e, i) => {
-                    const angleScale = scaleLinear()
-                        .domain([0, d.values.length])
-                        .range([0, 2 * Math.PI]);
+            // larger slice are drawn first
+            array.sort((a, b) => b.r - a.r);
 
-                    return {
-                        key: d.key,
-                        startAngle: angleScale(i),
-                        endAngle: angleScale(i + 1),
-                        r: radiusScale(e.y),
-                        data: e.data,
-                    }
-                })
+            return {
+                dimension: d,
+                slice: array
             }
         });
-        // cache finalState as the initial state of next animation call
-        this.previousState = finalState;
 
         let that = this;
         const ctx = that._frontContext;
         const opt = that._options;
 
-        animateStates(initialState,
-            finalState,
-            opt.animation.duration.update,
-            ctx,
-            opt).then(res=>{
-            // that._voronoi = applyVoronoi(ctx, opt, finalState.reduce((acc, p)=>{
-            //     acc = acc.concat(p.values.map(d=>{
-            //         return {
-            //             s: p.key,
-            //             label: that._getDimensionVal(d.data),
-            //             metric: d.data[p.key],
-            //             x: d.r * Math.sin(d.angle) + opt.chart.width / 2,
-            //             y: opt.chart.height - (d.r * Math.cos(d.angle) + opt.chart.height / 2),
-            //             c: p.c,
-            //             d: d,
-            //             data: d.data
-            //         }
-            //     }));
-            //     return acc;
-            // }, []));
 
 
-        });
+
+        if (!this.previousState) {
+            const initialState = getInitialState(this._getDimension().values, this._data.nested, opt, c);
+            drawBloomingRose(initialState, finalState, ctx, opt);
+        } else {
+            animateStates(this.previousState,
+                finalState,
+                opt.animation.duration.update,
+                ctx,
+                opt).then(res=>{
+            });
+        }
+
+        this.previousState = finalState;
+
+
+
     }
 
     createOptions(_userOpt) {

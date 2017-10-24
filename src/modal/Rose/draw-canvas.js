@@ -1,31 +1,38 @@
 import { arc } from 'd3-shape';
+import { getTransparentColor } from 'vizart-core';
+
+
 
 const drawCanvas = (context, state, opt)=> {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-    context.save();
 
-    context.translate(opt.chart.width / 2, opt.chart.height / 2);
+    const gridArc = arc()
+        .startAngle(d=> d.startAngle)
+        .endAngle(d=>d.endAngle)
+        .innerRadius(0)
+        .outerRadius(d=>d.r)
+        .padAngle(.04)
+        .context(context);
+
     for(const d of state) {
-        context.fillStyle = d.c;
-        context.globalAlpha = d.alpha;
-        context.strokeWidth = 1;
-        context.strokeStyle = 'white';
+        context.shadowBlur= 10;
 
-        const gridArc = arc()
-            .startAngle(d=> d.startAngle)
-            .endAngle(d=>d.endAngle)
-            .innerRadius(0)
-            .outerRadius(d=>d.r)
-            .context(context);
+        for (let e of d.slice) {
+            context.save();
+            context.translate(opt.chart.width / 2, opt.chart.height / 2);
+            context.beginPath();
+            context.fillStyle = getTransparentColor(e.c, e.alpha);
+            context.strokeWidth = 1;
+            context.strokeStyle = e.c;
+            context.shadowColor= e.c;
 
-        for (let e of d.values) {
             gridArc(e);
             context.fill();
             context.stroke();
+            context.restore();
+
         }
     }
-    context.restore();
-
 }
 
 export default drawCanvas;

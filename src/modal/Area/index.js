@@ -2,7 +2,8 @@ import { mouse } from 'd3-selection';
 import {
     uuid,
     linearStops,
-    applyVoronoi
+    applyVoronoi,
+    applyQuadtree
 } from 'vizart-core';
 
 import AbstractBasicCartesianChartWithAxes from '../../base/AbstractBasicCartesianChartWithAxes';
