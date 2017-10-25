@@ -48,7 +48,7 @@
 
 <script>
     $(document).ready(function () {
-        var options = {
+        var opt = {
             color: {
                type: 'categorical',
                scheme: ['#000000', '#fc0d1b', '#64b3fc']
@@ -66,20 +66,24 @@
             },
         };
 
-        var pieChart = new VizArtBasic.Rose('#pie', options);
+        var rose = new VizArtBasic.Rose('#pie', opt);
 
         var data = [
-            {"dimension": "A", "metric": 10, m2: 4, m3: 34},
-            {"dimension": "B", "metric": 15, m2: 2, m3: 24},
-            {"dimension": "C", "metric": 12, m2: 3, m3: 25},
-            {"dimension": "D", "metric": 4, m2: 6, m3: 35},
-            {"dimension": "E", "metric": 20, m2: 7, m3: 63},
-            {"dimension": "F", "metric": 21, m2: 5, m3: 38},
-            {"dimension": "G", "metric": 2, m2: 2, m3: 33}
-
+            {"dimension": "January", "metric": 10, m2: 4, m3: 34},
+            {"dimension": "February", "metric": 15, m2: 2, m3: 24},
+            {"dimension": "March", "metric": 12, m2: 3, m3: 25},
+            {"dimension": "April", "metric": 4, m2: 6, m3: 35},
+            {"dimension": "May", "metric": 20, m2: 7, m3: 63},
+            {"dimension": "June", "metric": 21, m2: 5, m3: 38},
+            {"dimension": "July", "metric": 2, m2: 2, m3: 33},
+            {"dimension": "August", "metric": 8, m2: 1, m3: 52},
+            {"dimension": "September", "metric": 7, m2: 9, m3: 45},
+            {"dimension": "October", "metric": 12, m2: 5, m3: 10},
+            {"dimension": "November", "metric": 22, m2: 12, m3: 3},
+            {"dimension": "December", "metric": 20, m2: 12, m3: 13}
         ]
 
-        pieChart.render(data);
+        rose.render(data);
 
 
         // live update button is clicked
@@ -87,31 +91,31 @@
             var random = d3.randomUniform(10, 20)
             var ranIndex = random();
             fakeData[ranIndex].y = random();
-            pieChart.data(fakeData);
-            pieChart.update();
+            rose.data(fakeData);
+            rose.update();
         });
 
-        var options2 = pieChart.options();
+        var options2 = rose.options();
 
         // change color
         $('#color1').click(function(){
             options2.color.scheme = "BuGn";
-            pieChart.transitionColor(options2.color);
+            rose.transitionColor(options2.color);
         });
 
         $('#color2').click(function(){
             options2.color.scheme = "Blues";
-            pieChart.transitionColor(options2.color)
+            rose.transitionColor(options2.color)
         });
 
         $('#color3').click(function(){
             options2.color.scheme = "Warm";
-            pieChart.transitionColor(options2.color)
+            rose.transitionColor(options2.color)
         });
 
         $('#color4').click(function(){
             options2.color.scheme = "Cubehelix";
-            pieChart.transitionColor(options2.color);
+            rose.transitionColor(options2.color);
         });
 
         $('#set1').click(function(){
@@ -119,7 +123,7 @@
                 '#deebf7',
                 '#3182bd'
             ];
-            pieChart.transitionColor(options2.color);
+            rose.transitionColor(options2.color);
         });
 
 
@@ -129,7 +133,7 @@
                 '#9ecae1',
                 '#3182bd'
             ];
-            pieChart.transitionColor(options2.color);
+            rose.transitionColor(options2.color);
         });
 
 
@@ -141,7 +145,7 @@
                 '#3182bd',
                 '#08519c',
             ];
-            pieChart.transitionColor(options2.color);
+            rose.transitionColor(options2.color);
         });
 
 
@@ -159,21 +163,21 @@
                 '#08519c',
                 '#08306b'
             ];
-            pieChart.transitionColor(options2.color);
+            rose.transitionColor(options2.color);
         });
 
 
         $('#a1').click(function(){
-            pieChart.sort('mx', 'asc');
+            rose.sort('mx', 'asc');
         })
         $('#a2').click(function(){
-            pieChart.sort('mx', 'desc');
+            rose.sort('mx', 'desc');
         });
         $('#a3').click(function(){
-            pieChart.sort('my', 'asc');
+            rose.sort('my', 'asc');
         });
         $('#a4').click(function(){
-            pieChart.sort('my', 'desc');
+            rose.sort('my', 'desc');
         });
 
     });

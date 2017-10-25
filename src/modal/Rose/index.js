@@ -17,7 +17,7 @@ const RoseOpt = {
     plots: {
         opacity: 0.5,
         innerRadiusRatio: 0,
-        outerRadiusMargin: 60,
+        outerRadiusMargin: 10,
         stackLayout: false, // stack areas
         stackMethod: Stacks.Zero,
     },
@@ -47,8 +47,8 @@ class Rose extends AbstractStackedCartesianChart {
         const [innerRadius, outerRadius] = getRadius(this._options);
         const dataRange = [this._data.minY, this._data.maxY];
         const radiusScale = scaleLinear()
-            .domain(dataRange.map(d => this._getMetric().scale(d)))
-            .range([20, outerRadius]);
+            .domain([0, dataRange[1]])
+            .range([0, outerRadius]);
 
         const sliceNum = this._getDimension().values.length;
         const angleScale = scaleLinear()
@@ -57,6 +57,7 @@ class Rose extends AbstractStackedCartesianChart {
 
         const finalState = this._getDimension().values.map((d, i) => {
             let array = this._data.nested.map(e=> {
+                console.log(e.values[i]);
                 return {
                     key: e.key,
                     s: e.key,
@@ -64,7 +65,7 @@ class Rose extends AbstractStackedCartesianChart {
                     alpha: this._options.plots.opacity,
                     startAngle: angleScale(i),
                     endAngle: angleScale(i + 1),
-                    r: radiusScale(e.values[i].y),
+                    r: radiusScale(e.values[i]._y),
                     data: e.values[i],
                 }
             });
@@ -120,7 +121,7 @@ class Rose extends AbstractStackedCartesianChart {
 
             groups.transition()
                 .delay( 1000 )
-                .duration((d,i)=> 500*i)
+                .duration((d,i)=> 300*i)
                 .attr('scale', 1)
                 .attr('transform', 'scale(1,1)')
                 .tween("blooming.petal", drawCanvasInTransition);
