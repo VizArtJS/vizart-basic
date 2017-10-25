@@ -4,12 +4,14 @@ import {
 } from 'd3-scale';
 import { arc } from 'd3-shape';
 import { select, mouse } from 'd3-selection';
+
 import { AbstractStackedCartesianChart } from '../../base';
 import createCartesianStackedOpt from '../../options/createCartesianStackedOpt';
 import animateStates from "./tween-states";
 
 import drawPetal from './draw-petal';
 import getRadius from './get-radius';
+import getOrderedDimensions from './get-ordered-dimensions';
 import drawHiddenCanvas from './draw-hidden-canvas';
 
 const RoseOpt = {
@@ -22,7 +24,8 @@ const RoseOpt = {
         outerRadiusMargin: 10,
         axisLabel: null,
         axisLabelOffset: 10,
-        axisLabelColor: 'black'
+        axisLabelColor: 'black',
+        dimensionOrder: null
     }
 }
 
@@ -59,7 +62,8 @@ class Rose extends AbstractStackedCartesianChart {
             .domain([0, sliceNum])
             .range([0, 2 * Math.PI]);
 
-        const finalState = this._getDimension().values.map((d, i) => {
+        const dimensions = getOrderedDimensions(this._options, this._getDimension().values);
+        const finalState = dimensions.map((d, i) => {
             let array = this._data.nested.map(e=> {
                 return {
                     key: e.key,
@@ -95,7 +99,6 @@ class Rose extends AbstractStackedCartesianChart {
                 const [mx, my] = mouse(this);
                 const col = that._hiddenContext.getImageData(mx * that._canvasScale, my * that._canvasScale, 1, 1).data;
                 const colString = "rgb(" + col[0] + "," + col[1] + ","+ col[2] + ")";
-                console.log(colString);
                 const node = colorMap.get(colString);
 
                 if (node) {
