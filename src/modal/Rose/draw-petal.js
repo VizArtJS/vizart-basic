@@ -1,7 +1,7 @@
 import { select } from 'd3-selection';
 import { getTransparentColor } from 'vizart-core';
 
-const drawPetal = (context, selection, opt)=> {
+const drawPetal = (context, selection, opt, scale)=> {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
     selection.each(function(d){
@@ -20,8 +20,7 @@ const drawPetal = (context, selection, opt)=> {
         context.shadowBlur= 10;
 
         const p = new Path2D(petal.attr('d'));
-        console.log(petal.attr('scale'));
-        context.scale(petal.attr('scale'), petal.attr('scale'))
+        context.scale(petal.attr('scale'), petal.attr('scale'));
         context.fill(p);
         context.stroke(p);
         context.restore();

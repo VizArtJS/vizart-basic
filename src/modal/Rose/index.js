@@ -1,5 +1,6 @@
 import {scaleLinear, scaleOrdinal} from 'd3-scale';
 import { transition } from 'd3-transition';
+import { select } from 'd3-selection';
 import {AbstractStackedCartesianChart} from '../../base';
 import createCartesianStackedOpt from '../../options/createCartesianStackedOpt';
 import animateStates from "./tween-states";
@@ -84,16 +85,19 @@ class Rose extends AbstractStackedCartesianChart {
 
 
         if (!this.previousState) {
-            const drawCanvasInTransition = ()=> {
+            const that = this;
+            const drawCanvasInTransition = function(d, i) {
                 return t=> {
-                    drawPetal(this._frontContext, this._detachedContainer.selectAll('.petal'), this._options);
+                    const currentTransform = select(this).attr('scale');
+                    select(this).selectAll('.petal').attr('scale', currentTransform);
+                    drawPetal(that._frontContext, that._detachedContainer.selectAll('.petal'), that._options);
                 }};
 
-            this._svg.attr("transform", "translate(" + (opt.chart.margin.left + opt.chart.innerWidth /2) + ","
+            this._detachedContainer.attr("transform", "translate(" + (opt.chart.margin.left + opt.chart.innerWidth /2) + ","
                 + (opt.chart.margin.top + opt.chart.innerHeight / 2) + ")");
 
 
-            const dataUpdate = this._svg.selectAll('.petal-group').data(finalState);
+            const dataUpdate = this._detachedContainer.selectAll('.petal-group').data(finalState);
             const dataJoin = dataUpdate.enter();
             const dataRemove = dataUpdate.exit();
 
@@ -106,6 +110,7 @@ class Rose extends AbstractStackedCartesianChart {
 
             const groups = dataJoin.append("g")
                 .attr('class', 'petal-group')
+                .attr('scale', 0)
                 .attr('transform', 'scale(0,0)');
 
             groups.selectAll('.petal')
@@ -113,23 +118,18 @@ class Rose extends AbstractStackedCartesianChart {
                 .enter()
                 .append('path')
                 .attr("class", 'petal')
-                    .attr("d", arcDiagram)
-                    .attr('opacity', 0)
-                    .attr('fill', d=> d.c)
-                    .attr('transform', 'scale(0,0)')
-                    .attr('scale', 0)
-                    .transition('petal-blooming')
-                    .duration(1000)
-                    .delay((d, i) => i * 300)
-                    .attr('scale', 0)
-                    .attr('opacity', d=> d.alpha)
-                    .attr('transform', 'scale(1,1)');
+                .attr("d", arcDiagram)
+                .attr('opacity', 0)
+                .attr('fill', d=> d.c)
+                .attr('opacity', d=> d.alpha);
 
 
             groups.transition()
                 .delay( 1000 )
                 .duration((d,i)=> 500*i)
-                .attr('transform', 'scale(1,1)');
+                .attr('scale', 1)
+                .attr('transform', 'scale(1,1)')
+                .tween("blooming.petal", drawCanvasInTransition);
 
                 // .transition()
                 // .duration(this._options.animation.duration.update)
