@@ -4,10 +4,9 @@ import { select } from 'd3-selection';
 import {AbstractStackedCartesianChart} from '../../base';
 import createCartesianStackedOpt from '../../options/createCartesianStackedOpt';
 import animateStates from "./tween-states";
-import getRadius from '../Corona/get-radius';
-import {Stacks} from '../../data';
 import { arc } from 'd3-shape';
 import drawPetal from './draw-petal';
+import getRadius from './get-radius';
 
 const RoseOpt = {
     chart: {
@@ -17,9 +16,9 @@ const RoseOpt = {
     plots: {
         opacity: 0.5,
         outerRadiusMargin: 10,
+        axisLabelOffset: 10,
         axisLabelColor: 'black'
-    },
-
+    }
 }
 
 /**
@@ -42,7 +41,7 @@ class Rose extends AbstractStackedCartesianChart {
     _animate() {
         const colorScale = scaleOrdinal().range(this._color.range());
         const c = d => colorScale(d);
-        const outerRadius = Math.min(this._options.chart.innerWidth / 2, this._options.chart.innerHeight / 2) - this._options.plots.outerRadiusMargin;
+        const outerRadius = getRadius(this._options)[1];
         const radiusScale = scaleLinear()
             .domain([0, this._data.maxY])
             .range([0, outerRadius]);
@@ -74,6 +73,7 @@ class Rose extends AbstractStackedCartesianChart {
 
             return {
                 dimension: d,
+                i: i,
                 slice: array
             }
         });
@@ -85,9 +85,7 @@ class Rose extends AbstractStackedCartesianChart {
         if (!this.previousState) {
             const drawCanvasInTransition = function(d, i) {
                 return t=> {
-                    const currentTransform = select(this).attr('scale');
-                    select(this).selectAll('.petal').attr('scale', currentTransform);
-                    drawPetal(ctx, that._detachedContainer.selectAll('.petal'), opt);
+                    drawPetal(ctx, that._detachedContainer.selectAll('.petal-group'), opt, sliceNum);
                 }};
 
             this._detachedContainer.attr("transform", "translate(" + (opt.chart.margin.left + opt.chart.innerWidth /2) + ","

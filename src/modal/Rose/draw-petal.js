@@ -1,41 +1,51 @@
 import { select } from 'd3-selection';
 import { getTransparentColor, drawCircularText } from 'vizart-core';
+import getRadius from './get-radius';
 
-const drawPetal = (context, selection, opt)=> {
+const drawPetal = (context, selection, opt, sliceNum)=> {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
-    selection.each(function(d){
-        context.save();
-        context.translate(opt.chart.innerWidth / 2, opt.chart.innerHeight / 2);
+    selection.each(function(g){
+        const group = select(this);
+        const scale = group.attr('scale');
 
-        const petal = select(this);
+        group.selectAll('.petal').each(function(d){
+            context.save();
+            context.translate(opt.chart.innerWidth / 2, opt.chart.innerHeight / 2);
 
-        context.beginPath();
-        context.fillStyle = petal.attr('fill');
-        context.fillStyle = getTransparentColor(petal.attr('fill'), petal.attr('opacity'));
-        context.strokeWidth = 1;
-        context.strokeStyle = petal.attr('fill');
-        context.shadowColor= petal.attr('fill');
-        context.shadowBlur= 10;
+            const petal = select(this);
+            const color = petal.attr('fill');
 
-        const p = new Path2D(petal.attr('d'));
-        context.scale(petal.attr('scale'), petal.attr('scale'));
-        context.fill(p);
-        context.stroke(p);
-        context.restore();
+            context.beginPath();
+            context.fillStyle = color;
+            context.fillStyle = getTransparentColor(color, petal.attr('opacity'));
+            context.strokeWidth = 1;
+            context.strokeStyle = color;
+            context.shadowColor= color;
+            context.shadowBlur= 10;
 
-        const radius = Math.floor(Math.pow(d.r,2) * Math.PI / 12);
+            const p = new Path2D(petal.attr('d'));
+            context.scale(scale, scale);
+            context.fill(p);
+            context.stroke(p);
+            context.closePath();
+            context.restore();
+        });
+
+        const radius = getRadius(opt)[1] * scale;
+        const angle = Math.PI * 2 / sliceNum;
 
         drawCircularText(context,
-            petal.attr('dimension'),
+            g.dimension,
             14,
             'Oswald',
             opt.plots.axisLabelColor,
             opt.chart.innerWidth / 2,
             opt.chart.innerHeight / 2,
             radius + opt.plots.axisLabelOffset,
-            d.startAngle,
-            5);
+            angle * g.i + angle / 2,
+            0);
+
     });
 }
 
