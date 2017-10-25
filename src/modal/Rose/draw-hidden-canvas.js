@@ -17,8 +17,7 @@ const drawHiddenCanvas = (context, state, opt)=> {
 
     for(const d of state) {
         for (let e of d.slice) {
-            const color = genColorByIndex(i);
-            i++;
+            const color = genColorByIndex(++i);
 
             context.save();
             context.translate(opt.chart.width / 2, opt.chart.height / 2);

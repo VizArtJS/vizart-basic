@@ -94,6 +94,7 @@ class Rose extends AbstractStackedCartesianChart {
                 const [mx, my] = mouse(this);
                 const col = that._hiddenContext.getImageData(mx * that._canvasScale, my * that._canvasScale, 1, 1).data;
                 const colString = "rgb(" + col[0] + "," + col[1] + ","+ col[2] + ")";
+                console.log(colString);
                 const node = colorMap.get(colString);
 
                 if (node) {
