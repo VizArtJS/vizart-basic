@@ -20,6 +20,8 @@ const drawPetal = (context, selection, opt)=> {
         context.shadowBlur= 10;
 
         const p = new Path2D(petal.attr('d'));
+        console.log(petal.attr('scale'));
+        context.scale(petal.attr('scale'), petal.attr('scale'))
         context.fill(p);
         context.stroke(p);
         context.restore();

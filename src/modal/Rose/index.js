@@ -89,16 +89,13 @@ class Rose extends AbstractStackedCartesianChart {
                     drawPetal(this._frontContext, this._detachedContainer.selectAll('.petal'), this._options);
                 }};
 
-            const dataUpdate = this._detachedContainer.selectAll('.petal-group').data(finalState);
+            this._svg.attr("transform", "translate(" + (opt.chart.margin.left + opt.chart.innerWidth /2) + ","
+                + (opt.chart.margin.top + opt.chart.innerHeight / 2) + ")");
+
+
+            const dataUpdate = this._svg.selectAll('.petal-group').data(finalState);
             const dataJoin = dataUpdate.enter();
             const dataRemove = dataUpdate.exit();
-
-            const initArc = arc()
-                .startAngle(d=> d.startAngle)
-                .endAngle(d=>d.endAngle)
-                .innerRadius(0)
-                .outerRadius(0)
-                .padAngle(.04);
 
             const arcDiagram = arc()
                 .startAngle(d=> d.startAngle)
@@ -107,27 +104,53 @@ class Rose extends AbstractStackedCartesianChart {
                 .outerRadius(d=>d.r)
                 .padAngle(.04);
 
-            const dataJoinTransition = transition()
-                .duration(this._options.animation.duration.update)
-                .delay((d, i) => i * 200)
-                .each(()=>{
-                    const petalGroup = dataJoin.append("g")
-                        .attr('class', 'petal-group');
+            const groups = dataJoin.append("g")
+                .attr('class', 'petal-group')
+                .attr('transform', 'scale(0,0)');
 
-                    petalGroup.selectAll('.petal').data(d=>d.slice)
-                        .enter()
-                        .append('path')
-                        .attr("class", 'petal')
-                        .attr("d", initArc)
-                        .attr('opacity', d=> d.alpha)
-                        .attr('fill', d=> d.c)
-                        .transition()
-                        .duration(1000)
-                        .delay((d, i) => i * 100)
-                        .attr("d", arcDiagram)
-                        .tween("blooming.petal", drawCanvasInTransition);
-                });
+            groups.selectAll('.petal')
+                .data(d=>d.slice)
+                .enter()
+                .append('path')
+                .attr("class", 'petal')
+                    .attr("d", arcDiagram)
+                    .attr('opacity', 0)
+                    .attr('fill', d=> d.c)
+                    .attr('transform', 'scale(0,0)')
+                    .attr('scale', 0)
+                    .transition('petal-blooming')
+                    .duration(1000)
+                    .delay((d, i) => i * 300)
+                    .attr('scale', 0)
+                    .attr('opacity', d=> d.alpha)
+                    .attr('transform', 'scale(1,1)');
 
+
+            groups.transition()
+                .delay( 1000 )
+                .duration((d,i)=> 500*i)
+                .attr('transform', 'scale(1,1)');
+
+                // .transition()
+                // .duration(this._options.animation.duration.update)
+                // .delay((d, i) => i * 400)
+                // .each(()=>{
+                //     const petalGroup = dataJoin.append("g")
+                //         .attr('class', 'petal-group');
+                //
+                //     petalGroup.selectAll('.petal').data(d=>d.slice)
+                //         .enter()
+                //         .append('path')
+                //         .attr("class", 'petal')
+                //         .attr("d", initArc)
+                //         .attr('opacity', d=> d.alpha)
+                //         .attr('fill', d=> d.c)
+                //         .transition()
+                //         .duration(1000)
+                //         .delay((d, i) => i * 100)
+                //         .attr("d", arcDiagram)
+                //     // .tween("blooming.petal", drawCanvasInTransition);
+                // });
 
             // const initialState = getInitialState(this._getDimension().values, this._data.nested, opt, c);
             // drawBloomingRose(initialState, finalState, ctx, opt);
