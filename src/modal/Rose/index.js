@@ -20,6 +20,7 @@ const RoseOpt = {
     plots: {
         opacity: 0.5,
         outerRadiusMargin: 10,
+        axisLabel: null,
         axisLabelOffset: 10,
         axisLabelColor: 'black'
     }

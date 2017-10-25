@@ -1,4 +1,5 @@
 import { drawCircularText } from 'vizart-core';
+import getAxisLabel from './get-axis-label';
 
 const drawAxisLabel = (context, dimensions, opt, radius)=> {
     const angle = 2 * Math.PI / dimensions.length;
@@ -7,7 +8,7 @@ const drawAxisLabel = (context, dimensions, opt, radius)=> {
     for (let i=0; i<dimensions.length; i++) {
 
         drawCircularText(context,
-            dimensions[i],
+            getAxisLabel(opt, dimensions[i], i),
             14,
             'Oswald',
             opt.plots.axisLabelColor,
