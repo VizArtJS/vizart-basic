@@ -27,7 +27,7 @@ const drawHiddenCanvas = (context, state, opt)=> {
     for (const [i, s] of slices.entries()) {
         context.beginPath();
         arcDiagram(s);
-        const color = genColorByIndex(i + 1)
+        const color = genColorByIndex(i + 1);
         context.fillStyle = color;
         context.fill();
 

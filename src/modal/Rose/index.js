@@ -3,12 +3,14 @@ import {
     scaleOrdinal
 } from 'd3-scale';
 import { arc } from 'd3-shape';
+import { select, mouse } from 'd3-selection';
 import { AbstractStackedCartesianChart } from '../../base';
 import createCartesianStackedOpt from '../../options/createCartesianStackedOpt';
 import animateStates from "./tween-states";
 
 import drawPetal from './draw-petal';
 import getRadius from './get-radius';
+import drawHiddenCanvas from './draw-hidden-canvas';
 
 const RoseOpt = {
     chart: {
@@ -84,6 +86,47 @@ class Rose extends AbstractStackedCartesianChart {
         const ctx = that._frontContext;
         const opt = that._options;
 
+        const enableMouse = ()=> {
+            const colorMap = drawHiddenCanvas(that._hiddenContext, finalState, opt);
+
+            function mouseMoveHandler() {
+                // get the current mouse position
+                const [mx, my] = mouse(this);
+                const col = that._hiddenContext.getImageData(mx * that._canvasScale, my * that._canvasScale, 1, 1).data;
+                const colString = "rgb(" + col[0] + "," + col[1] + ","+ col[2] + ")";
+                const node = colorMap.get(colString);
+
+                if (node) {
+                    const html = that.tooltip(node.data.data);
+
+                    that._tooltip
+                        .html(html)
+                        .transition()
+                        .duration(that._options.animation.tooltip)
+                        .style("left", mx + that._options.tooltip.offset[0] + "px")
+                        .style("top", my + that._options.tooltip.offset[1] + "px")
+                        .style("opacity", 1);
+                } else {
+                    that._tooltip
+                        .transition()
+                        .duration(that._options.animation.tooltip)
+                        .style("opacity", 0);
+                }
+            }
+
+            function mouseOutHandler() {
+                that._tooltip
+                    .transition()
+                    .duration(that._options.animation.tooltip)
+                    .style("opacity", 0);
+            }
+
+            that._frontCanvas.on('mousemove', mouseMoveHandler);
+            that._frontCanvas.on('mouseout', mouseOutHandler);
+
+            that._listeners.call('rendered');
+        }
+
         if (!this.previousState) {
             const drawCanvasInTransition = function(d, i) {
                 return t=> {
@@ -121,17 +164,21 @@ class Rose extends AbstractStackedCartesianChart {
 
 
             groups.transition()
-                .delay( 1000 )
-                .duration((d,i)=> 300*i)
+                .delay( 500 )
+                .duration((d,i)=> 150*i)
                 .attr('scale', 1)
                 .attr('transform', 'scale(1,1)')
-                .tween("blooming.petal", drawCanvasInTransition);
+                .tween("blooming.petal", drawCanvasInTransition)
+                .on('end', ()=>{
+                    enableMouse();
+                });
         } else {
             animateStates(this.previousState,
                 finalState,
                 opt.animation.duration.update,
                 ctx,
                 opt).then(res=>{
+                    enableMouse();
             });
         }
 
