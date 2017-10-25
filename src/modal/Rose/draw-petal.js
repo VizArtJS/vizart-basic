@@ -1,7 +1,7 @@
 import { select } from 'd3-selection';
 import { getTransparentColor } from 'vizart-core';
 
-const drawPetal = (context, selection, opt, scale)=> {
+const drawPetal = (context, selection, opt)=> {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
     selection.each(function(d){
