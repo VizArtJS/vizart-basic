@@ -16,10 +16,8 @@ const RoseOpt = {
 
     plots: {
         opacity: 0.5,
-        innerRadiusRatio: 0,
         outerRadiusMargin: 10,
-        stackLayout: false, // stack areas
-        stackMethod: Stacks.Zero,
+        axisLabelColor: 'black'
     },
 
 }
@@ -44,11 +42,13 @@ class Rose extends AbstractStackedCartesianChart {
     _animate() {
         const colorScale = scaleOrdinal().range(this._color.range());
         const c = d => colorScale(d);
-        const [innerRadius, outerRadius] = getRadius(this._options);
-        const dataRange = [this._data.minY, this._data.maxY];
+        const outerRadius = Math.min(this._options.chart.innerWidth / 2, this._options.chart.innerHeight / 2) - this._options.plots.outerRadiusMargin;
         const radiusScale = scaleLinear()
-            .domain([0, dataRange[1]])
+            .domain([0, this._data.maxY])
             .range([0, outerRadius]);
+        // const radiusScale = scaleLinear()
+        //     .domain([0, Math.sqrt(this._data.maxY*12 / Math.PI)])
+        //     .range([0, Math.min(this._options.chart.innerWidth, this._options.chart.innerHeight)]);
 
         const sliceNum = this._getDimension().values.length;
         const angleScale = scaleLinear()
@@ -57,7 +57,6 @@ class Rose extends AbstractStackedCartesianChart {
 
         const finalState = this._getDimension().values.map((d, i) => {
             let array = this._data.nested.map(e=> {
-                console.log(e.values[i]);
                 return {
                     key: e.key,
                     s: e.key,
@@ -114,6 +113,8 @@ class Rose extends AbstractStackedCartesianChart {
                 .enter()
                 .append('path')
                 .attr("class", 'petal')
+                .attr("series", d=> d.s)
+                .attr("dimension", d=> this._getDimensionVal(d.data.data))
                 .attr("d", arcDiagram)
                 .attr('fill', d=> d.c)
                 .attr('opacity', d=> d.alpha);
@@ -135,9 +136,6 @@ class Rose extends AbstractStackedCartesianChart {
         }
 
         this.previousState = finalState;
-
-
-
     }
 
     createOptions(_userOpt) {

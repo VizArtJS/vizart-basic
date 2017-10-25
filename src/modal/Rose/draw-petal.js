@@ -1,5 +1,5 @@
 import { select } from 'd3-selection';
-import { getTransparentColor } from 'vizart-core';
+import { getTransparentColor, drawCircularText } from 'vizart-core';
 
 const drawPetal = (context, selection, opt)=> {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
@@ -23,6 +23,19 @@ const drawPetal = (context, selection, opt)=> {
         context.fill(p);
         context.stroke(p);
         context.restore();
+
+        const radius = Math.floor(Math.pow(d.r,2) * Math.PI / 12);
+
+        drawCircularText(context,
+            petal.attr('dimension'),
+            14,
+            'Oswald',
+            opt.plots.axisLabelColor,
+            opt.chart.innerWidth / 2,
+            opt.chart.innerHeight / 2,
+            radius + opt.plots.axisLabelOffset,
+            d.startAngle,
+            5);
     });
 }
 
