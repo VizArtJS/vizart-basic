@@ -1,10 +1,12 @@
-import {scaleLinear, scaleOrdinal} from 'd3-scale';
-import { transition } from 'd3-transition';
-import { select } from 'd3-selection';
-import {AbstractStackedCartesianChart} from '../../base';
+import {
+    scaleLinear,
+    scaleOrdinal
+} from 'd3-scale';
+import { arc } from 'd3-shape';
+import { AbstractStackedCartesianChart } from '../../base';
 import createCartesianStackedOpt from '../../options/createCartesianStackedOpt';
 import animateStates from "./tween-states";
-import { arc } from 'd3-shape';
+
 import drawPetal from './draw-petal';
 import getRadius from './get-radius';
 
