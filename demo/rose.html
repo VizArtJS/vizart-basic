@@ -32,19 +32,7 @@
     </ul>
 </div>
 
-<div class="dropdown2" style="position: fixed; top: 10px; left: 250px; z-index: 99">
-    <button  class="btn btn-info dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-        Sort
-        <span class="caret"></span>
-    </button>
-    <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-        <li id="a1"><a href="#">dimension asc</a></li>
-        <li id="a2"><a href="#">dim desc</a></li>
-        <li id="a3"><a href="#">metric asc</a></li>
-        <li id="a4"><a href="#">metric desc</a></li>
-    </ul>
-</div>
-<div id="pie" class="chart-container"></div>
+<div id="chart" class="chart-container"></div>
 
 <script>
     $(document).ready(function () {
@@ -75,7 +63,7 @@
             },
         };
 
-        var rose = new VizArtBasic.Rose('#pie', opt);
+        var rose = new VizArtBasic.Rose('#chart', opt);
 
         var data = [
             {"dimension": "January", "metric": 10, m2: 4, m3: 34},
@@ -174,21 +162,6 @@
             ];
             rose.transitionColor(options2.color);
         });
-
-
-        $('#a1').click(function(){
-            rose.sort('mx', 'asc');
-        })
-        $('#a2').click(function(){
-            rose.sort('mx', 'desc');
-        });
-        $('#a3').click(function(){
-            rose.sort('my', 'asc');
-        });
-        $('#a4').click(function(){
-            rose.sort('my', 'desc');
-        });
-
     });
 </script>
 </body>
