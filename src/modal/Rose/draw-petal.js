@@ -12,7 +12,6 @@ const drawPetal = (context, selection, opt)=> {
 
         context.beginPath();
         context.fillStyle = petal.attr('fill');
-
         context.fillStyle = getTransparentColor(petal.attr('fill'), petal.attr('opacity'));
         context.strokeWidth = 1;
         context.strokeStyle = petal.attr('fill');

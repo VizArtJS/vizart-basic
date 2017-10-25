@@ -114,7 +114,6 @@ class Rose extends AbstractStackedCartesianChart {
                 .append('path')
                 .attr("class", 'petal')
                 .attr("d", arcDiagram)
-                .attr('opacity', 0)
                 .attr('fill', d=> d.c)
                 .attr('opacity', d=> d.alpha);
 
