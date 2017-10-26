@@ -50,12 +50,17 @@ class Rose extends AbstractStackedCartesianChart {
         const colorScale = scaleOrdinal().range(this._color.range());
         const c = d => colorScale(d);
         const outerRadius = getRadius(this._options)[1];
+
+        // y is area
+        // https://understandinguncertainty.org/node/214
+        const area = r=> Math.PI * Math.pow(r, 2) / 3;
+        const radiusOfArea = area => Math.sqrt(area * 3 / Math.PI);
+
         const radiusScale = scaleLinear()
-            .domain([0, this._data.maxY])
+            .domain([0, radiusOfArea(this._data.maxY)])
             .range([0, outerRadius]);
-        // const radiusScale = scaleLinear()
-        //     .domain([0, Math.sqrt(this._data.maxY*12 / Math.PI)])
-        //     .range([0, Math.min(this._options.chart.innerWidth, this._options.chart.innerHeight)]);
+
+        const r = d=> radiusScale(radiusOfArea(d));
 
         const sliceNum = this._getDimension().values.length;
         const angleScale = scaleLinear()
@@ -72,7 +77,7 @@ class Rose extends AbstractStackedCartesianChart {
                     alpha: this._options.plots.opacity,
                     startAngle: angleScale(i),
                     endAngle: angleScale(i + 1),
-                    r: radiusScale(e.values[i]._y),
+                    r: r(e.values[i]._y),
                     data: e.values[i],
                 }
             });
