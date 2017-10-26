@@ -2,7 +2,6 @@ import { arc } from 'd3-shape';
 import { getTransparentColor} from 'vizart-core';
 import drawLabel from './draw-label';
 
-
 const drawCanvas = (context, state, opt)=> {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
@@ -36,7 +35,6 @@ const drawCanvas = (context, state, opt)=> {
         }
 
         drawLabel(context, opt, d.dimension, d.i, state.length, maxR, 1);
-
     }
 }
 

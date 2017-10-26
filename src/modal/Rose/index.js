@@ -3,7 +3,7 @@ import {
     scaleOrdinal
 } from 'd3-scale';
 import { arc } from 'd3-shape';
-import { select, mouse } from 'd3-selection';
+import { mouse } from 'd3-selection';
 
 import { AbstractStackedCartesianChart } from '../../base';
 import createCartesianStackedOpt from '../../options/createCartesianStackedOpt';
