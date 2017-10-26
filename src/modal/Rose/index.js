@@ -23,6 +23,8 @@ const RoseOpt = {
         opacity: 0.5,
         outerRadiusMargin: 10,
         axisLabel: null,
+        axisLabelAlign: true,
+        axisLabelAlignThreshold: 0.5,
         axisLabelOffset: 10,
         axisLabelColor: 'black',
         dimensionOrder: null
