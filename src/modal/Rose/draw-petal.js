@@ -1,6 +1,6 @@
 import { select } from 'd3-selection';
 import { getTransparentColor, drawCircularText } from 'vizart-core';
-import getRadius from './get-radius';
+import getLabelRadius from './get-label-radius';
 
 const drawPetal = (context, selection, opt, sliceNum)=> {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
@@ -36,20 +36,8 @@ const drawPetal = (context, selection, opt, sliceNum)=> {
         });
 
 
-        const radius = getRadius(opt)[1] * scale;
         const angle = Math.PI * 2 / sliceNum;
-
-        let textRadius;
-
-        if (opt.plots.axisLabelAlign === true) {
-            const threshold = opt.plots.axisLabelAlignThreshold > 1
-                ? opt.plots.axisLabelAlignThreshold
-                : radius * opt.plots.axisLabelAlignThreshold;
-
-            textRadius = Math.max(maxR, threshold);
-        } else {
-            textRadius = radius;
-        }
+        const radius = getLabelRadius(opt, scale, maxR);
 
         drawCircularText(context,
             g.dimension,
@@ -58,7 +46,7 @@ const drawPetal = (context, selection, opt, sliceNum)=> {
             opt.plots.axisLabelColor,
             opt.chart.innerWidth / 2,
             opt.chart.innerHeight / 2,
-            textRadius * scale + opt.plots.axisLabelOffset,
+            radius,
             angle * g.i + angle / 2,
             0);
 
