@@ -9,6 +9,7 @@ const drawPetal = (context, selection, opt, sliceNum)=> {
         const group = select(this);
         const scale = group.attr('scale');
 
+        let maxR = 0;
         group.selectAll('.petal').each(function(d){
             context.save();
             context.translate(opt.chart.innerWidth / 2, opt.chart.innerHeight / 2);
@@ -30,10 +31,25 @@ const drawPetal = (context, selection, opt, sliceNum)=> {
             context.stroke(p);
             context.closePath();
             context.restore();
+
+            maxR = Math.max(maxR, +petal.attr('r'));
         });
+
 
         const radius = getRadius(opt)[1] * scale;
         const angle = Math.PI * 2 / sliceNum;
+
+        let textRadius;
+
+        if (opt.plots.axisLabelAlign === true) {
+            const threshold = opt.plots.axisLabelAlignThreshold > 1
+                ? opt.plots.axisLabelAlignThreshold
+                : radius * opt.plots.axisLabelAlignThreshold;
+
+            textRadius = Math.max(maxR, threshold);
+        } else {
+            textRadius = radius;
+        }
 
         drawCircularText(context,
             g.dimension,
@@ -42,7 +58,7 @@ const drawPetal = (context, selection, opt, sliceNum)=> {
             opt.plots.axisLabelColor,
             opt.chart.innerWidth / 2,
             opt.chart.innerHeight / 2,
-            radius + opt.plots.axisLabelOffset,
+            textRadius * scale + opt.plots.axisLabelOffset,
             angle * g.i + angle / 2,
             0);
 
