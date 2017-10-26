@@ -5,6 +5,9 @@ import {
 } from 'vizart-core';
 import getRadius from './get-radius';
 
+import getLabelRadius from './get-label-radius';
+
+
 const drawCanvas = (context, state, opt)=> {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
@@ -20,7 +23,7 @@ const drawCanvas = (context, state, opt)=> {
 
     for(const d of state) {
         context.shadowBlur= 10;
-
+        let maxR = 0;
         for (let e of d.slice) {
             context.save();
             context.translate(opt.chart.width / 2, opt.chart.height / 2);
@@ -35,7 +38,10 @@ const drawCanvas = (context, state, opt)=> {
             context.stroke();
             context.restore();
 
+            maxR = Math.max(maxR, e.r);
         }
+
+        const radius = getLabelRadius(opt, 1, maxR);
 
         drawCircularText(context,
             d.dimension,
@@ -44,7 +50,7 @@ const drawCanvas = (context, state, opt)=> {
             opt.plots.axisLabelColor,
             opt.chart.innerWidth / 2,
             opt.chart.innerHeight / 2,
-            getRadius(opt)[1] + opt.plots.outerRadiusMargin,
+            radius,
             angle * d.i + angle / 2,
             0);
     }
