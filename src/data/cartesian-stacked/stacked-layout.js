@@ -34,7 +34,9 @@ const generateStackLayout = (data, opt)=> {
                     y: metric
                         ? metric.scale(e.data[metric.accessor])
                         : opt.data.y[0].scale(e.data[d.key]),
-                    _y: e.data[metric.accessor],
+                    _y: metric
+                        ? e.data[metric.accessor]
+                        : e.data[d.key],
                     data: e.data
                 }
             })

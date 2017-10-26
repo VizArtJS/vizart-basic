@@ -1,4 +1,5 @@
 import { select } from 'd3-selection';
+import isNaN from 'lodash-es/isNaN';
 import { getTransparentColor } from 'vizart-core';
 import drawLabel from './draw-label';
 
@@ -32,7 +33,9 @@ const drawPetal = (context, selection, opt, sliceNum)=> {
             context.closePath();
             context.restore();
 
-            maxR = Math.max(maxR, +petal.attr('r'));
+            if (!isNaN(+petal.attr('r'))) {
+                maxR = Math.max(maxR, +petal.attr('r'));
+            }
         });
 
         drawLabel(context, opt, g.dimension, g.i, sliceNum, maxR, scale);
