@@ -1,11 +1,6 @@
 import { arc } from 'd3-shape';
-import {
-    getTransparentColor,
-    drawCircularText
-} from 'vizart-core';
-import getRadius from './get-radius';
-
-import getLabelRadius from './get-label-radius';
+import { getTransparentColor} from 'vizart-core';
+import drawLabel from './draw-label';
 
 
 const drawCanvas = (context, state, opt)=> {
@@ -19,7 +14,6 @@ const drawCanvas = (context, state, opt)=> {
         .padAngle(.04)
         .context(context);
 
-    const angle = 2 * Math.PI / state.length;
 
     for(const d of state) {
         context.shadowBlur= 10;
@@ -41,18 +35,8 @@ const drawCanvas = (context, state, opt)=> {
             maxR = Math.max(maxR, e.r);
         }
 
-        const radius = getLabelRadius(opt, 1, maxR);
+        drawLabel(context, opt, d.dimension, d.i, state.length, maxR, 1);
 
-        drawCircularText(context,
-            d.dimension,
-            14,
-            'Oswald',
-            opt.plots.axisLabelColor,
-            opt.chart.innerWidth / 2,
-            opt.chart.innerHeight / 2,
-            radius,
-            angle * d.i + angle / 2,
-            0);
     }
 }
 

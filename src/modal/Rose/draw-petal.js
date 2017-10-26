@@ -1,6 +1,6 @@
 import { select } from 'd3-selection';
-import { getTransparentColor, drawCircularText } from 'vizart-core';
-import getLabelRadius from './get-label-radius';
+import { getTransparentColor } from 'vizart-core';
+import drawLabel from './draw-label';
 
 const drawPetal = (context, selection, opt, sliceNum)=> {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
@@ -35,21 +35,7 @@ const drawPetal = (context, selection, opt, sliceNum)=> {
             maxR = Math.max(maxR, +petal.attr('r'));
         });
 
-
-        const angle = Math.PI * 2 / sliceNum;
-        const radius = getLabelRadius(opt, scale, maxR);
-
-        drawCircularText(context,
-            g.dimension,
-            14,
-            'Oswald',
-            opt.plots.axisLabelColor,
-            opt.chart.innerWidth / 2,
-            opt.chart.innerHeight / 2,
-            radius,
-            angle * g.i + angle / 2,
-            0);
-
+        drawLabel(context, opt, g.dimension, g.i, sliceNum, maxR, scale);
     });
 }
 
