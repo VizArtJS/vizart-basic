@@ -21,14 +21,9 @@
         <span class="caret"></span>
     </button>
     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-        <li id="color1"><a href="#">BuGn</a></li>
-        <li id="color2"><a href="#">Blues</a></li>
-        <li id="color3"><a href="#">Warm</a></li>
-        <li id="color4"><a href="#">Cubehelix</a></li>
-        <li id="set1"><a href="#">color 2</a></li>
-        <li id="set2"><a href="#">color 3</a></li>
-        <li id="set3"><a href="#">color 5</a></li>
-        <li id="set4"><a href="#">color 9</a></li>
+        <li id="color1"><a href="#">Metro</a></li>
+        <li id="color2"><a href="#">Dawn</a></li>
+        <li id="color3"><a href="#">Cold</a></li>
     </ul>
 </div>
 
@@ -110,72 +105,34 @@
 
         // change color
         $('#color1').click(function(){
-            options2.color.scheme = "BuGn";
+            options2.color.scheme = [    '#1bcebf',
+                '#24bbd2',
+                '#1572ca',
+                '#1f33a1',
+                '#5f26c1',];
             rose.transitionColor(options2.color);
         });
 
         $('#color2').click(function(){
-            options2.color.scheme = "Blues";
+            options2.color.scheme = [
+                '#ffe100',
+                '#ffbf00',
+                '#ff5730',
+                '#eb3ba6'
+            ];
             rose.transitionColor(options2.color)
         });
 
         $('#color3').click(function(){
-            options2.color.scheme = "Warm";
+            options2.color.scheme = [
+                '#79e70f',
+                '#10d9ec',
+                '#1f97e7'
+            ];
             rose.transitionColor(options2.color)
         });
 
-        $('#color4').click(function(){
-            options2.color.scheme = "Cubehelix";
-            rose.transitionColor(options2.color);
-        });
 
-        $('#set1').click(function(){
-            options2.color.scheme = [
-                '#deebf7',
-                '#3182bd'
-            ];
-            rose.transitionColor(options2.color);
-        });
-
-
-        $('#set2').click(function(){
-            options2.color.scheme = [
-                '#deebf7',
-                '#9ecae1',
-                '#3182bd'
-            ];
-            rose.transitionColor(options2.color);
-        });
-
-
-        $('#set3').click(function(){
-            options2.color.scheme = [
-                '#eff3ff',
-                '#bdd7e7',
-                '#6baed6',
-                '#3182bd',
-                '#08519c',
-            ];
-            rose.transitionColor(options2.color);
-        });
-
-
-
-
-        $('#set4').click(function(){
-            options2.color.scheme = [
-                '#f7fbff',
-                '#deebf7',
-                '#c6dbef',
-                '#9ecae1',
-                '#6baed6',
-                '#4292c6',
-                '#2171b5',
-                '#08519c',
-                '#08306b'
-            ];
-            rose.transitionColor(options2.color);
-        });
     });
 </script>
 </body>
