@@ -6,7 +6,7 @@ const drawLabel = (context, opt, text, i, sliceNum, maxR, scale)=> {
     const angle = 2 * Math.PI / sliceNum;
 
     drawCircularText(context,
-        text,
+        text + '',
         14,
         'Oswald',
         opt.plots.axisLabelColor,

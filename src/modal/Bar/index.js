@@ -48,9 +48,6 @@ class Bar extends AbstractBasicCartesianChartWithAxes {
         };
         this._h = d=>  this._options.chart.innerHeight - this._y(d);
         this._zero = ()=> this._getMetric().scale(0);
-
-        // We also make a map/dictionary to keep track of colors associated with node.
-        this.colToNode;
     }
 
     _animate() {

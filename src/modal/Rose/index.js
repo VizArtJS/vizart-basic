@@ -139,7 +139,7 @@ class Rose extends AbstractStackedCartesianChart {
             that._listeners.call('rendered');
         }
 
-        if (!this.previousState) {
+        if (!this.previousState && finalState.length < 30) {
             const drawCanvasInTransition = function(d, i) {
                 return t=> {
                     drawPetal(ctx, that._detachedContainer.selectAll('.petal-group'), opt, sliceNum);
