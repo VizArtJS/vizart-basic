@@ -1,9 +1,9 @@
 import { arc } from 'd3-shape';
-import { getTransparentColor} from 'vizart-core';
-import drawLabel from './draw-label';
+import { genColorByIndex } from 'vizart-core';
 
-const drawCanvas = (context, state, opt)=> {
+const drawHiddenCanvas = (context, state, opt)=> {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+    const colorMap = new Map();
 
     const gridArc = arc()
         .startAngle(d=> d.startAngle)
@@ -13,29 +13,26 @@ const drawCanvas = (context, state, opt)=> {
         .padAngle(.04)
         .context(context);
 
+    let i = 0;
 
     for(const d of state) {
-        context.shadowBlur= 10;
-        let maxR = 0;
         for (let e of d.slice) {
+            const color = genColorByIndex(++i);
+
             context.save();
             context.translate(opt.chart.width / 2, opt.chart.height / 2);
             context.beginPath();
-            context.fillStyle = getTransparentColor(e.c, e.alpha);
-            context.strokeWidth = 1;
-            context.strokeStyle = e.c;
-            context.shadowColor= e.c;
+            context.fillStyle = color;
 
             gridArc(e);
             context.fill();
-            context.stroke();
             context.restore();
 
-            maxR = Math.max(maxR, e.r);
+            colorMap.set(color, e);
         }
-
-        drawLabel(context, opt, d.dimension, d.i, state.length, maxR, 1);
     }
+
+    return colorMap;
 }
 
-export default drawCanvas;
+export default drawHiddenCanvas;

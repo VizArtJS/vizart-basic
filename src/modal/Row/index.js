@@ -49,8 +49,17 @@ const miniWidth = opt => opt.chart.width - opt.plots.miniBarWidth;
 const BottomAxisOffset = 10;
 const InitialBrushHeight = 200;
 
+const forceMetricDesc = userOpt=> {
+    userOpt.ordering = {
+        accessor: userOpt.data.y[0].accessor,
+        direction: 'desc'
+    };
+}
+
 class Row extends AbstractBasicCartesianChart {
     constructor(canvasId, userOpt) {
+        forceMetricDesc(userOpt);
+
         super(canvasId, userOpt);
     }
 
@@ -69,9 +78,13 @@ class Row extends AbstractBasicCartesianChart {
         this.miniSvg = this._container.append('g')
             .attr('width', width)
             .attr('height', height)
+            .attr('class', 'mini-group')
             .attr("transform", "translate(" + miniX + "," + this._options.chart.margin.top + ")");
 
-        const miniXScale = this._getDimension().scale.copy();
+        const miniXScale = scaleBand()
+            .domain(data.map(d => this._getDimensionVal(d)))
+            .range([0, this._options.chart.innerHeight - BottomAxisOffset - 5])
+            .paddingInner(.1);
         const miniYScale = scaleLinear()
             .domain(extent(data, this._getMetricVal))
             .range([0, this._options.plots.miniBarWidth]);
@@ -331,6 +344,14 @@ class Row extends AbstractBasicCartesianChart {
             that._frontCanvas.on('mouseout', mouseOutHandler);
             that._listeners.call('rendered');
         });
+    }
+
+    options(userOpt) {
+        if(userOpt) {
+            forceMetricDesc(userOpt);
+        }
+
+        return super.options(userOpt);
     }
 
     createOptions(_userOptions) {

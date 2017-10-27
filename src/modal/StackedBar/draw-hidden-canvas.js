@@ -8,13 +8,12 @@ const drawHiddenCanvas = (context, state)=> {
     for (const n of state) {
 
         for (const b of n.values) {
-            const color = genColorByIndex(i);
+            const color = genColorByIndex(++i);
 
             context.beginPath();
             context.fillStyle = color;
             context.rect(b.x, b.y, b.w, b.h);
             context.fill();
-            i++;
 
             colorMap.set(color, b);
         }

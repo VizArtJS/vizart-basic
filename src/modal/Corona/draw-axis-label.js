@@ -26,8 +26,8 @@ const drawAxisLabel = (context, opt)=> {
             14,
             'Oswald',
             opt.plots.axisLabelColor,
-            opt.chart.width / 2,
-            opt.chart.height / 2,
+            opt.chart.innerWidth / 2,
+            opt.chart.innerHeight / 2,
             outerRadius + opt.plots.axisLabelOffset,
             axisScale(i), 5);
     }
