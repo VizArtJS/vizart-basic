@@ -72,6 +72,7 @@ class Row extends AbstractBasicCartesianChart {
             this.drawMainBars(this._data.filter(d => this._x(d) < InitialBrushHeight));
         }  else {
             this.drawMainBars(this._data);
+            this.updateAxis(this._data);
         }
     }
 
