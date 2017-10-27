@@ -39,6 +39,7 @@ const DefaultOpt = {
             offset: 10
         },
 
+        enableMiniBar: true,
         miniBarWidth: 50,
 
     }
@@ -65,8 +66,13 @@ class Row extends AbstractBasicCartesianChart {
 
     _animate() {
         this._getDimension().scale.range([0, this._options.chart.innerHeight]);
-        this.drawMiniSvg(this._data);
-        this.drawMainBars(this._data.filter(d => this._x(d) < InitialBrushHeight));
+
+        if (this._options.plots.enableMiniBar === true) {
+            this.drawMiniSvg(this._data);
+            this.drawMainBars(this._data.filter(d => this._x(d) < InitialBrushHeight));
+        }  else {
+            this.drawMainBars(this._data);
+        }
     }
 
     drawMiniSvg(data) {
@@ -216,7 +222,9 @@ class Row extends AbstractBasicCartesianChart {
             .paddingInner(.1);
 
         const yScale = this._makeMetricScale(data);
-        const mainWidth = this._options.chart.innerWidth - this._options.plots.miniBarWidth;
+        const mainWidth = this._options.plots.enableMiniBar === true
+            ? this._options.chart.innerWidth - this._options.plots.miniBarWidth
+            : this._options.chart.innerWidth;
 
 
         const h = xScale.bandwidth();
