@@ -81,6 +81,7 @@ class Row extends AbstractBasicCartesianChart {
         const height = this._options.chart.innerHeight;
 
         const miniX = miniWidth(this._options);
+        this._container.select('.mini-group').remove();
 
         this.miniSvg = this._container.append('g')
             .attr('width', width)
@@ -98,7 +99,7 @@ class Row extends AbstractBasicCartesianChart {
 
         const h = miniXScale.bandwidth();
         const y = d => miniYScale(this._getMetricVal(d));
-        const x = this._x;
+        const x = d=> miniXScale(this._getDimensionVal(d));
 
         const dataUpdate = this.miniSvg.selectAll('.mini').data(data);
         const dataJoin = dataUpdate.enter();
