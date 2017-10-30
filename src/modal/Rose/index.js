@@ -72,10 +72,14 @@ class Rose extends AbstractStackedCartesianChart {
         const dimensions = getOrderedDimensions(this._options, this._getDimension().values);
         const finalState = dimensions.map((d, i) => {
             let array = this._data.nested.map(e=> {
+                const _c = this._options.data.y.length > 1
+                    ? c(e.key)
+                    : c(d);
+
                 return {
                     key: e.key,
                     s: e.key,
-                    c: c(e.key),
+                    c: _c,
                     alpha: this._options.plots.opacity,
                     startAngle: angleScale(i),
                     endAngle: angleScale(i + 1),
