@@ -36,6 +36,8 @@ class Pie extends AbstractBasicCartesianChart {
 
 
     _animate() {
+        this._getMetric().scale.range(this._getMetric().scale.range().reverse());
+
         const initialState = this.previousState
             ? this.previousState
             : this._data.map(d=>{
