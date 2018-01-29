@@ -10,14 +10,14 @@ import StackedBar from './StackedBar';
 import Corona from './Corona';
 
 export {
-    Bar,
-    Pie,
-    Area,
-    Line,
-    Scatter,
-    StackedArea,
-    StackedBar,
-    Stream,
-    Corona,
-    MultiLine
-}
+  Bar,
+  Pie,
+  Area,
+  Line,
+  Scatter,
+  StackedArea,
+  StackedBar,
+  Stream,
+  Corona,
+  MultiLine,
+};

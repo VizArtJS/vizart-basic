@@ -5,9 +5,9 @@ import AbstractStackedCartesianChart from './AbstractStackedCartesianChart';
 import AbstractStackedCartesianChartWithAxes from './AbstractStackedCartesianChartWithAxes';
 
 export {
-    AbstractBasicCartesianChart,
-    AbstractBasicCartesianChartWithAxes,
-    AbstractCartesianChart,
-    AbstractStackedCartesianChart,
-    AbstractStackedCartesianChartWithAxes
-}
+  AbstractBasicCartesianChart,
+  AbstractBasicCartesianChartWithAxes,
+  AbstractCartesianChart,
+  AbstractStackedCartesianChart,
+  AbstractStackedCartesianChartWithAxes,
+};
