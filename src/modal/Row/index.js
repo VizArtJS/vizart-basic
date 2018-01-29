@@ -16,7 +16,7 @@ import tickRange from '../../data/update-scale/ticks';
 import brushResizePath from '../../util/brush-handle';
 
 const DefaultOpt = {
-  chart: { type: 'bar_horizontal' },
+  chart: { type: 'row' },
   plots: {
     barLabel: {
       enabled: false,

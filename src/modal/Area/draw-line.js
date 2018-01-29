@@ -14,8 +14,7 @@ const drawLine = (context, particles, opt) => {
   context.beginPath();
   curve(particles);
   context.lineWidth = opt.plots.strokeWidth;
-  const gradientStyle = verticalGradient(context, opt.color.scheme, 1);
-  context.strokeStyle = gradientStyle;
+  context.strokeStyle = verticalGradient(context, opt.color.scheme, 1);
 
   context.stroke();
   context.closePath();
