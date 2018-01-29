@@ -8,129 +8,135 @@ import highlightNode from './highlight-node';
 import animateStates from './tween-states';
 
 const DefaultOptions = {
-    chart: {
-        type: 'line_multi'
-    },
-    plots: {
-        curve: 'linear',
-        highlightNodeColor: '#F03E1E',
-        strokeWidth: 3,
-        showDots: false,
-        dotRadius: 4
-    }
+  chart: {
+    type: 'line_multi',
+  },
+  plots: {
+    curve: 'linear',
+    highlightNodeColor: '#F03E1E',
+    strokeWidth: 3,
+    showDots: false,
+    dotRadius: 4,
+  },
 };
 
-
 class MultiLine extends AbstractStackedCartesianChartWithAxes {
-    constructor(canvasId, _userOptions) {
-        super(canvasId, _userOptions);
-    }
+  constructor(canvasId, _userOptions) {
+    super(canvasId, _userOptions);
+  }
 
-    _animate() {
-        const initialState = this.previousState
-            ? this.previousState
-            : this._data.nested.map(d => {
-                return {
-                    key: d.key,
-                    c: this._c(d),
-                    s: d.key,
-                    alpha: 0,
-                    values: d.values.map(e => {
-                        return {
-                            key: d.key,
-                            x: this._x(e.data),
-                            y: this._options.chart.innerHeight,
-                            data: e.data
-                        }
-                    })
-                }
-            });
-
-        const finalState = this._data.nested.map(d => {
-            return {
+  _animate() {
+    const initialState = this.previousState
+      ? this.previousState
+      : this._data.nested.map(d => {
+          return {
+            key: d.key,
+            c: this._c(d),
+            s: d.key,
+            alpha: 0,
+            values: d.values.map(e => {
+              return {
                 key: d.key,
-                c: this._c(d),
-                alpha: 1,
-                values: d.values.map(e => {
-                    return {
-                        key: d.key,
-                        x: this._x(e.data),
-                        y: e.y,
-                        data: e.data
-                    }
-                })
-            }
+                x: this._x(e.data),
+                y: this._options.chart.innerHeight,
+                data: e.data,
+              };
+            }),
+          };
         });
 
-        // cache finalState as the initial state of next animation call
-        this.previousState = finalState;
+    const finalState = this._data.nested.map(d => {
+      return {
+        key: d.key,
+        c: this._c(d),
+        alpha: 1,
+        values: d.values.map(e => {
+          return {
+            key: d.key,
+            x: this._x(e.data),
+            y: e.y,
+            data: e.data,
+          };
+        }),
+      };
+    });
 
-        let that = this;
-        const ctx = that._frontContext;
-        const opt = that._options;
+    // cache finalState as the initial state of next animation call
+    this.previousState = finalState;
 
-        animateStates(initialState,
-            finalState,
-            opt.animation.duration.update,
-            ctx,
-            opt).then(res=> {
-            that._voronoi = applyVoronoi(ctx, opt, res.reduce((acc, p)=>{
-                    acc = acc.concat(p.values);
-                    return acc;
-                }, []));
+    let that = this;
+    const ctx = that._frontContext;
+    const opt = that._options;
 
-            /**
-             * callback for when the mouse moves across the overlay
-             */
-            function mouseMoveHandler() {
-                // get the current mouse position
-                const [mx, my] = mouse(this);
-                const QuadtreeRadius = 100;
-                // use the new diagram.find() function to find the Voronoi site
-                // closest to the mouse, limited by max distance voronoiRadius
-                const closest = that._voronoi.find(mx, my, QuadtreeRadius);
-                if (closest) {
-                    closest.data.data[that._getMetric().accessor] = closest.data.data[closest.data.key];
+    animateStates(
+      initialState,
+      finalState,
+      opt.animation.duration.update,
+      ctx,
+      opt
+    ).then(res => {
+      that._voronoi = applyVoronoi(
+        ctx,
+        opt,
+        res.reduce((acc, p) => {
+          acc = acc.concat(p.values);
+          return acc;
+        }, [])
+      );
 
-                    that._tooltip
-                        .html(that.tooltip(closest.data.data))
-                        .transition()
-                        .duration(that._options.animation.tooltip)
-                        .style("left", mx + that._options.tooltip.offset[0] + "px")
-                        .style("top", my + that._options.tooltip.offset[1] + "px")
-                        .style("opacity", 1);
+      /**
+       * callback for when the mouse moves across the overlay
+       */
+      function mouseMoveHandler() {
+        // get the current mouse position
+        const [mx, my] = mouse(this);
+        const QuadtreeRadius = 100;
+        // use the new diagram.find() function to find the Voronoi site
+        // closest to the mouse, limited by max distance voronoiRadius
+        const closest = that._voronoi.find(mx, my, QuadtreeRadius);
+        if (closest) {
+          closest.data.data[that._getMetric().accessor] =
+            closest.data.data[closest.data.key];
 
-                    highlightLine(ctx, res, opt, closest.data);
-                    highlightNode(ctx, opt, closest.data.c, closest[0], closest[1]);
-                } else {
-                    that._tooltip
-                        .transition()
-                        .duration(that._options.animation.tooltip)
-                        .style("opacity", 0);
+          that._tooltip
+            .html(that.tooltip(closest.data.data))
+            .transition()
+            .duration(that._options.animation.tooltip)
+            .style('left', mx + that._options.tooltip.offset[0] + 'px')
+            .style('top', my + that._options.tooltip.offset[1] + 'px')
+            .style('opacity', 1);
 
-                    drawCanvas(ctx, res, opt);
-                }
-            }
+          highlightLine(ctx, res, opt, closest.data);
+          highlightNode(ctx, opt, closest.data.c, closest[0], closest[1]);
+        } else {
+          that._tooltip
+            .transition()
+            .duration(that._options.animation.tooltip)
+            .style('opacity', 0);
 
-            function mouseOutHandler() {
-                that._tooltip
-                    .transition()
-                    .duration(that._options.animation.tooltip)
-                    .style("opacity", 0);
+          drawCanvas(ctx, res, opt);
+        }
+      }
 
-                drawCanvas(ctx, res, opt);
-            }
+      function mouseOutHandler() {
+        that._tooltip
+          .transition()
+          .duration(that._options.animation.tooltip)
+          .style('opacity', 0);
 
-            that._frontCanvas.on('mousemove', mouseMoveHandler);
-            that._frontCanvas.on('mouseout', mouseOutHandler);
+        drawCanvas(ctx, res, opt);
+      }
 
-            that._listeners.call('rendered');
-        });
-    }
+      that._frontCanvas.on('mousemove', mouseMoveHandler);
+      that._frontCanvas.on('mouseout', mouseOutHandler);
 
-    createOptions(_userOpt) {
-        return createCartesianStackedOpt(DefaultOptions, _userOpt);
-    };
+      that._listeners.call('rendered');
+    });
+  }
+
+  createOptions(_userOpt) {
+    return createCartesianStackedOpt(DefaultOptions, _userOpt);
+  }
 }
 
 export default MultiLine;
