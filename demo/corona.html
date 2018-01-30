@@ -54,7 +54,7 @@
             levelColor: 'rgba(255, 255, 255, 0.2)',
             levelLabelColor: 'rgba(255, 255, 255, 0.8)',
             levelLabelPosition: 'top', //'top', 'bottom', 'right'
-            levelLabel: function(d){ return d + ' views'},
+            levelLabel: function(d){ return d + ' downloads'},
 
             axisLabel: function(d, i){ return i===0 ? '' : d + 'am'},
             axisLabelOffset: 35,
@@ -87,7 +87,7 @@
             levelColor: 'rgba(0, 0, 0, 0.2)',
             levelLabelColor: 'rgba(0, 0, 0, 0.8)',
             levelLabelPosition: 'top', //'top', 'bottom', 'right'
-            levelLabel: function(d){ return d + ' views'},
+            levelLabel: function(d){ return d + ' downloads'},
 
             axisLabel: function(d, i){ return i===0 ? '' : d + 'am'},
             axisLabelOffset: 35,
@@ -118,10 +118,10 @@
 
         var options = {
             data: {
-                s: { name: 'Page', type: 'string', accessor: 'page'},
+                s: { name: 'AppId', type: 'string', accessor: 'appid'},
                 x: { name: 'Hour', type: 'number', accessor: 'hour'},
                 y: [
-                    { name: 'Views', type: 'number', accessor: 'views', yAxis: 0},
+                    { name: 'Downloads', type: 'number', accessor: 'downloads', yAxis: 0},
                 ],
             },
             plots: LightPreset,
@@ -137,10 +137,14 @@
 
         var chart = new VizArtBasic.Corona('#chart', options);
 
-        d3.csv('assets/corona_page_views.csv', function(err, res){
+        d3.csv('assets/app-downloads.csv', function(err, res){
             chart.render(res);
 
         });
+
+        for (var i = 0; i < 24; i++) {
+
+        }
 
         var opt = chart.options();
 
