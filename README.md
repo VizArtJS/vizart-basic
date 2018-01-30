@@ -71,9 +71,13 @@ npm run test:cover  // run tests and view coverage report
 * [Grouped Bar](https://github.com/VizArtJS/vizart-basic/wiki/grouped-bar)
 * [Multi Line](https://github.com/VizArtJS/vizart-basic/wiki/multi-line)
 
+## Credits
+
+My work is based on or inspired by other people's works
+* Corona is modified from Nadieh Bremer's [A redsign of radar chart](https://www.visualcinnamon.com/2015/10/different-look-d3-radar-chart.html)
+* Rose is based on Athan kgryte's [Nightingale's Rose](http://bl.ocks.org/kgryte/5926740)
 
 ## License
-
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
 
 
