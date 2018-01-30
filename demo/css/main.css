@@ -18,8 +18,5 @@ body {
 }
 
 .ocean {
-    background-image: url(../assets/vz-skin-galaxy_2.jpg);
-    background-repeat: no-repeat;
-    background-size: cover;
-
+    background-image: linear-gradient(120deg, #89f7fe 0%, #66a6ff 100%);
 }
