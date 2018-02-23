@@ -8,6 +8,7 @@
     <link href="./lib/bootstrap-3.3.7/css/bootstrap.css" rel="stylesheet" type="text/css">
     <script src="./lib/stats.js"></script>
     <script src="./lib/chance.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/es6-shim/0.35.3/es6-shim.js"></script>
     <script src="./lib/d3.js"></script>
     <script src="./lib/jquery-1.12.4.min.js"></script>
     <script src="./lib/bootstrap-3.3.7/js/bootstrap.js"></script>
@@ -80,7 +81,7 @@
             }
         };
 
-        var area = new VizArtBasic.Area('#bar', options);
+        var area = VizArtBasic.area('#bar', options);
 //        area.on('rendered', function(){
 //            area.revealVoronoi();
 //            area.revealQuadtree();
