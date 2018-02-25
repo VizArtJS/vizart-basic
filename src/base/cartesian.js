@@ -14,7 +14,8 @@ const renderTooltip = (containerId)=> {
 const cartesian = (chart) => Object.assign({}, chart, {
     _getMetric: () => chart._options.data.y[0],
     _getDimension: () => chart._options.data.x,
-    _getDimensionVal: d => d[this._getDimension().accessor],
+    _getDimensionVal: d => d[this._getMetric().accessor],
+    _getMetricVal: d => d[this._getDimension().accessor],
     _x(d) {
         return this._getDimension().scale(this._getDimensionVal(d));
     },

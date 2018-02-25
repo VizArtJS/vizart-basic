@@ -1,5 +1,5 @@
 import {mouse} from 'd3-selection';
-import {uuid, linearStops, applyVoronoi, applyQuadtree, base, canvas} from 'vizart-core';
+import {uuid, linearStops, applyVoronoi, applyQuadtree, svg, canvas} from 'vizart-core';
 import cartesian from '../../base/cartesian';
 import cartesianBasic from '../../base/cartesianBasic'
 import tooltipMarkup from '../../base/tooltip';
@@ -122,7 +122,7 @@ const plotArea = (chart) => Object.assign({}, chart, {
 
 const areaOpt = opt => createCartesianOpt(AreaOpt, opt);
 const area = (id, opt) => {
-    const h1 = base(id, opt, areaOpt);
+    const h1 = svg(id, opt, areaOpt);
     const h2 = canvas(h1);
     const h3 = cartesian(h2);
     const h4 = cartesianBasic(h3);
