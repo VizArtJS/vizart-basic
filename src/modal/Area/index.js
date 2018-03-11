@@ -1,7 +1,8 @@
 import {mouse} from 'd3-selection';
-import {uuid, linearStops, applyVoronoi, applyQuadtree, svg, canvas} from 'vizart-core';
+import { linearStops, applyVoronoi, applyQuadtree, svg, canvas, genericColor} from 'vizart-core';
 import cartesian from '../../base/cartesian';
-import cartesianBasic from '../../base/cartesianBasic'
+import cartesianBasic from '../../base/cartesianBasic';
+import { processCartesianData } from '../../data';
 import tooltipMarkup from '../../base/tooltip';
 
 import createCartesianOpt from '../../options/createCartesianOpt';
@@ -25,7 +26,8 @@ const AreaOpt = {
 };
 
 
-const _animate = (previousState, data, opt, x, y, frontCanvas, frontContext, tooltip, listeners)=> {
+const _animateArea = (previousState, data, opt, x, y, frontCanvas, frontContext, tooltip, listeners)=> {
+    console.log('------')
     const stops = linearStops(opt.color.scheme);
     const nodeColor = stops[stops.length - 1].color;
 
@@ -60,7 +62,7 @@ const _animate = (previousState, data, opt, x, y, frontCanvas, frontContext, too
         initialState,
         finalState,
         opt.animation.duration.update,
-        ctx,
+        frontContext,
         opt
     ).then(res => {
         voronoi= applyVoronoi(frontContext, opt, res);
@@ -108,8 +110,8 @@ const _animate = (previousState, data, opt, x, y, frontCanvas, frontContext, too
             drawCanvas(frontContext, res, opt, false);
         }
 
-        frontContext.on('mousemove', mouseMoveHandler);
-        frontContext.on('mouseout', mouseOutHandler);
+        frontCanvas.on('mousemove', mouseMoveHandler);
+        frontCanvas.on('mouseout', mouseOutHandler);
 
         listeners.call('rendered');
     });
@@ -117,17 +119,37 @@ const _animate = (previousState, data, opt, x, y, frontCanvas, frontContext, too
 
 
 const plotArea = (chart) => Object.assign({}, chart, {
+    _animate(){
+        _animateArea(chart._previousState, chart._data, chart._options, chart._x, chart._y, chart._frontCanvas, chart._frontContext, chart._tooltip, chart._listeners)
+    },
 
+    render(data){
+        console.log('------')
+        chart.render(data);
+        chart.data();
+        this._animate();
+    },
+
+    update(){
+        chart.update();
+        this._animate();
+    }
 })
 
+const cartesianColor = (colorOpt, data, opt)=> genericColor(colorOpt, data.map(d=> d[opt.data.y[0].accessor]));
+
 const areaOpt = opt => createCartesianOpt(AreaOpt, opt);
+const composers = {
+    opt: areaOpt,
+    data: processCartesianData,
+    color: cartesianColor,
+}
+
 const area = (id, opt) => {
-    const h1 = svg(id, opt, areaOpt);
+    const h1 = svg(id, opt, composers);
     const h2 = canvas(h1);
     const h3 = cartesian(h2);
-    const h4 = cartesianBasic(h3);
-    const h5 = plotArea(h4);
-    return h5;
+    return plotArea(h3);
 };
 
 // const area = (id, opt) =>

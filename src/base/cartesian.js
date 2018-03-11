@@ -39,11 +39,12 @@ const cartesian = (chart) => Object.assign({}, chart, {
         }
     },
 
-    render(data) {
-        chart.render(data);
-
-        this._tooltip = renderTooltip(this._containerId);
-    },
+    // render(data) {
+    //     console.log(' - 3 - render cartesian')
+    //     chart.render(data);
+    //
+    //     this._tooltip = renderTooltip(this._containerId);
+    // },
 
     sort (_accessor, direction) {
         this._options.ordering = {
