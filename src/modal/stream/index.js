@@ -15,7 +15,14 @@ import drawCanvas from './draw-canvas';
 import highlightNode from './highlight-node';
 import { renderAxis, updateAxis } from '../../base/Axis';
 import createCartesianStackedOpt from '../../options/createCartesianStackedOpt';
-import cartesianStacked from '../../base/cartesianStack';
+import cartesianStacked, {
+    y0,
+    y1,
+    c,
+} from '../../base/cartesianStack';
+
+import {
+    x} from '../../base/cartesian';
 import tooltipMarkup from '../../base/tooltip';
 
 const StreamOpt = {
@@ -36,19 +43,19 @@ const animateStream = state => {
     _dataState: previousState,
     _data: data,
     _options: opt,
-    _x,
-    _c,
-    _y0,
-    _y1,
-    _metric,
     _frontCanvas: frontCanvas,
     _frontContext: frontContext,
     _tooltip: tooltip,
     _listeners: listeners,
   } = state;
 
+  const _x = x(state),
+      _c = c(state),
+      _y0 = y0(state),
+      _y1 = y1(state);
+
   const minY0 = min(data.nested.map(d => min(d.values.map(e => e.y0))));
-  _metric.scale.domain([minY0, data.maxY]);
+  state._options.data.y[0].scale.domain([minY0, data.maxY]);
 
   const initialState = previousState
     ? previousState
@@ -195,7 +202,7 @@ const stream = (id, opt) => {
   return Object.assign(
     {},
     cartesianStackedChart,
-    renderArea(cartesianStackedChart),
+    renderArea(baseChart),
     updateArea(cartesianStackedChart)
   );
 };

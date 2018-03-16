@@ -17,3 +17,11 @@ const cartesianStacked = state =>
   });
 
 export default cartesianStacked;
+
+export {
+    getSeries,
+    s,
+    y0,
+    y1,
+    c,
+}

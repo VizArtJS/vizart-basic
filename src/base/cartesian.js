@@ -47,4 +47,10 @@ const cartesian = state =>
 
 export default cartesian;
 
-export { getMetric };
+export { getMetric,
+    getDimension,
+    getDimensionVal,
+    getMetricVal,
+    x,
+    y,
+    c ,};
