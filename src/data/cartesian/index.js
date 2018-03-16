@@ -9,7 +9,6 @@ import updateOptionScales from '../update-scale/index';
  * @param opt _options
  */
 const processCartesianData = (data, opt, cleanseData = true) => {
-  console.log('----')
   const copy = cloneDeep(data);
   // a cleansed copy of data.
   let cleansed = cleanseData === true ? cleanse(copy, opt) : copy;

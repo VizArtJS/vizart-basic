@@ -12,7 +12,9 @@ import cnTimeFormat from './cn-time-format';
 
 import isBar from '../../data/helper/is-bar';
 
-const updateAxis = (svg, data, opt) => {
+const updateAxis = state => {
+  const { _svg: svg, _data: data, _options: opt } = state;
+
   let dimension = opt.data.x;
   let metric = opt.data.y[0];
   let xScale = dimension.scale;

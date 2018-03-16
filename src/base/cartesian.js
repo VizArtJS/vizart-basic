@@ -1,64 +1,48 @@
 import { Globals, uuid, AbstractCanvasChart, compose } from 'vizart-core';
 import './tooltip.css';
-import {select} from 'd3-selection';
+import { select } from 'd3-selection';
 import tooltipMarkup from './tooltip';
 
-const renderTooltip = (containerId)=> {
-    return select(containerId)
-        .append('div')
-        .attr('id', 'tooltip-' + uuid())
-        .attr('class', 'vizart-tooltip')
-        .style('opacity', 0);
-}
+const renderTooltip = state => {
+  return select(state._containerId)
+    .append('div')
+    .attr('id', 'tooltip-' + uuid())
+    .attr('class', 'vizart-tooltip')
+    .style('opacity', 0);
+};
 
-const cartesian = (chart) => Object.assign({}, chart, {
-    _getMetric: () => chart._options.data.y[0],
-    _getDimension: () => chart._options.data.x,
-    _getDimensionVal: d => d[this._getMetric().accessor],
-    _getMetricVal: d => d[this._getDimension().accessor],
-    _x(d) {
-        return this._getDimension().scale(this._getDimensionVal(d));
-    },
-    _y(d){
-        return this._getMetric().scale(this._getMetricVal(d));
-    },
+const getDimension = state => state._options.data.x;
+const getMetric = state => state._options.data.y[0];
+const getDimensionVal = state => d => d[getDimension(state).accessor];
+const getMetricVal = state => d => d[getMetric(state).accessor];
+const x = state => d => getDimension(state).scale(getDimensionVal(state)(d));
+const y = state => d => getMetric(state).scale(getMetricVal(state)(d));
+const c = state => d => {
+  if (d.color !== null && d.color !== undefined) {
+    return d.color;
+  }
 
-    _c(d) {
-        if (d.color) {
-            return d.color;
-        }
+  switch (state._options.color.type) {
+    case Globals.ColorType.CATEGORICAL:
+      return state._color(getDimensionVal(state)(d));
+    case Globals.ColorType.GRADIENT:
+    case Globals.ColorType.DISTINCT:
+      return state._color(getMetricVal(state)(d));
+    default:
+      return state._color(getMetricVal(state)(d));
+  }
+};
 
-        switch (this._options.color.type) {
-            case Globals.ColorType.CATEGORICAL:
-                return this._color(this._getDimensionVal(d));
-            case Globals.ColorType.GRADIENT:
-            case Globals.ColorType.DISTINCT:
-                return this._color(this._getMetricVal(d));
-            default:
-                return this._color(this._getMetricVal(d));
-        }
-    },
-
-    // render(data) {
-    //     console.log(' - 3 - render cartesian')
-    //     chart.render(data);
-    //
-    //     this._tooltip = renderTooltip(this._containerId);
-    // },
-
-    sort (_accessor, direction) {
-        this._options.ordering = {
-            accessor: _accessor,
-            direction: direction,
-        };
-
-        this.update();
-    },
-
-    tooltip (d) {
-        return tooltipMarkup(d, this);
-    }
-});
-
+const cartesian = state =>
+  Object.assign({}, state, {
+    _metric: getMetric(state),
+    _dimension: getDimension(state),
+    _getDimensionVal: getDimensionVal(state),
+    _getMetricVal: getMetricVal(state),
+    _tooltip: renderTooltip(state),
+    _x: x(state),
+    _y: y(state),
+    _c: c(state),
+  });
 
 export default cartesian;
