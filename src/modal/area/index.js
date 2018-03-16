@@ -144,15 +144,15 @@ const updateArea = state => ({
   },
 });
 
-const composers = {
-  opt: opt => createCartesianOpt(AreaOpt, opt),
+const makeComposers = ChartOpt => ({
+  opt: opt => createCartesianOpt(ChartOpt, opt),
   data: processCartesianData,
   color: (colorOpt, data, opt) =>
-      genericColor(colorOpt, data.map(d => d[opt.data.y[0].accessor])),
-};
+    genericColor(colorOpt, data.map(d => d[opt.data.y[0].accessor])),
+});
 
-const area = (id, opt) => {
-  const baseChart = canvas(id, opt, composers);
+const abstractArea = ChartOpt => (id, opt) => {
+  const baseChart = canvas(id, opt, makeComposers(ChartOpt));
   const cartesianChart = cartesian(baseChart);
   return Object.assign(
     {},
@@ -162,4 +162,8 @@ const area = (id, opt) => {
   );
 };
 
+const area = abstractArea(AreaOpt);
+
 export default area;
+
+export { abstractArea };
