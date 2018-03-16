@@ -26,20 +26,6 @@ class AbstractStackedCartesianChart extends AbstractCartesianChart {
 
     super.update();
   }
-
-  data(_data) {
-    if (check(_data) === true) {
-      this._data = processStackedData(_data, this._options, true);
-    }
-
-    return this._data;
-  }
-
-  _provideColor() {
-    let _num = this._data && this._data.nested ? this._data.nested.length : 0;
-
-    return categoricalColor(this._options.color.scheme, _num);
-  }
 }
 
 export default AbstractStackedCartesianChart;

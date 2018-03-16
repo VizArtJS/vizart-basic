@@ -46,3 +46,5 @@ const cartesian = state =>
   });
 
 export default cartesian;
+
+export { getMetric };

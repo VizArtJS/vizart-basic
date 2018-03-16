@@ -2,9 +2,13 @@ import { scaleLinear } from 'd3-scale';
 
 import generateStackLayout from './stacked-layout';
 import rescaleStackedMetric from './scale-stacked-metric';
-import processCartesianData from '../cartesian/index';
+import processCartesianData from '../cartesian';
 
 const processStackedData = (data, opt, cleanse = true) => {
+  if (data.hasOwnProperty('original')) {
+    data = data.original;
+  }
+
   let copy = processCartesianData(data, opt, cleanse);
   let nestedData = generateStackLayout(copy, opt);
 

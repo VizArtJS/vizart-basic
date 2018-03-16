@@ -1,8 +1,8 @@
 import { mergeBase } from 'vizart-core';
 import CartesianStackedOptions from './CartesianStackedOptions';
 
-const createCartesianStackedOpt = (_chartOpt, _userOpt) => {
-  let cartesianOpt = mergeBase(CartesianStackedOptions, _chartOpt, _userOpt);
+const createCartesianStackedOpt = (chartOpt, userOpt) => {
+  const cartesianOpt = mergeBase(CartesianStackedOptions, chartOpt, userOpt);
 
   cartesianOpt.ordering.accessor = cartesianOpt.data.x.accessor;
 

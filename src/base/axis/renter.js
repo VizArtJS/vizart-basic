@@ -1,9 +1,9 @@
 import updateAxis from './update';
 import rotateXTicks from './rotete';
 
-const renderAxis = state => {
+const renderAxis = (state, stacked = false) => {
   const { _svg: svg, _options: opt } = state;
-  const { x: _xAxis, y: _yAxis } = updateAxis(state);
+  const { x: _xAxis, y: _yAxis } = updateAxis(state, stacked);
 
   const xAxis = svg
     .append('g')

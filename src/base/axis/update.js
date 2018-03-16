@@ -12,8 +12,11 @@ import cnTimeFormat from './cn-time-format';
 
 import isBar from '../../data/helper/is-bar';
 
-const updateAxis = state => {
-  const { _svg: svg, _data: data, _options: opt } = state;
+const updateAxis = (state, stacked) => {
+  const { _svg: svg, _data, _options: opt } = state;
+
+  const data =
+    stacked === true ? _data.nested[0].values.map(d => d.data) : _data;
 
   let dimension = opt.data.x;
   let metric = opt.data.y[0];
