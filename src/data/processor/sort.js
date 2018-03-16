@@ -1,4 +1,4 @@
-import { Globals} from 'vizart-core';
+import { Globals } from 'vizart-core';
 import has from 'lodash-es/has';
 import getSortDef from '../helper/get-sort-def';
 

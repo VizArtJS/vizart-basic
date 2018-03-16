@@ -8,9 +8,9 @@ import {
   genericColor,
 } from 'vizart-core';
 import cartesian from '../../base/cartesian';
-import { processCartesianData } from '../../data';
 import tooltipMarkup from '../../base/tooltip';
 import { renderAxis, updateAxis } from '../../base/axis';
+import { processCartesianData } from '../../data';
 
 import createCartesianOpt from '../../options/createCartesianOpt';
 import animateStates from './tween-states';
@@ -144,15 +144,11 @@ const updateArea = state => ({
   },
 });
 
-const cartesianColor = (colorOpt, data, opt) =>
-  genericColor(colorOpt, data.map(d => d[opt.data.y[0].accessor]));
-
-const areaOpt = opt => createCartesianOpt(AreaOpt, opt);
-
 const composers = {
-  opt: areaOpt,
+  opt: opt => createCartesianOpt(AreaOpt, opt),
   data: processCartesianData,
-  color: cartesianColor,
+  color: (colorOpt, data, opt) =>
+      genericColor(colorOpt, data.map(d => d[opt.data.y[0].accessor])),
 };
 
 const area = (id, opt) => {
