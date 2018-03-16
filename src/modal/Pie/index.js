@@ -4,7 +4,7 @@ import isArray from 'lodash-es/isArray';
 import { check, Globals } from 'vizart-core';
 
 import createCartesianOpt from '../../options/createCartesianOpt';
-import AbstractBasicCartesianChart from '../../base/AbstractBasicCartesianChart';
+import AbstractBasicCartesianChart from '../../tooltip/AbstractBasicCartesianChart';
 import drawHiddenCanvas from './draw-hidden-canvas';
 import limitSliceValues from './limit-slice-values';
 import animateStates from './tween-states';

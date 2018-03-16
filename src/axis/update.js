@@ -10,7 +10,7 @@ import updateXAxisTicks from './update-x-ticks';
 import transitionTicks from './transition';
 import cnTimeFormat from './cn-time-format';
 
-import isBar from '../../data/helper/is-bar';
+import isBar from '../data/helper/is-bar';
 
 const updateAxis = (state, stacked) => {
   const { _svg: svg, _data, _options: opt } = state;

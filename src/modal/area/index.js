@@ -7,9 +7,9 @@ import {
   canvas,
   genericColor,
 } from 'vizart-core';
-import cartesian from '../../base/cartesian';
-import tooltipMarkup from '../../base/tooltip';
-import { renderAxis, updateAxis } from '../../base/axis';
+import { x, y } from '../../helper/withCartesian';
+import tooltipMarkup from '../../tooltip/markup';
+import { renderAxis, updateAxis } from '../../axis';
 import { processCartesianData } from '../../data';
 
 import createCartesianOpt from '../../options/createCartesianOpt';
@@ -37,8 +37,6 @@ const _animateArea = state => {
     _dataState: previousState,
     _data: data,
     _options: opt,
-    _x: x,
-    _y: y,
     _frontCanvas: frontCanvas,
     _frontContext: frontContext,
     _tooltip: tooltip,
@@ -52,7 +50,7 @@ const _animateArea = state => {
     ? previousState
     : data.map(d => {
         return {
-          x: x(d),
+          x: x(state)(d),
           y: frontCanvas.node().height,
           r: opt.plots.nodeRadius,
           c: nodeColor,
@@ -63,8 +61,8 @@ const _animateArea = state => {
 
   const finalState = data.map(d => {
     return {
-      x: x(d),
-      y: y(d),
+      x: x(state)(d),
+      y: y(state)(d),
       r: opt.plots.nodeRadius,
       c: nodeColor,
       alpha: 1,
@@ -153,12 +151,12 @@ const makeComposers = ChartOpt => ({
 
 const abstractArea = ChartOpt => (id, opt) => {
   const baseChart = canvas(id, opt, makeComposers(ChartOpt));
-  const cartesianChart = cartesian(baseChart);
+
   return Object.assign(
     {},
-    cartesianChart,
-    renderArea(cartesianChart),
-    updateArea(cartesianChart)
+    baseChart,
+    renderArea(baseChart),
+    updateArea(baseChart)
   );
 };
 

@@ -40,7 +40,7 @@ const Curves = {
   CATMULL_ROM_OPEN: 'catmull-rom-open',
 };
 
-let interpolateCurve = function(_curve, _shapes) {
+const interpolateCurve = (_curve, _shapes) => {
   for (let _shape of _shapes) {
     switch (_curve) {
       case Curves.LINEAR:
@@ -105,11 +105,11 @@ let interpolateCurve = function(_curve, _shapes) {
         _shape.curve(curveCatmullRom);
         break;
 
-      case Curves.CARDINAL_CLOSED:
+      case Curves.CATMULL_ROM_CLOSED:
         _shape.curve(curveCatmullRomClosed);
         break;
 
-      case Curves.CARDINAL_OPEN:
+      case Curves.CATMULL_ROM_OPEN:
         _shape.curve(curveCatmullRomOpen);
         break;
 

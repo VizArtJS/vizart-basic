@@ -4,10 +4,10 @@ import generateStackLayout from './stacked-layout';
 import rescaleStackedMetric from './scale-stacked-metric';
 import processCartesianData from '../cartesian';
 
-const processStackedData = (data, opt, cleanse = true) => {
-  if (data.hasOwnProperty('original')) {
-    data = data.original;
-  }
+const processStackedData = (_data, opt, cleanse = true) => {
+  const data = _data.hasOwnProperty('original')
+    ? _data.original.slice()
+    : _data.slice();
 
   let copy = processCartesianData(data, opt, cleanse);
   let nestedData = generateStackLayout(copy, opt);

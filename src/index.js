@@ -1,5 +1,7 @@
 export { version } from '../package.json';
 
+import './tooltip/tooltip.css';
+
 // export { default as Bar } from './modal/Bar';
 // export { default as Pie } from './modal/Pie';
 export { default as area } from './modal/area';

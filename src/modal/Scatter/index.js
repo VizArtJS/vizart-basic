@@ -1,7 +1,7 @@
 import { mouse } from 'd3-selection';
 import isNull from 'lodash-es/isNull';
 import { Globals, applyVoronoi } from 'vizart-core';
-import AbstractBasicCartesianChartWithAxes from '../../base/AbstractBasicCartesianChartWithAxes';
+import AbstractBasicCartesianChartWithAxes from '../../tooltip/AbstractBasicCartesianChartWithAxes';
 import createCartesianOpt from '../../options/createCartesianOpt';
 import updateRadiusScale from './update-radius-scale';
 import animateStates from './tween-states';

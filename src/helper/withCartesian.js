@@ -1,15 +1,4 @@
-import { Globals, uuid, AbstractCanvasChart, compose } from 'vizart-core';
-import './tooltip.css';
-import { select } from 'd3-selection';
-import tooltipMarkup from './tooltip';
-
-const renderTooltip = state => {
-  return select(state._containerId)
-    .append('div')
-    .attr('id', 'tooltip-' + uuid())
-    .attr('class', 'vizart-tooltip')
-    .style('opacity', 0);
-};
+import { Globals } from 'vizart-core';
 
 const getDimension = state => state._options.data.x;
 const getMetric = state => state._options.data.y[0];
@@ -33,8 +22,8 @@ const c = state => d => {
   }
 };
 
-const cartesian = state =>
-  Object.assign({}, state, {
+const withCartesian = state =>
+  Object.assign(state, {
     _metric: getMetric(state),
     _dimension: getDimension(state),
     _getDimensionVal: getDimensionVal(state),
@@ -45,12 +34,6 @@ const cartesian = state =>
     _c: c(state),
   });
 
-export default cartesian;
+export default withCartesian;
 
-export { getMetric,
-    getDimension,
-    getDimensionVal,
-    getMetricVal,
-    x,
-    y,
-    c ,};
+export { getMetric, getMetricVal, getDimension, getDimensionVal, x, y, c };

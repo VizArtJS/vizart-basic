@@ -13,17 +13,12 @@ import { processStackedData, Stacks } from '../../data';
 import animateStates from './tween-states';
 import drawCanvas from './draw-canvas';
 import highlightNode from './highlight-node';
-import { renderAxis, updateAxis } from '../../base/Axis';
+import { renderAxis, updateAxis } from '../../axis';
 import createCartesianStackedOpt from '../../options/createCartesianStackedOpt';
-import cartesianStacked, {
-    y0,
-    y1,
-    c,
-} from '../../base/cartesianStack';
+import { y0, y1, c } from '../../helper/withCartesianStacked';
 
-import {
-    x} from '../../base/cartesian';
-import tooltipMarkup from '../../base/tooltip';
+import { x, getMetric } from '../../helper/withCartesian';
+import tooltipMarkup from '../../tooltip/markup';
 
 const StreamOpt = {
   chart: {
@@ -50,12 +45,12 @@ const animateStream = state => {
   } = state;
 
   const _x = x(state),
-      _c = c(state),
-      _y0 = y0(state),
-      _y1 = y1(state);
+    _c = c(state),
+    _y0 = y0(state),
+    _y1 = y1(state);
 
   const minY0 = min(data.nested.map(d => min(d.values.map(e => e.y0))));
-  state._options.data.y[0].scale.domain([minY0, data.maxY]);
+  getMetric(state).scale.domain([minY0, data.maxY]);
 
   const initialState = previousState
     ? previousState
@@ -163,8 +158,8 @@ const animateStream = state => {
       drawCanvas(frontCanvas, res, opt);
     }
 
-    frontCanvas.on('mousemove', mouseMoveHandler);
-    frontCanvas.on('mouseout', mouseOutHandler);
+    // frontCanvas.on('mousemove', mouseMoveHandler);
+    // frontCanvas.on('mouseout', mouseOutHandler);
 
     listeners.call('rendered');
   });
@@ -198,12 +193,12 @@ const composers = {
 
 const stream = (id, opt) => {
   const baseChart = canvas(id, opt, composers);
-  const cartesianStackedChart = cartesianStacked(baseChart);
+  // const cartesianStackedChart = cartesianStacked(baseChart);
   return Object.assign(
     {},
-    cartesianStackedChart,
+    baseChart,
     renderArea(baseChart),
-    updateArea(cartesianStackedChart)
+    updateArea(baseChart)
   );
 };
 

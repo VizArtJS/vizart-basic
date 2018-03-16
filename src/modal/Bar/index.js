@@ -3,11 +3,11 @@ import { transition } from 'd3-transition';
 import isUndefined from 'lodash-es/isUndefined';
 import isFunction from 'lodash-es/isFunction';
 
-import { updateAxis } from '../../base/Axis';
+import { updateAxis } from '../../axis';
 
 import { Globals, mergeOptions } from 'vizart-core';
 
-import AbstractBasicCartesianChartWithAxes from '../../base/AbstractBasicCartesianChartWithAxes';
+import AbstractBasicCartesianChartWithAxes from '../../tooltip/AbstractBasicCartesianChartWithAxes';
 import createCartesianOpt from '../../options/createCartesianOpt';
 import sortSelector from '../../data/helper/sort-selector';
 import drawRects from './draw-rects';

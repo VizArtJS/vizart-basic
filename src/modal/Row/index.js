@@ -8,7 +8,7 @@ import { brushY } from 'd3-brush';
 
 import { Globals, mergeOptions, uuid } from 'vizart-core';
 
-import AbstractBasicCartesianChart from '../../base/AbstractBasicCartesianChart';
+import AbstractBasicCartesianChart from '../../tooltip/AbstractBasicCartesianChart';
 import createCartesianOpt from '../../options/createCartesianOpt';
 import drawCanvas from './draw-canvas';
 import drawHiddenRects from './draw-hidden-rects';

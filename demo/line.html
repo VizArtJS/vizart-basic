@@ -126,32 +126,32 @@
                 accessor: 'date',
                 direction: 'asc'
             }
-            area.options(options2);
-            area.update();
+            line.options(options2);
+            line.update();
         })
         $('#a2').click(function(){
             options2.ordering = {
                 accessor: 'date',
                 direction: 'desc'
             }
-            area.options(options2);
-            area.update();
+            line.options(options2);
+            line.update();
         });
         $('#a3').click(function(){
             options2.ordering = {
                 accessor: metricAccessor,
                 direction: 'asc'
             }
-            area.options(options2);
-            area.update();
+            line.options(options2);
+            line.update();
         });
         $('#a4').click(function(){
             options2.ordering = {
                 accessor: metricAccessor,
                 direction: 'desc'
             }
-            area.options(options2);
-            area.update();
+            line.options(options2);
+            line.update();
         });
 
     });
