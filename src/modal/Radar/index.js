@@ -1,4 +1,4 @@
-import Corona from '../Corona';
+import Corona from '../corona';
 import createCartesianStackedOpt from '../../options/createCartesianStackedOpt';
 
 const RadarOptions = {

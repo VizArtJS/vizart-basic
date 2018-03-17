@@ -180,7 +180,7 @@ const apiUpdateStream = state => ({
   },
 });
 
-const colorApi = state => ({
+const apiColor = state => ({
   color(colorOpt) {
     state._options.color = colorOpt;
     apiUpdate(state).update();
@@ -207,7 +207,7 @@ const stream = (id, opt) => {
     baseChart,
     apiRenderStream(baseChart),
     apiUpdateStream(baseChart),
-    colorApi(baseChart)
+    apiColor(baseChart)
   );
 };
 

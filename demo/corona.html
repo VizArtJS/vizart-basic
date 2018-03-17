@@ -135,7 +135,7 @@
             }
         };
 
-        var chart = new VizArtBasic.Corona('#chart', options);
+        var chart = VizArtBasic.corona('#chart', options);
 
         d3.csv('assets/app-downloads.csv', function(err, res){
             chart.render(res);
