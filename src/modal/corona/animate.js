@@ -5,7 +5,7 @@ import getRadius from './get-radius';
 import drawCanvas from './draw-canvas';
 import { scaleLinear } from 'd3-scale';
 import highlight from './highlight';
-import { c } from '../../helper/withCartesianStacked';
+import { c } from '../../helper/withStacked';
 
 const animate = state => {
   const { _options, _data, _dataState, _frontContext } = state;

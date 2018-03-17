@@ -1,5 +1,5 @@
 import { apiRenderCanvas, apiUpdate, canvas } from 'vizart-core';
-import { renderAxis, updateAxis } from '../axis/index';
+import { renderAxis, updateAxis } from '../axis';
 
 import { stackedComposer, standardComposer } from './composers';
 
@@ -23,7 +23,7 @@ const apiUpdateChart = (state, animate, hasAxis, stacked) => ({
   },
 });
 
-const apiColor = (state) => ({
+const apiColor = state => ({
   color(colorOpt) {
     state._options.color = colorOpt;
     state.update();

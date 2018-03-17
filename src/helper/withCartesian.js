@@ -28,7 +28,6 @@ const withCartesian = state =>
     _dimension: getDimension(state),
     _getDimensionVal: getDimensionVal(state),
     _getMetricVal: getMetricVal(state),
-    _tooltip: renderTooltip(state),
     _x: x(state),
     _y: y(state),
     _c: c(state),

@@ -1,4 +1,5 @@
 import { select } from 'd3-selection';
+import { uuid } from 'vizart-core';
 
 const renderTooltip = state => {
   return select(state._containerId)

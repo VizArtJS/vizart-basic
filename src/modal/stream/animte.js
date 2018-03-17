@@ -5,7 +5,7 @@ import { applyVoronoi } from 'vizart-core';
 import animateStates from './tween-states';
 import drawCanvas from './draw-canvas';
 import highlightNode from './highlight-node';
-import { y0, y1, c } from '../../helper/withCartesianStacked';
+import { y0, y1, c } from '../../helper/withStacked';
 
 import { x, getMetric } from '../../helper/withCartesian';
 import tooltipMarkup from '../../tooltip/markup';
