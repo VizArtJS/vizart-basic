@@ -23,14 +23,10 @@ const apiUpdateChart = (state, animate, hasAxis, stacked) => ({
   },
 });
 
-const apiColor = (state, animate, hasAxis, stacked) => ({
+const apiColor = (state) => ({
   color(colorOpt) {
     state._options.color = colorOpt;
-    apiUpdate(state).update();
-    if (hasAxis === true) {
-      updateAxis(state, stacked);
-    }
-    animate(state);
+    state.update();
   },
 });
 
@@ -44,7 +40,7 @@ const build = builderConfig => (ChartOpt, animate) => (id, opt) => {
     baseChart,
     apiRender(baseChart, animate, hasAxis, stacked),
     apiUpdateChart(baseChart, animate, hasAxis, stacked),
-    apiColor(baseChart, animate, hasAxis, stacked)
+    apiColor(baseChart)
   );
 };
 
