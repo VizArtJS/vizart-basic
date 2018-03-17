@@ -1,33 +1,27 @@
-import {
-    genericColor,
-    categoricalColor,
-} from 'vizart-core';
+import { genericColor, categoricalColor } from 'vizart-core';
 
-import createCartesianStackedOpt from "../options/createCartesianStackedOpt";
-import {processCartesianData, processStackedData} from "../data";
-import createCartesianOpt from "../options/createCartesianOpt";
+import createCartesianStackedOpt from '../options/createCartesianStackedOpt';
+import { processCartesianData, processStackedData } from '../data';
+import createCartesianOpt from '../options/createCartesianOpt';
 
 const colorBySeries = (colorOpt, data, opt) => {
-    const distinct = data && data.nested ? data.nested.length : 0;
-    return categoricalColor(opt.color.scheme, distinct);
+  const distinct = data && data.nested ? data.nested.length : 0;
+  return categoricalColor(opt.color.scheme, distinct);
 };
 
 const stackedComposer = ChartOpt => ({
-    opt: opt => createCartesianStackedOpt(ChartOpt, opt),
-    data: processStackedData,
-    color: colorBySeries,
+  opt: opt => createCartesianStackedOpt(ChartOpt, opt),
+  data: processStackedData,
+  color: colorBySeries,
 });
 
 const colorComposer = (colorOpt, data, opt) =>
-    genericColor(colorOpt, data.map(d => d[opt.data.y[0].accessor]));
+  genericColor(colorOpt, data.map(d => d[opt.data.y[0].accessor]));
 
 const standardComposer = ChartOpt => ({
-    opt: opt => createCartesianOpt(ChartOpt, opt),
-    data: processCartesianData,
-    color: colorComposer,
+  opt: opt => createCartesianOpt(ChartOpt, opt),
+  data: processCartesianData,
+  color: colorComposer,
 });
 
-export {
-    stackedComposer,
-    standardComposer
-}
+export { stackedComposer, standardComposer };

@@ -1,15 +1,7 @@
-import {
-  apiRenderCanvas,
-  apiUpdate,
-  canvas,
-} from 'vizart-core';
+import { apiRenderCanvas, apiUpdate, canvas } from 'vizart-core';
 import { renderAxis, updateAxis } from '../axis/index';
 
-import {
-    stackedComposer,
-    standardComposer
-} from './composers';
-
+import { stackedComposer, standardComposer } from './composers';
 
 const apiRender = (state, animate, hasAxis, stacked) => ({
   render(data) {
@@ -43,7 +35,7 @@ const apiColor = (state, animate, hasAxis, stacked) => ({
 });
 
 const build = builderConfig => (ChartOpt, animate) => (id, opt) => {
-  const { hasAxis = true, stacked = false} = builderConfig;
+  const { hasAxis = true, stacked = false } = builderConfig;
   const compose = stacked === true ? stackedComposer : standardComposer;
 
   const baseChart = canvas(id, opt, compose(ChartOpt));
@@ -56,16 +48,11 @@ const build = builderConfig => (ChartOpt, animate) => (id, opt) => {
   );
 };
 
-const cartesian = build({ hasAxis: true, stacked: false});
-const polar = build({ hasAxis: false, stacked: false});
-const stacked = build({ hasAxis: true, stacked: true});
-const polarStacked = build({ hasAxis: false, stacked: true});
+const cartesian = build({ hasAxis: true, stacked: false });
+const polar = build({ hasAxis: false, stacked: false });
+const stacked = build({ hasAxis: true, stacked: true });
+const polarStacked = build({ hasAxis: false, stacked: true });
 
 export default build;
 
-export {
-    cartesian,
-    polar,
-    stacked,
-    polarStacked,
-}
+export { cartesian, polar, stacked, polarStacked };
