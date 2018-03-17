@@ -2,16 +2,10 @@ import { scaleLinear } from 'd3-scale';
 import { mouse } from 'd3-selection';
 import {
   applyVoronoi,
-  apiRenderCanvas,
-  apiUpdate,
-  canvas,
-  categoricalColor,
   getTransparentColor,
 } from 'vizart-core';
 
-import CoronaOptions from './options';
-import createCartesianStackedOpt from '../../options/createCartesianStackedOpt';
-import { processStackedData, Stacks } from '../../data';
+import build from '../cartesianStacked';
 
 import drawCanvas from './draw-canvas';
 import highlight from './highlight';
@@ -19,8 +13,9 @@ import getRadius from './get-radius';
 import animateStates from './tween-states';
 import { getMetric, getDimensionVal } from '../../helper/withCartesian';
 import { c } from '../../helper/withCartesianStacked';
+import CoronaOptions from "./options";
 
-const animateCorona = state => {
+const animate = state => {
   const { _options, _data, _dataState, _frontContext } = state;
   const [innerRadius, outerRadius] = getRadius(_options);
   const dataRange = [_data.minY, _data.maxY];
@@ -162,73 +157,31 @@ const animateCorona = state => {
   });
 };
 
-const apiRenderCorona = state => ({
-  render(data) {
-    apiRenderCanvas(state).render(data);
-    animateCorona(state);
-  },
-});
 
-const apiUpdateCorona = state => ({
-  update() {
-    apiUpdate(state).update();
-    animateCorona(state);
-  },
-});
-
-const apiLayout = state => ({
-  stackLayout() {
-    state._options.plots.stackLayout = true;
-    state._options.plots.stackMethod = Stacks.Zero;
-
-    apiUpdate(state).update();
-    animateCorona(state);
-  },
-
-  expandLayout() {
-    state._options.plots.stackLayout = true;
-    state._options.plots.stackMethod = Stacks.Expand;
-
-    apiUpdate(state).update();
-    animateCorona(state);
-  },
-
-  groupedLayout() {
-    state._options.plots.stackLayout = false;
-    apiUpdate(state).update();
-    animateCorona(state);
-  },
-});
-
-const apiColor = state => ({
-  color(colorOpt) {
-    state._options.color = colorOpt;
-    apiUpdate(state).update();
-    animateCorona(state);
-  },
-});
-
-const colorBySeries = (colorOpt, data, opt) => {
-  const distinct = data && data.nested ? data.nested.length : 0;
-  return categoricalColor(opt.color.scheme, distinct);
-};
-
-const composers = {
-  opt: opt => createCartesianStackedOpt(CoronaOptions, opt),
-  data: processStackedData,
-  color: colorBySeries,
-};
-
-const corona = (id, opt) => {
-  const baseChart = canvas(id, opt, composers);
-
-  return Object.assign(
-    baseChart,
-    apiRenderCorona(baseChart),
-    apiUpdateCorona(baseChart),
-    apiColor(baseChart),
-    apiLayout(baseChart)
-  );
-};
+// const apiLayout = state => ({
+//   stackLayout() {
+//     state._options.plots.stackLayout = true;
+//     state._options.plots.stackMethod = Stacks.Zero;
+//
+//     apiUpdate(state).update();
+//     animateCorona(state);
+//   },
+//
+//   expandLayout() {
+//     state._options.plots.stackLayout = true;
+//     state._options.plots.stackMethod = Stacks.Expand;
+//
+//     apiUpdate(state).update();
+//     animateCorona(state);
+//   },
+//
+//   groupedLayout() {
+//     state._options.plots.stackLayout = false;
+//     apiUpdate(state).update();
+//     animateCorona(state);
+//   },
+// });
+//
+const corona = build(CoronaOptions, animate);
 
 export default corona;
