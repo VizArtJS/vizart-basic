@@ -57,15 +57,15 @@ const build = builderConfig => (ChartOpt, animate) => (id, opt) => {
 };
 
 const cartesian = build({ hasAxis: true, stacked: false});
-const cartesianWithoutAxes = build({ hasAxis: false, stacked: false});
+const polar = build({ hasAxis: false, stacked: false});
 const stacked = build({ hasAxis: true, stacked: true});
-const stackedWithoutAxes = build({ hasAxis: false, stacked: true});
+const polarStacked = build({ hasAxis: false, stacked: true});
 
 export default build;
 
 export {
     cartesian,
-    cartesianWithoutAxes,
+    polar,
     stacked,
-    stackedWithoutAxes,
+    polarStacked,
 }
