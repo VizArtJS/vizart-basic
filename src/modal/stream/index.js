@@ -164,7 +164,7 @@ const animateStream = state => {
     listeners.call('rendered');
   });
 };
-const renderArea = state => ({
+const apiRenderStream = state => ({
   render(data) {
     apiRenderCanvas(state).render(data);
     renderAxis(state, true);
@@ -172,8 +172,17 @@ const renderArea = state => ({
   },
 });
 
-const updateArea = state => ({
+const apiUpdateStream = state => ({
   update() {
+    apiUpdate(state).update();
+    updateAxis(state, true);
+    animateStream(state);
+  },
+});
+
+const colorApi = state => ({
+  color(colorOpt) {
+    state._options.color = colorOpt;
     apiUpdate(state).update();
     updateAxis(state, true);
     animateStream(state);
@@ -193,11 +202,12 @@ const composers = {
 
 const stream = (id, opt) => {
   const baseChart = canvas(id, opt, composers);
-  
+
   return Object.assign(
     baseChart,
-    renderArea(baseChart),
-    updateArea(baseChart)
+    apiRenderStream(baseChart),
+    apiUpdateStream(baseChart),
+    colorApi(baseChart)
   );
 };
 

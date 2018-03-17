@@ -126,7 +126,7 @@ const _animateArea = state => {
   });
 };
 
-const renderArea = state => ({
+const apiRenderArea = state => ({
   render(data) {
     apiRenderCanvas(state).render(data);
     renderAxis(state);
@@ -134,7 +134,7 @@ const renderArea = state => ({
   },
 });
 
-const updateArea = state => ({
+const apiUpdateArea = state => ({
   update() {
     apiUpdate(state).update();
     updateAxis(state);
@@ -143,21 +143,21 @@ const updateArea = state => ({
 });
 
 const colorComposer = (colorOpt, data, opt) =>
-    genericColor(colorOpt, data.map(d => d[opt.data.y[0].accessor]));
+  genericColor(colorOpt, data.map(d => d[opt.data.y[0].accessor]));
 
-const color = state => ({
+const apiColor = state => ({
   color(colorOpt) {
-      state._options.color = colorOpt;
-      apiUpdate(state).update();
-      updateAxis(state);
-      _animateArea(state);
-  }
-})
+    state._options.color = colorOpt;
+    apiUpdate(state).update();
+    updateAxis(state);
+    _animateArea(state);
+  },
+});
 
 const makeComposers = ChartOpt => ({
   opt: opt => createCartesianOpt(ChartOpt, opt),
   data: processCartesianData,
-  color: colorComposer
+  color: colorComposer,
 });
 
 const abstractArea = ChartOpt => (id, opt) => {
@@ -165,9 +165,9 @@ const abstractArea = ChartOpt => (id, opt) => {
 
   return Object.assign(
     baseChart,
-    renderArea(baseChart),
-    updateArea(baseChart),
-    color(baseChart)
+    apiRenderArea(baseChart),
+    apiUpdateArea(baseChart),
+    apiColor(baseChart)
   );
 };
 
