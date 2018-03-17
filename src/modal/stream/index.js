@@ -193,9 +193,8 @@ const composers = {
 
 const stream = (id, opt) => {
   const baseChart = canvas(id, opt, composers);
-  // const cartesianStackedChart = cartesianStacked(baseChart);
+  
   return Object.assign(
-    {},
     baseChart,
     renderArea(baseChart),
     updateArea(baseChart)

@@ -142,21 +142,32 @@ const updateArea = state => ({
   },
 });
 
+const colorComposer = (colorOpt, data, opt) =>
+    genericColor(colorOpt, data.map(d => d[opt.data.y[0].accessor]));
+
+const color = state => ({
+  color(colorOpt) {
+      state._options.color = colorOpt;
+      apiUpdate(state).update();
+      updateAxis(state);
+      _animateArea(state);
+  }
+})
+
 const makeComposers = ChartOpt => ({
   opt: opt => createCartesianOpt(ChartOpt, opt),
   data: processCartesianData,
-  color: (colorOpt, data, opt) =>
-    genericColor(colorOpt, data.map(d => d[opt.data.y[0].accessor])),
+  color: colorComposer
 });
 
 const abstractArea = ChartOpt => (id, opt) => {
   const baseChart = canvas(id, opt, makeComposers(ChartOpt));
 
   return Object.assign(
-    {},
     baseChart,
     renderArea(baseChart),
-    updateArea(baseChart)
+    updateArea(baseChart),
+    color(baseChart)
   );
 };
 
