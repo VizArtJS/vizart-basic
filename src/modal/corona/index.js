@@ -1,7 +1,7 @@
-import build from '../../helper/buildStack';
+import { stackedWithoutAxes } from '../../helper/builder';
 import animate from './animate';
 import CoronaOptions from './options';
 
-const corona = build(CoronaOptions, animate, false);
+const corona = stackedWithoutAxes(CoronaOptions, animate);
 
 export default corona;

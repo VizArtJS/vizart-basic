@@ -1,6 +1,6 @@
 import { Stacks } from '../../data';
 import animate from './animte';
-import build from '../../helper/buildStack';
+import build from '../../helper/builder';
 
 const StreamOpt = {
   chart: {

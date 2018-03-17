@@ -1,5 +1,5 @@
 import animate from './animate';
-import build from '../../helper/buildCartesian';
+import { cartesian } from '../../helper/builder';
 
 const AreaOpt = {
   chart: {
@@ -16,6 +16,6 @@ const AreaOpt = {
   },
 };
 
-const area = build(AreaOpt, animate);
+const area = cartesian(AreaOpt, animate);
 
 export default area;

@@ -1,5 +1,5 @@
 import animate from '../area/animate';
-import build from '../../helper/buildCartesian';
+import { cartesian } from '../../helper/builder';
 
 const LineOptions = {
   chart: {
@@ -15,6 +15,6 @@ const LineOptions = {
   },
 };
 
-const line = build(LineOptions, animate);
+const line = cartesian(LineOptions, animate);
 
 export default line;
