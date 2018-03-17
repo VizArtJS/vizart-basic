@@ -1,4 +1,5 @@
-import { abstractArea } from '../area';
+import animate from '../area/animate';
+import build from '../../helper/buildCartesian';
 
 const LineOptions = {
   chart: {
@@ -14,6 +15,6 @@ const LineOptions = {
   },
 };
 
-const line = abstractArea(LineOptions);
+const line = build(LineOptions, animate);
 
 export default line;

@@ -3,7 +3,7 @@ import {
   apiUpdate,
   canvas,
   categoricalColor,
-} from '../../../vizart-core/dist/vizart-core';
+} from 'vizart-core';
 import createCartesianStackedOpt from '../options/createCartesianStackedOpt';
 import { processStackedData } from '../data/index';
 import { renderAxis, updateAxis } from '../axis/index';
