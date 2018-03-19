@@ -96,7 +96,7 @@
 
 
 
-        var barChart = new VizArtBasic.Bar('#bar', options);
+        var barChart = VizArtBasic.bar('#bar', options);
 
         d3.csv('assets/movies.csv', function(err, res){
             var data = _.uniqWith(res, function(a, b) {

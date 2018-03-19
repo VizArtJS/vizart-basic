@@ -1,9 +1,21 @@
 import { mouse } from 'd3-selection';
 import { transition } from 'd3-transition';
-import drawHiddenRects from './draw-hidden-rects';
-import hasNegativeValue from '../../util/has-negative';
-import { transition } from 'd3-transition';
 import drawRects from './draw-rects';
+import drawHiddenRects from './draw-hidden-rects';
+
+import hasNegativeValue from '../../util/has-negative';
+
+import {
+  y,
+  c,
+  x,
+  getDimensionVal,
+  getMetricVal,
+  getDimension,
+  getMetric,
+} from '../../helper/withCartesian';
+import isFunction from '../../util/isFunction';
+import tooltipMarkup from '../../tooltip/markup';
 
 const animate = state => {
   const {
@@ -11,13 +23,32 @@ const animate = state => {
     _options,
     _frontContext,
     _detachedContainer,
-    _y,
-    _c,
-    _x,
-    _getDimensionVal,
-    _getMetricVal,
+    _hiddenContext,
+    _canvasScale,
   } = state;
+
+  const _y = y(state);
+  const _c = c(state);
+  const _x = x(state);
+
   const _hasNegative = hasNegativeValue(_data, _options);
+  const _getDimensionVal = getDimensionVal(state);
+  const _getMetricVal = getMetricVal(state);
+
+  const _w = () => {
+    if (
+      getDimension(state).scale.bandwidth === undefined ||
+      !isFunction(getDimension(state).scale.bandwidth)
+    ) {
+      const evenWidth = Math.ceil(_options.chart.innerWidth / _data.length);
+
+      return evenWidth > 1 ? evenWidth - 1 : 0.1;
+    } else {
+      return getDimension(state).scale.bandwidth();
+    }
+  };
+  const _h = d => _options.chart.innerHeight - _y(d);
+  const _zero = () => getMetric(state).scale(0);
 
   const drawCanvasInTransition = () => {
     return t => {
@@ -46,20 +77,15 @@ const animate = state => {
     .duration(_options.animation.duration.update)
     .each(() => {
       dataUpdate
-        .attr('dimension', _getDimensionVal())
-        .attr('metric', _getMetricVal())
+        .attr('dimension', _getDimensionVal)
+        .attr('metric', _getMetricVal)
         .transition('update-rect-transition')
-        .delay(
-          (d, i) => i / this._data.length * _options.animation.duration.update
-        )
-        .attr('fill', this._c)
-        .attr('x', this._x)
-        .attr('width', this._w)
-        .attr('y', d => (this._getMetricVal(d) > 0 ? _y(d) : this._zero()))
-        .attr(
-          'height',
-          d => (_hasNegative ? Math.abs(_y(d) - this._zero()) : this._h(d))
-        )
+        .delay((d, i) => i / _data.length * _options.animation.duration.update)
+        .attr('fill', _c)
+        .attr('x', _x)
+        .attr('width', _w)
+        .attr('y', d => (getMetricVal(d) > 0 ? _y(d) : _zero()))
+        .attr('height', d => (_hasNegative ? Math.abs(_y(d) - _zero()) : _h(d)))
         .tween('update.rects', drawCanvasInTransition);
     });
 
@@ -73,29 +99,23 @@ const animate = state => {
         .attr('fill', _c)
         .attr('opacity', 1)
         .attr('x', _x)
-        .attr('width', this._w)
-        .attr('dimension', this._getDimensionVal)
-        .attr('metric', this._getMetricVal)
-        .attr('y', _hasNegative ? this._zero(0) : _options.chart.innerHeight)
+        .attr('width', _w)
+        .attr('dimension', _getDimensionVal)
+        .attr('metric', _getMetricVal)
+        .attr('y', _hasNegative ? _zero(0) : _options.chart.innerHeight)
         .attr('height', 0)
         .transition()
         .duration(_options.animation.duration.add)
-        .delay(
-          (d, i) => i / this._data.length * _options.animation.duration.add
-        )
-        .attr('y', d => (this._getMetricVal(d) > 0 ? this._y(d) : this._zero()))
-        .attr(
-          'height',
-          d => (_hasNegative ? Math.abs(this._y(d) - this._zero()) : this._h(d))
-        )
+        .delay((d, i) => i / _data.length * _options.animation.duration.add)
+        .attr('y', d => (_getMetricVal(d) > 0 ? _y(d) : _zero()))
+        .attr('height', d => (_hasNegative ? Math.abs(_y(d) - _zero()) : _h(d)))
         .tween('append.rects', drawCanvasInTransition);
     });
 
-  const that = this;
   enterTransition.on('end', () => {
     const colorMap = drawHiddenRects(
-      this._hiddenContext,
-      this._detachedContainer.selectAll('.bar')
+      _hiddenContext,
+      _detachedContainer.selectAll('.bar')
     );
 
     // shadow color?
@@ -106,9 +126,9 @@ const animate = state => {
       // get the current mouse position
       const [mx, my] = mouse(this);
       // This will return that pixel's color
-      const col = that._hiddenContext.getImageData(
-        mx * that._canvasScale,
-        my * that._canvasScale,
+      const col = _hiddenContext.getImageData(
+        mx * _canvasScale,
+        my * _canvasScale,
         1,
         1
       ).data;
@@ -117,31 +137,31 @@ const animate = state => {
       const node = colorMap.get(colString);
 
       if (node) {
-        that._tooltip
-          .html(that.tooltip(node))
+        _tooltip
+          .html(tooltipMarkup(node, state))
           .transition()
-          .duration(that._options.animation.tooltip)
-          .style('left', mx + that._options.tooltip.offset[0] + 'px')
-          .style('top', my + that._options.tooltip.offset[1] + 'px')
+          .duration(_options.animation.tooltip)
+          .style('left', mx + _options.tooltip.offset[0] + 'px')
+          .style('top', my + _options.tooltip.offset[1] + 'px')
           .style('opacity', 1);
       } else {
-        that._tooltip
+        _tooltip
           .transition()
-          .duration(that._options.animation.tooltip)
+          .duration(_options.animation.tooltip)
           .style('opacity', 0);
       }
     }
 
     function mouseOutHandler() {
-      that._tooltip
+      _tooltip
         .transition()
-        .duration(that._options.animation.tooltip)
+        .duration(_options.animation.tooltip)
         .style('opacity', 0);
     }
 
-    that._frontCanvas.on('mousemove', mouseMoveHandler);
-    that._frontCanvas.on('mouseout', mouseOutHandler);
-    that._listeners.call('rendered');
+    state._frontCanvas.on('mousemove', mouseMoveHandler);
+    state._frontCanvas.on('mouseout', mouseOutHandler);
+    state._listeners.call('rendered');
   });
 };
 

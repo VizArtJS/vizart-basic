@@ -2,7 +2,7 @@ export { version } from '../package.json';
 
 import './tooltip/tooltip.css';
 
-// export { default as Bar } from './modal/Bar';
+export { default as bar } from './modal/bar';
 // export { default as Pie } from './modal/Pie';
 export { default as area } from './modal/area';
 export { default as line } from './modal/line';
