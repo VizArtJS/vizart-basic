@@ -1,6 +1,6 @@
 import { Stacks } from '../../data';
 import animate from './animte';
-import build from '../../helper/builder';
+import { stacked } from '../../helper/builder';
 
 const StreamOpt = {
   chart: {
@@ -15,6 +15,6 @@ const StreamOpt = {
   },
 };
 
-const stream = build(StreamOpt, animate);
+const stream = stacked(StreamOpt, animate);
 
 export default stream;
