@@ -1,6 +1,6 @@
 import withCartesian, { getMetric } from './withCartesian';
 
-const getSeries = state => () => state._options.data.s;
+const getSeries = state => state._options.data.s;
 const s = state => d => d[getSeries(state).accessor];
 const y1 = state => d => getMetric(state).scale(d.y1);
 const y0 = state => d => getMetric(state).scale(d.y0);

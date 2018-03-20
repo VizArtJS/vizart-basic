@@ -61,7 +61,7 @@
             },
         };
 
-        var pieChart = new VizArtBasic.Pie('#pie', options);
+        var pieChart = VizArtBasic.pie('#pie', options);
 
         d3.csv('assets/movies.csv', function(err, res){
             var data = _.uniqWith(res, function(a, b) {

@@ -1,5 +1,5 @@
-import Corona from '../corona';
-import createCartesianStackedOpt from '../../options/createCartesianStackedOpt';
+import { polarStacked } from '../../helper/builder';
+import animate from '../corona/animate';
 
 const RadarOptions = {
   chart: {
@@ -39,23 +39,6 @@ const RadarOptions = {
   },
 };
 
-class Radar extends Corona {
-  constructor(canvasId, _userOptions) {
-    super(canvasId, _userOptions);
-  }
+const radar = polarStacked(RadarOptions, animate);
 
-  options(_userOpt) {
-    super.options(_userOpt);
-
-    this._options.plots.isArea = false;
-    this._options.plots.stackLayout = false;
-
-    return this._options;
-  }
-
-  createOptions(_userOpt) {
-    return createCartesianStackedOpt(RadarOptions, _userOpt);
-  }
-}
-
-export default Radar;
+export default radar;

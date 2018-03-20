@@ -10,7 +10,7 @@ import highlightNode from './highlight-node';
 
 const animate = state => {
   const {
-    _dataState: previousState,
+    _animationState: previousState,
     _data: data,
     _options: opt,
     _frontCanvas: frontCanvas,
@@ -46,7 +46,7 @@ const animate = state => {
     };
   });
 
-  state._dataState = finalState;
+  state._animationState = finalState;
 
   animateStates(
     initialState,

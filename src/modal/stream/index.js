@@ -1,5 +1,5 @@
 import { Stacks } from '../../data';
-import animate from './animte';
+import animate from './animate';
 import { stacked } from '../../helper/builder';
 
 const StreamOpt = {

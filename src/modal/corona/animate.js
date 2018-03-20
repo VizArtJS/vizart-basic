@@ -8,7 +8,7 @@ import highlight from './highlight';
 import { c } from '../../helper/withStacked';
 
 const animate = state => {
-  const { _options, _data, _dataState, _frontContext } = state;
+  const { _options, _data, _animationState, _frontContext } = state;
   const [innerRadius, outerRadius] = getRadius(_options);
   const dataRange = [_data.minY, _data.maxY];
   const radiusScale = scaleLinear()
@@ -20,8 +20,8 @@ const animate = state => {
   const _c = c(state);
   const _getDimensionVal = getDimensionVal(state);
 
-  const initialState = _dataState
-    ? _dataState
+  const initialState = _animationState
+    ? _animationState
     : _data.nested.map(d => {
         return {
           key: d.key,
@@ -66,7 +66,7 @@ const animate = state => {
     };
   });
   // cache finalState as the initial state of next animation call
-  state._dataState = finalState;
+  state._animationState = finalState;
 
   animateStates(
     initialState,

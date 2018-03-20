@@ -1,63 +1,50 @@
-import { min } from 'd3-array';
+import animateStates from './tween-states';
 import { mouse } from 'd3-selection';
 import { applyVoronoi } from 'vizart-core';
 
-import animateStates from './tween-states';
-import drawCanvas from './draw-canvas';
 import highlightNode from './highlight-node';
-import { y0, y1, c } from '../../helper/withStacked';
-
+import drawCanvas from './draw-canvas';
+import highlightArea from './highlight-area';
+import { c, y0, y1 } from '../../helper/withStacked';
 import { x, getMetric } from '../../helper/withCartesian';
 import tooltipMarkup from '../../tooltip/markup';
 
 const animate = state => {
-  const {
-    _dataState: previousState,
-    _data: data,
-    _options: opt,
-    _frontCanvas: frontCanvas,
-    _frontContext: frontContext,
-    _tooltip: tooltip,
-    _listeners: listeners,
-  } = state;
-
-  const _x = x(state),
-    _c = c(state),
-    _y0 = y0(state),
-    _y1 = y1(state);
-
-  const minY0 = min(data.nested.map(d => min(d.values.map(e => e.y0))));
-  getMetric(state).scale.domain([minY0, data.maxY]);
-
-  const initialState = previousState
-    ? previousState
-    : data.nested.map(d => {
+  const { _animationState, _data, _options, _frontContext } = state;
+  const _x = x(state);
+  const _c = c(state);
+  const _y0 = y0(state);
+  const _y1 = y1(state);
+  const initialState = _animationState
+    ? _animationState
+    : _data.nested.map(d => {
         return {
           key: d.key,
           c: _c(d),
-          s: d.key,
           alpha: 0,
           values: d.values.map(e => {
             return {
               key: d.key,
+              c: _c(d),
               x: _x(e.data),
-              y: e.y,
-              y0: opt.chart.innerHeight / 2,
-              y1: opt.chart.innerHeight / 2,
+              y: _options.chart.innerHeight,
+              y0: _y0(e),
+              y1: _y1(e),
               data: e.data,
             };
           }),
         };
       });
 
-  const finalState = data.nested.map(d => {
+  const finalState = _data.nested.map(d => {
     return {
       key: d.key,
       c: _c(d),
-      alpha: opt.plots.opacityArea,
+      alpha: _options.plots.opacityArea,
       values: d.values.map(e => {
         return {
           key: d.key,
+          c: _c(d),
           x: _x(e.data),
           y: e.y,
           y0: _y0(e),
@@ -69,26 +56,20 @@ const animate = state => {
   });
 
   // cache finalState as the initial state of next animation call
-  state._dataState = finalState;
+  state._animationState = finalState;
 
   animateStates(
     initialState,
     finalState,
-    opt.animation.duration.update,
-    frontContext,
-    opt
+    _options.animation.duration.update,
+    _frontContext,
+    _options
   ).then(res => {
     state._voronoi = applyVoronoi(
-      frontContext,
-      opt,
+      _frontContext,
+      _options,
       res.reduce((acc, p) => {
-        acc = acc.concat(
-          p.values.map(d => {
-            let n = d;
-            n.y = d.y1;
-            return n;
-          })
-        );
+        acc = acc.concat(p.values);
         return acc;
       }, [])
     );
@@ -105,40 +86,48 @@ const animate = state => {
       const closest = state._voronoi.find(mx, my, QuadtreeRadius);
 
       if (closest) {
-        closest.data.data[state._getMetric().accessor] =
+        closest.data.data[getMetric(state).accessor] =
           closest.data.data[closest.data.key];
-        tooltip
+
+        _tooltip
           .html(tooltipMarkup(closest.data.data, state))
           .transition()
-          .duration(opt.animation.tooltip)
-          .style('left', mx + opt.tooltip.offset[0] + 'px')
-          .style('top', my + opt.tooltip.offset[1] + 'px')
+          .duration(_options.animation.tooltip)
+          .style('left', mx + _options.tooltip.offset[0] + 'px')
+          .style('top', my + _options.tooltip.offset[1] + 'px')
           .style('opacity', 1);
 
-        drawCanvas(frontCanvas, res, opt);
-        highlightNode(frontCanvas, opt, closest.data.c, closest[0], closest[1]);
+        highlightArea(_frontContext, res, _options, closest.data);
+        highlightNode(
+          _frontContext,
+          _options,
+          closest.data.c,
+          closest[0],
+          closest[1]
+        );
       } else {
-        tooltip
+        drawCanvas(_frontContext, res, _options);
+
+        _tooltip
           .transition()
-          .duration(opt.animation.tooltip)
+          .duration(_options.animation.tooltip)
           .style('opacity', 0);
-        drawCanvas(frontCanvas, res, opt);
       }
     }
 
     function mouseOutHandler() {
-      tooltip
-        .transition()
-        .duration(opt.animation.tooltip)
-        .style('opacity', 0);
+      drawCanvas(_frontContext, res, _options);
 
-      drawCanvas(frontCanvas, res, opt);
+      _tooltip
+        .transition()
+        .duration(_options.animation.tooltip)
+        .style('opacity', 0);
     }
 
-    frontCanvas.on('mousemove', mouseMoveHandler);
-    frontCanvas.on('mouseout', mouseOutHandler);
+    state._frontCanvas.on('mousemove', mouseMoveHandler);
+    state._frontCanvas.on('mouseout', mouseOutHandler);
 
-    listeners.call('rendered');
+    state._listeners.call('rendered');
   });
 };
 

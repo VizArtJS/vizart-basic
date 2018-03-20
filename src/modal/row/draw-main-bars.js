@@ -1,62 +1,80 @@
-import { mouse } from 'd3-selection';
+import { scaleBand } from 'd3-scale';
 import { transition } from 'd3-transition';
-import drawRects from './draw-rects';
+import { mouse } from 'd3-selection';
+import { extent } from 'd3-array';
+
 import drawHiddenRects from './draw-hidden-rects';
-
-import hasNegativeValue from '../../util/has-negative';
-
+import drawCanvas from './draw-canvas';
+import getMetricScale from './get-metric-scale';
 import {
-  y,
-  c,
-  x,
   getDimensionVal,
   getMetricVal,
-  getDimension,
-  getMetric,
+  x as standardX,
 } from '../../helper/withCartesian';
-import isFunction from '../../util/isFunction';
 import tooltipMarkup from '../../tooltip/markup';
 
-const animate = state => {
+const drawMainBars = (state, data) => {
   const {
-    _data,
-    _options,
     _frontContext,
-    _detachedContainer,
     _hiddenContext,
+    _detachedContainer,
+    _options,
+    _color,
     _canvasScale,
   } = state;
-
-  const _y = y(state);
-  const _c = c(state);
-  const _x = x(state);
-
-  const _hasNegative = hasNegativeValue(_data, _options);
   const _getDimensionVal = getDimensionVal(state);
   const _getMetricVal = getMetricVal(state);
 
-  const _w = () => {
-    if (
-      getDimension(state).scale.bandwidth === undefined ||
-      !isFunction(getDimension(state).scale.bandwidth)
-    ) {
-      const evenWidth = Math.ceil(_options.chart.innerWidth / _data.length);
-
-      return evenWidth > 1 ? evenWidth - 1 : 0.1;
-    } else {
-      return getDimension(state).scale.bandwidth();
-    }
-  };
-  const _h = d => _options.chart.innerHeight - _y(d);
-  const _zero = () => getMetric(state).scale(0);
-
   const drawCanvasInTransition = () => {
     return t => {
-      drawRects(_frontContext, _detachedContainer.selectAll('.bar'), _options);
+      drawCanvas(_frontContext, _detachedContainer.selectAll('.bar'), _options);
     };
   };
 
-  const dataUpdate = _detachedContainer.selectAll('.bar').data(_data);
+  const xScale = scaleBand()
+    .domain(data.map(d => _getDimensionVal(d)))
+    .range([
+      0,
+      _options.chart.innerHeight - _options.plots.bottomAxisOffset - 5,
+    ])
+    .paddingInner(0.1);
+
+  const yScale = getMetricScale(state, data);
+  const mainWidth =
+    _options.plots.enableMiniBar === true
+      ? _options.chart.innerWidth - _options.plots.miniBarWidth
+      : _options.chart.innerWidth;
+
+  const h = xScale.bandwidth();
+  const x = d => xScale(_getDimensionVal(d));
+  let w;
+  let y;
+  const colorScale = _color.copy().domain(yScale.domain());
+
+  const yExtent = extent(data, _getMetricVal);
+
+  if (yExtent[0] >= 0) {
+    w = d => yScale(_getMetricVal(d));
+    y = d => yScale(0);
+
+    if (_options.color.type === 'divergent') {
+      colorScale.domain([-yScale.domain()[1], Math.abs(yScale.domain()[1])]);
+    }
+  } else if (yExtent[1] <= 0) {
+    w = d => mainWidth - yScale(_getMetricVal(d));
+    y = d => yScale(_getMetricVal(d));
+
+    if (_options.color.type === 'divergent') {
+      colorScale.domain([yScale.domain()[0], Math.abs(yScale.domain()[0])]);
+    }
+  } else {
+    w = d => Math.abs(mainWidth / 2 - yScale(_getMetricVal(d)));
+    y = d => (_getMetricVal(d) > 0 ? mainWidth / 2 : mainWidth / 2 - w(d));
+  }
+
+  const c = d => colorScale(_getMetricVal(d));
+
+  const dataUpdate = _detachedContainer.selectAll('.bar').data(data);
   const dataJoin = dataUpdate.enter();
   const dataRemove = dataUpdate.exit();
 
@@ -65,8 +83,7 @@ const animate = state => {
     .each(() => {
       dataRemove
         .transition()
-        .attr('y', _hasNegative ? _y(0) : _options.chart.innerHeight)
-        .attr('height', 0)
+        .attr('width', 0)
         .tween('remove.rects', drawCanvasInTransition);
 
       dataRemove.remove();
@@ -80,38 +97,37 @@ const animate = state => {
         .attr('dimension', _getDimensionVal)
         .attr('metric', _getMetricVal)
         .transition('update-rect-transition')
-        .delay((d, i) => i / _data.length * _options.animation.duration.update)
-        .attr('fill', _c)
-        .attr('x', _x)
-        .attr('width', _w)
-        .attr('y', d => (_getMetricVal(d) > 0 ? _y(d) : _zero()))
-        .attr('height', d => (_hasNegative ? Math.abs(_y(d) - _zero()) : _h(d)))
+        .delay((d, i) => i / data.length * _options.animation.duration.update)
+        .attr('fill', c)
+        .attr('x', y)
+        .attr('width', w)
+        .attr('y', x)
+        .attr('height', h)
         .tween('update.rects', drawCanvasInTransition);
     });
 
   const enterTransition = updateTransition
     .transition()
-    .duration(_options.animation.duration.add)
+    .duration(_options.animation.duration.update)
     .each(() => {
       dataJoin
         .append('rect')
         .attr('class', 'bar')
-        .attr('fill', _c)
+        .attr('fill', c)
         .attr('opacity', 1)
-        .attr('x', _x)
-        .attr('width', _w)
+        .attr('x', y)
+        .attr('y', x)
+        .attr('width', 0)
         .attr('dimension', _getDimensionVal)
         .attr('metric', _getMetricVal)
-        .attr('y', _hasNegative ? _zero(0) : _options.chart.innerHeight)
-        .attr('height', 0)
+        .attr('height', h)
         .transition()
-        .duration(_options.animation.duration.add)
-        .delay((d, i) => i / _data.length * _options.animation.duration.add)
-        .attr('y', d => (_getMetricVal(d) > 0 ? _y(d) : _zero()))
-        .attr('height', d => (_hasNegative ? Math.abs(_y(d) - _zero()) : _h(d)))
+        .delay((d, i) => i / data.length * _options.animation.duration.update)
+        .attr('width', w)
         .tween('append.rects', drawCanvasInTransition);
     });
 
+  const that = this;
   enterTransition.on('end', () => {
     const colorMap = drawHiddenRects(
       _hiddenContext,
@@ -165,4 +181,4 @@ const animate = state => {
   });
 };
 
-export default animate;
+export default drawMainBars;

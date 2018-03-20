@@ -1,9 +1,8 @@
 import { cartesian } from '../../helper/builder';
 import animate from './animate';
-import apiSort from './sort';
 
-const BarOpt = {
-  chart: { type: 'bar' },
+const DefaultOpt = {
+  chart: { type: 'row' },
   plots: {
     barLabel: {
       enabled: false,
@@ -14,9 +13,14 @@ const BarOpt = {
       color: 'black',
       offset: 10,
     },
+
+    enableMiniBar: true,
+    miniBarWidth: 50,
+    bottomAxisOffset: 10,
+    initialBrushHeight: 200,
   },
 };
 
-const bar = cartesian(BarOpt, animate);
+const row = cartesian(DefaultOpt, animate);
 
-export default bar;
+export default row;
