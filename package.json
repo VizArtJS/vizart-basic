@@ -1,6 +1,6 @@
 {
   "name": "vizart-basic",
-  "version": "1.1.8",
+  "version": "2.0.0",
   "description": "VizArt: Basic Charts",
   "main": "dist/vizart-basic.js",
   "module": "dist/vizart-basic.mjs",
@@ -42,7 +42,7 @@
     "d3-timer": "^1.0.7",
     "d3-transition": "^1.1.1",
     "d3-voronoi": "^1.1.2",
-    "vizart-core": "^2.0.0-beta"
+    "vizart-core": "^2.0.0-rc.1"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

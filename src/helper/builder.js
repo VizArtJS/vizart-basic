@@ -1,4 +1,4 @@
-import { apiRenderCanvas, apiUpdate, canvas } from 'vizart-core';
+import { apiRenderCanvas, apiUpdate, canvasLayer } from 'vizart-core';
 import { renderAxis, updateAxis } from '../axis';
 
 import { stackedComposer, standardComposer } from './composers';
@@ -41,7 +41,7 @@ const build = builderConfig => (ChartOpt, animate, apis = []) => (id, opt) => {
   const { hasAxis = true, stacked = false } = builderConfig;
   const compose = stacked === true ? stackedComposer : standardComposer;
 
-  const baseChart = canvas(id, opt, compose(ChartOpt));
+  const baseChart = canvasLayer(id, opt, compose(ChartOpt));
 
   const chart = Object.assign(
     baseChart,
