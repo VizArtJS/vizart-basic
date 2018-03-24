@@ -4,7 +4,9 @@ import isSeriesDefined from '../helper/is-series-defined';
 
 const generateStackLayout = (data, opt) => {
   if (isSeriesDefined(opt)) {
-    opt.data.s.values = data.map(d=> d[opt.data.s.accessor]).filter((ele, pos, arr)=> arr.indexOf(ele) === pos);
+    opt.data.s.values = data
+      .map(d => d[opt.data.s.accessor])
+      .filter((ele, pos, arr) => arr.indexOf(ele) === pos);
   } else {
     opt.data.s.values = opt.data.y.map(d => d.accessor);
   }

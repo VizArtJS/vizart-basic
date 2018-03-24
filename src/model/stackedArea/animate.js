@@ -17,60 +17,60 @@ const animate = state => {
     _frontContext,
     _containerId,
   } = state;
+
   const _x = x(state);
   const _c = c(state);
   const _y0 = y0(state);
   const _y1 = y1(state);
+
   const initialState = _animationState
     ? _animationState
-    : _data.nested.map(d => {
-        return {
-          key: d.key,
-          c: _c(d),
-          alpha: 0,
-          values: d.values.map(e => {
-            return {
-              key: d.key,
-              c: _c(d),
-              x: _x(e.data),
-              y: _options.chart.innerHeight,
-              y0: _y0(e),
-              y1: _y1(e),
-              data: e.data,
-            };
-          }),
-        };
-      });
+    : _data.nested.map(d => ({
+        key: d.key,
+        c: _c(d),
+        alpha: 0,
+        values: d.values.map(e => {
+          return {
+            key: d.key,
+            c: _c(d),
+            x: _x(e.data),
+            y: _options.chart.innerHeight,
+            y0: _y0(e),
+            y1: _y1(e),
+            data: e.data,
+          };
+        }),
+      }));
 
-  const finalState = _data.nested.map(d => {
-    return {
-      key: d.key,
-      c: _c(d),
-      alpha: _options.plots.opacityArea,
-      values: d.values.map(e => {
-        return {
-          key: d.key,
-          c: _c(d),
-          x: _x(e.data),
-          y: e.y,
-          y0: _y0(e),
-          y1: _y1(e),
-          data: e.data,
-        };
-      }),
-    };
-  });
+  const finalState = _data.nested.map(d => ({
+    key: d.key,
+    c: _c(d),
+    alpha: _options.plots.opacityArea,
+    values: d.values.map(e => {
+      return {
+        key: d.key,
+        c: _c(d),
+        x: _x(e.data),
+        y: e.y,
+        y0: _y0(e),
+        y1: _y1(e),
+        data: e.data,
+      };
+    }),
+  }));
 
   // cache finalState as the initial state of next animation call
   state._animationState = finalState;
 
-  const tooltip = select(_containerId)
+  select(_containerId)
     .selectAll('.vizart-tooltip')
     .data([1])
     .enter()
     .append('div')
     .attr('class', 'vizart-tooltip')
     .style('opacity', 0);
+
+  const tooltip = select(_containerId).select('.vizart-tooltip');
 
   animateStates(
     initialState,
