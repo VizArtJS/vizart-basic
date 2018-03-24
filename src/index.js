@@ -2,20 +2,20 @@ export { version } from '../package.json';
 
 import './tooltip/tooltip.css';
 
-export { default as bar } from './modal/bar';
-export { default as pie } from './modal/pie';
-export { default as area } from './modal/area';
-export { default as line } from './modal/line';
-export { default as scatter } from './modal/scatter';
+export { default as bar } from './model/bar';
+export { default as pie } from './model/pie';
+export { default as area } from './model/area';
+export { default as line } from './model/line';
+export { default as scatter } from './model/scatter';
 
-export { default as stackedArea } from './modal/stackedArea';
-export { default as stream } from './modal/stream';
-export { default as multiLine } from './modal/multiLine';
-export { default as stackedBar } from './modal/stackedBar';
-export { default as corona } from './modal/corona';
-export { default as radar } from './modal/radar';
-export { default as rose } from './modal/rose';
-export { default as row } from './modal/row';
+export { default as stackedArea } from './model/stackedArea';
+export { default as stream } from './model/stream';
+export { default as multiLine } from './model/multiLine';
+export { default as stackedBar } from './model/stackedBar';
+export { default as corona } from './model/corona';
+export { default as radar } from './model/radar';
+export { default as rose } from './model/rose';
+export { default as row } from './model/row';
 
 export * from './data';
 export * from './options';
