@@ -1,9 +1,8 @@
 import { Globals } from 'vizart-core';
-import has from 'lodash-es/has';
 import getSortDef from '../helper/get-sort-def';
 
 const sortData = (_data, _options) => {
-  if (has(_options, 'ordering')) {
+  if (_options.hasOwnProperty('ordering')) {
     let _field = getSortDef(_options);
 
     let _accessor = _field.accessor;
