@@ -1,16 +1,12 @@
 import { scaleBand } from 'd3-scale';
 import { transition } from 'd3-transition';
-import { mouse } from 'd3-selection';
+import { mouse, select } from 'd3-selection';
 import { extent } from 'd3-array';
 
 import drawHiddenRects from './draw-hidden-rects';
 import drawCanvas from './draw-canvas';
 import getMetricScale from './get-metric-scale';
-import {
-  getDimensionVal,
-  getMetricVal,
-  x as standardX,
-} from '../../helper/withCartesian';
+import { getDimensionVal, getMetricVal } from '../../helper/withCartesian';
 import tooltipMarkup from '../../tooltip/markup';
 
 const drawMainBars = (state, data) => {
@@ -20,6 +16,7 @@ const drawMainBars = (state, data) => {
     _detachedContainer,
     _options,
     _color,
+    _containerId,
     _canvasScale,
   } = state;
   const _getDimensionVal = getDimensionVal(state);
@@ -127,7 +124,16 @@ const drawMainBars = (state, data) => {
         .tween('append.rects', drawCanvasInTransition);
     });
 
-  const that = this;
+  select(_containerId)
+    .selectAll('.vizart-tooltip')
+    .data([1])
+    .enter()
+    .append('div')
+    .attr('class', 'vizart-tooltip')
+    .style('opacity', 0);
+
+  const tooltip = select(_containerId).select('.vizart-tooltip');
+
   enterTransition.on('end', () => {
     const colorMap = drawHiddenRects(
       _hiddenContext,
@@ -153,25 +159,25 @@ const drawMainBars = (state, data) => {
       const node = colorMap.get(colString);
 
       if (node) {
-        _tooltip
+        tooltip
           .html(tooltipMarkup(node, state))
           .transition()
-          .duration(_options.animation.tooltip)
+          .duration(_options.animation.duration.tooltip)
           .style('left', mx + _options.tooltip.offset[0] + 'px')
           .style('top', my + _options.tooltip.offset[1] + 'px')
           .style('opacity', 1);
       } else {
-        _tooltip
+        tooltip
           .transition()
-          .duration(_options.animation.tooltip)
+          .duration(_options.animation.duration.tooltip)
           .style('opacity', 0);
       }
     }
 
     function mouseOutHandler() {
-      _tooltip
+      tooltip
         .transition()
-        .duration(_options.animation.tooltip)
+        .duration(_options.animation.duration.tooltip)
         .style('opacity', 0);
     }
 

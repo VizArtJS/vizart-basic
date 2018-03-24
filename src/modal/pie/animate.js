@@ -1,6 +1,8 @@
+import { mouse, select } from 'd3-selection';
+import { sum } from 'd3-array';
+
 import limitSliceValues from './limit-slice-values';
 import animateStates from './tween-states';
-import { mouse } from 'd3-selection';
 import drawHiddenCanvas from './draw-hidden-canvas';
 import tooltipMarkup from '../../tooltip/markup';
 
@@ -23,6 +25,7 @@ const animate = state => {
     _options,
     _hiddenContext,
     _canvasScale,
+    _containerId,
     _color,
   } = state;
 
@@ -67,6 +70,14 @@ const animate = state => {
   const transformedInitial = limitSliceValues(initialState, _options, _color);
   const transformedFinal = limitSliceValues(finalState, _options, _color);
 
+  const tooltip = select(_containerId)
+    .selectAll('.vizart-tooltip')
+    .data([1])
+    .enter()
+    .append('div')
+    .attr('class', 'vizart-tooltip')
+    .style('opacity', 0);
+
   animateStates(
     transformedInitial,
     transformedFinal,
@@ -104,25 +115,25 @@ const animate = state => {
           html = tooltipMarkup(node.data.data, state);
         }
 
-        _tooltip
+        tooltip
           .html(html)
           .transition()
-          .duration(_options.animation.tooltip)
+          .duration(_options.animation.duration.tooltip)
           .style('left', mx + _options.tooltip.offset[0] + 'px')
           .style('top', my + _options.tooltip.offset[1] + 'px')
           .style('opacity', 1);
       } else {
-        _tooltip
+        tooltip
           .transition()
-          .duration(_options.animation.tooltip)
+          .duration(_options.animation.duration.tooltip)
           .style('opacity', 0);
       }
     }
 
     function mouseOutHandler() {
-      _tooltip
+      tooltip
         .transition()
-        .duration(_options.animation.tooltip)
+        .duration(_options.animation.duration.tooltip)
         .style('opacity', 0);
     }
 

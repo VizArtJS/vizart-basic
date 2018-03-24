@@ -1,7 +1,13 @@
 import { stacked } from '../../helper/builder';
-import animate from './animate';
-import { StackedOptions, AreaMultiOptions, ExpandedOptions } from './options';
+import { apiGroup, apiStack, apiExpand } from '../../helper/api-layout';
 
-const stackedArea = stacked(StackedOptions, animate);
+import animate from './animate';
+import StackedOptions from './options';
+
+const stackedArea = stacked(StackedOptions, animate, [
+  apiGroup,
+  apiStack,
+  apiExpand,
+]);
 
 export default stackedArea;

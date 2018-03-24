@@ -1,4 +1,6 @@
-import { mouse } from 'd3-selection';
+import { mouse, select } from 'd3-selection';
+import { applyVoronoi } from 'vizart-core';
+
 import animateStates from './tween-states';
 import drawCanvas from './draw-canvas';
 import highlightNode from './highlight-node';
@@ -11,6 +13,7 @@ const animate = state => {
     _data,
     _options,
     _frontContext,
+    _containerId,
     _frontCanvas,
     _animationState,
   } = state;
@@ -57,6 +60,14 @@ const animate = state => {
   // cache finalState as the initial state of next animation call
   state._animationState = finalState;
 
+  const tooltip = select(_containerId)
+    .selectAll('.vizart-tooltip')
+    .data([1])
+    .enter()
+    .append('div')
+    .attr('class', 'vizart-tooltip')
+    .style('opacity', 0);
+
   animateStates(
     initialState,
     finalState,
@@ -78,10 +89,10 @@ const animate = state => {
       const closest = state._voronoi.find(mx, my, QuadtreeRadius);
 
       if (closest) {
-        state._tooltip
-          .html(tooltipMarkup(node, state))
+        tooltip
+          .html(tooltipMarkup(closest.data.data, state))
           .transition()
-          .duration(_options.animation.tooltip)
+          .duration(_options.animation.duration.tooltip)
           .style('left', mx + _options.tooltip.offset[0] + 'px')
           .style('top', my + _options.tooltip.offset[1] + 'px')
           .style('opacity', 1);
@@ -89,9 +100,9 @@ const animate = state => {
         drawCanvas(_frontContext, finalState);
         highlightNode(_frontContext, closest.data);
       } else {
-        _tooltip
+        tooltip
           .transition()
-          .duration(_options.animation.tooltip)
+          .duration(_options.animation.duration.tooltip)
           .style('opacity', 0);
 
         drawCanvas(_frontContext, finalState);
@@ -99,9 +110,9 @@ const animate = state => {
     }
 
     function mouseOutHandler() {
-      _tooltip
+      tooltip
         .transition()
-        .duration(_options.animation.tooltip)
+        .duration(_options.animation.duration.tooltip)
         .style('opacity', 0);
 
       drawCanvas(_frontContext, finalState);

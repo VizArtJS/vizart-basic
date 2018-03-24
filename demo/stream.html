@@ -83,21 +83,15 @@
 
         // change color
         $('#wiggle').click(function(){
-            options2.plots.stackMethod = "wiggle";
-            chart.options(options2);
-            chart.update();
+            chart.wiggle();
         });
 
         $('#silhouette').click(function(){
-            options2.plots.stackMethod = "silhouette";
-            chart.options(options2);
-            chart.update();
+            chart.silhouette();
         });
 
         $('#divergent').click(function(){
-            options2.plots.stackMethod = "divergent";
-            chart.options(options2);
-            chart.update();
+            chart.divergent();
         });
 
         // change color

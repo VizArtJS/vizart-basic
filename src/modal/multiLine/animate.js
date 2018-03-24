@@ -1,4 +1,5 @@
-import { mouse } from 'd3-selection';
+import { mouse, select } from 'd3-selection';
+import { applyVoronoi } from 'vizart-core';
 
 import highlightNode from './highlight-node';
 import animateStates from './tween-states';
@@ -10,7 +11,13 @@ import { x, getMetric } from '../../helper/withCartesian';
 import tooltipMarkup from '../../tooltip/markup';
 
 const animate = state => {
-  const { _data, _animationState, _frontContext, _options } = state;
+  const {
+    _data,
+    _animationState,
+    _frontContext,
+    _options,
+    _containerId,
+  } = state;
   const _c = c(state);
   const _x = x(state);
 
@@ -52,6 +59,16 @@ const animate = state => {
   // cache finalState as the initial state of next animation call
   state._animationState = finalState;
 
+  select(_containerId)
+    .selectAll('.vizart-tooltip')
+    .data([1])
+    .enter()
+    .append('div')
+    .attr('class', 'vizart-tooltip')
+    .style('opacity', 0);
+
+  const tooltip = select(_containerId).select('.vizart-tooltip');
+
   animateStates(
     initialState,
     finalState,
@@ -82,10 +99,10 @@ const animate = state => {
         closest.data.data[getMetric(state).accessor] =
           closest.data.data[closest.data.key];
 
-        _tooltip
+        tooltip
           .html(tooltipMarkup(closest.data.data, state))
           .transition()
-          .duration(_options.animation.tooltip)
+          .duration(_options.animation.duration.tooltip)
           .style('left', mx + _options.tooltip.offset[0] + 'px')
           .style('top', my + _options.tooltip.offset[1] + 'px')
           .style('opacity', 1);
@@ -99,9 +116,9 @@ const animate = state => {
           closest[1]
         );
       } else {
-        _tooltip
+        tooltip
           .transition()
-          .duration(_options.animation.tooltip)
+          .duration(_options.animation.duration.tooltip)
           .style('opacity', 0);
 
         drawCanvas(_frontContext, res, opt);
@@ -109,9 +126,9 @@ const animate = state => {
     }
 
     function mouseOutHandler() {
-      _tooltip
+      tooltip
         .transition()
-        .duration(_options.animation.tooltip)
+        .duration(_options.animation.duration.tooltip)
         .style('opacity', 0);
 
       drawCanvas(ctx, res, opt);

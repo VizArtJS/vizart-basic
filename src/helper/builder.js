@@ -30,18 +30,26 @@ const apiColor = state => ({
   },
 });
 
-const build = builderConfig => (ChartOpt, animate) => (id, opt) => {
+const addApi = (state, apis) => {
+  return apis.reduce((acc, cur) => {
+    acc = Object.assign(acc, cur(acc));
+    return acc;
+  }, state);
+};
+
+const build = builderConfig => (ChartOpt, animate, apis = []) => (id, opt) => {
   const { hasAxis = true, stacked = false } = builderConfig;
   const compose = stacked === true ? stackedComposer : standardComposer;
 
   const baseChart = canvas(id, opt, compose(ChartOpt));
 
-  return Object.assign(
+  const chart = Object.assign(
     baseChart,
     apiRender(baseChart, animate, hasAxis, stacked),
-    apiUpdateChart(baseChart, animate, hasAxis, stacked),
-    apiColor(baseChart)
+    apiUpdateChart(baseChart, animate, hasAxis, stacked)
   );
+
+  return addApi(chart, [apiColor, ...apis]);
 };
 
 const cartesian = build({ hasAxis: true, stacked: false });

@@ -17,6 +17,6 @@ const BarOpt = {
   },
 };
 
-const bar = cartesian(BarOpt, animate);
+const bar = cartesian(BarOpt, animate, [apiSort]);
 
 export default bar;

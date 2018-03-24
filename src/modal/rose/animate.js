@@ -1,6 +1,6 @@
 import animateStates from './tween-states';
 import { scaleLinear, scaleOrdinal } from 'd3-scale';
-import { mouse } from 'd3-selection';
+import { mouse, select } from 'd3-selection';
 import drawPetal from './draw-petal';
 import { arc } from 'd3-shape';
 import drawHiddenCanvas from './draw-hidden-canvas';
@@ -17,6 +17,7 @@ const animate = state => {
     _options,
     _frontContext,
     _detachedContainer,
+    _containerId,
     _hiddenContext,
     _canvasScale,
     _animationState,
@@ -69,6 +70,16 @@ const animate = state => {
     };
   });
 
+  select(_containerId)
+    .selectAll('.vizart-tooltip')
+    .data([1])
+    .enter()
+    .append('div')
+    .attr('class', 'vizart-tooltip')
+    .style('opacity', 0);
+
+  const tooltip = select(_containerId).select('.vizart-tooltip');
+
   const enableMouse = () => {
     const colorMap = drawHiddenCanvas(_hiddenContext, finalState, _options);
 
@@ -87,25 +98,25 @@ const animate = state => {
       if (node) {
         const html = tooltipMarkup(node.data.data, state);
 
-        _tooltip
+        tooltip
           .html(html)
           .transition()
-          .duration(_options.animation.tooltip)
+          .duration(_options.animation.duration.tooltip)
           .style('left', mx + _options.tooltip.offset[0] + 'px')
           .style('top', my + _options.tooltip.offset[1] + 'px')
           .style('opacity', 1);
       } else {
-        _tooltip
+        tooltip
           .transition()
-          .duration(_options.animation.tooltip)
+          .duration(_options.animation.duration.tooltip)
           .style('opacity', 0);
       }
     }
 
     function mouseOutHandler() {
-      _tooltip
+      tooltip
         .transition()
-        .duration(_options.animation.tooltip)
+        .duration(_options.animation.duration.tooltip)
         .style('opacity', 0);
     }
 

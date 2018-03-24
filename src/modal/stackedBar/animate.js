@@ -1,5 +1,5 @@
 import drawHiddenCanvas from './draw-hidden-canvas';
-import { mouse } from 'd3-selection';
+import { mouse, select } from 'd3-selection';
 import animateStates from './tween-states';
 import { c } from '../../helper/withStacked';
 import { x, getMetric } from '../../helper/withCartesian';
@@ -13,6 +13,7 @@ const animate = state => {
     _frontContext,
     _hiddenContext,
     _canvasScale,
+    _containerId,
   } = state;
   const _x = x(state);
   const _c = c(state);
@@ -20,6 +21,16 @@ const animate = state => {
   const seriesNum = _data.nested.length;
   const band = _options.data.x.scale.bandwidth();
   const barWidth = band / seriesNum;
+
+  select(_containerId)
+    .selectAll('.vizart-tooltip')
+    .data([1])
+    .enter()
+    .append('div')
+    .attr('class', 'vizart-tooltip')
+    .style('opacity', 0);
+
+  const tooltip = select(_containerId).select('.vizart-tooltip');
 
   const initialGroupLayout = (d, i) => {
     return {
@@ -191,25 +202,25 @@ const animate = state => {
         if (closest) {
           closest.data[getMetric(state).accessor] = closest.data[closest.key];
 
-          _tooltip
-            .html(tooltipMarkup(closest.data.data, state))
+          tooltip
+            .html(tooltipMarkup(closest.data, state))
             .transition()
-            .duration(_options.animation.tooltip)
+            .duration(_options.animation.duration.tooltip)
             .style('left', mx + _options.tooltip.offset[0] + 'px')
             .style('top', my + _options.tooltip.offset[1] + 'px')
             .style('opacity', 1);
         } else {
-          _tooltip
+          tooltip
             .transition()
-            .duration(_options.animation.tooltip)
+            .duration(_options.animation.duration.tooltip)
             .style('opacity', 0);
         }
       }
 
       function mouseOutHandler() {
-        _tooltip
+        tooltip
           .transition()
-          .duration(_options.animation.tooltip)
+          .duration(_options.animation.duration.tooltip)
           .style('opacity', 0);
       }
 

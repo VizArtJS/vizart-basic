@@ -1,5 +1,5 @@
 import animateStates from './tween-states';
-import { mouse } from 'd3-selection';
+import { mouse, select } from 'd3-selection';
 import { applyVoronoi } from 'vizart-core';
 
 import highlightNode from './highlight-node';
@@ -10,7 +10,13 @@ import { x, getMetric } from '../../helper/withCartesian';
 import tooltipMarkup from '../../tooltip/markup';
 
 const animate = state => {
-  const { _animationState, _data, _options, _frontContext } = state;
+  const {
+    _animationState,
+    _data,
+    _options,
+    _frontContext,
+    _containerId,
+  } = state;
   const _x = x(state);
   const _c = c(state);
   const _y0 = y0(state);
@@ -58,6 +64,14 @@ const animate = state => {
   // cache finalState as the initial state of next animation call
   state._animationState = finalState;
 
+  const tooltip = select(_containerId)
+    .selectAll('.vizart-tooltip')
+    .data([1])
+    .enter()
+    .append('div')
+    .attr('class', 'vizart-tooltip')
+    .style('opacity', 0);
+
   animateStates(
     initialState,
     finalState,
@@ -89,10 +103,10 @@ const animate = state => {
         closest.data.data[getMetric(state).accessor] =
           closest.data.data[closest.data.key];
 
-        _tooltip
+        tooltip
           .html(tooltipMarkup(closest.data.data, state))
           .transition()
-          .duration(_options.animation.tooltip)
+          .duration(_options.animation.duration.tooltip)
           .style('left', mx + _options.tooltip.offset[0] + 'px')
           .style('top', my + _options.tooltip.offset[1] + 'px')
           .style('opacity', 1);
@@ -108,9 +122,9 @@ const animate = state => {
       } else {
         drawCanvas(_frontContext, res, _options);
 
-        _tooltip
+        tooltip
           .transition()
-          .duration(_options.animation.tooltip)
+          .duration(_options.animation.duration.tooltip)
           .style('opacity', 0);
       }
     }
@@ -118,9 +132,9 @@ const animate = state => {
     function mouseOutHandler() {
       drawCanvas(_frontContext, res, _options);
 
-      _tooltip
+      tooltip
         .transition()
-        .duration(_options.animation.tooltip)
+        .duration(_options.animation.duration.tooltip)
         .style('opacity', 0);
     }
 

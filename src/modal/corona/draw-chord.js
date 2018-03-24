@@ -1,5 +1,4 @@
 import { descending } from 'd3-array';
-import { formatPrefix } from 'd3-format';
 import { chord, ribbon } from 'd3-chord';
 import { arc } from 'd3-shape';
 import { scaleOrdinal } from 'd3-scale';

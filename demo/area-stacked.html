@@ -70,27 +70,28 @@
 //        })
         var opt = chart.options();
 
+        console.log(chart);
 
         // change color
         $('#group').click(function(){
-            opt.plots.stackLayout = false;
-            chart.options(opt);
-            chart.update();
+            // opt.plots.stackLayout = false;
+            // chart.options(opt);
+            chart.group();
         });
 
         $('#zero').click(function(){
-            opt.plots.stackLayout = true;
-            opt.plots.stackMethod = 'zero';
-            chart.options(opt);
-            chart.update();
+            // opt.plots.stackLayout = true;
+            // opt.plots.stackMethod = 'zero';
+            // chart.options(opt);
+            chart.stack();
 
         });
 
         $('#expand').click(function(){
-            opt.plots.stackLayout = true;
-            opt.plots.stackMethod = 'expand';
-            chart.options(opt);
-            chart.update();
+            // opt.plots.stackLayout = true;
+            // opt.plots.stackMethod = 'expand';
+            // chart.options(opt);
+            chart.expand();
         });
 
     });

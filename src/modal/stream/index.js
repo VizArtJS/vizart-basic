@@ -1,6 +1,11 @@
 import { Stacks } from '../../data';
 import animate from './animate';
 import { stacked } from '../../helper/builder';
+import {
+  apiWiggle,
+  apiSilhouette,
+  apiDivergent,
+} from '../../helper/api-layout';
 
 const StreamOpt = {
   chart: {
@@ -15,6 +20,10 @@ const StreamOpt = {
   },
 };
 
-const stream = stacked(StreamOpt, animate);
+const stream = stacked(StreamOpt, animate, [
+  apiWiggle,
+  apiSilhouette,
+  apiDivergent,
+]);
 
 export default stream;

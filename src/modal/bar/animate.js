@@ -1,4 +1,4 @@
-import { mouse } from 'd3-selection';
+import { mouse, select } from 'd3-selection';
 import { transition } from 'd3-transition';
 import drawRects from './draw-rects';
 import drawHiddenRects from './draw-hidden-rects';
@@ -23,6 +23,7 @@ const animate = state => {
     _options,
     _frontContext,
     _detachedContainer,
+    _containerId,
     _hiddenContext,
     _canvasScale,
   } = state;
@@ -112,6 +113,14 @@ const animate = state => {
         .tween('append.rects', drawCanvasInTransition);
     });
 
+  const tooltip = select(_containerId)
+    .selectAll('.vizart-tooltip')
+    .data([1])
+    .enter()
+    .append('div')
+    .attr('class', 'vizart-tooltip')
+    .style('opacity', 0);
+
   enterTransition.on('end', () => {
     const colorMap = drawHiddenRects(
       _hiddenContext,
@@ -137,25 +146,25 @@ const animate = state => {
       const node = colorMap.get(colString);
 
       if (node) {
-        _tooltip
+        tooltip
           .html(tooltipMarkup(node, state))
           .transition()
-          .duration(_options.animation.tooltip)
+          .duration(_options.animation.duration.tooltip)
           .style('left', mx + _options.tooltip.offset[0] + 'px')
           .style('top', my + _options.tooltip.offset[1] + 'px')
           .style('opacity', 1);
       } else {
-        _tooltip
+        tooltip
           .transition()
-          .duration(_options.animation.tooltip)
+          .duration(_options.animation.duration.tooltip)
           .style('opacity', 0);
       }
     }
 
     function mouseOutHandler() {
-      _tooltip
+      tooltip
         .transition()
-        .duration(_options.animation.tooltip)
+        .duration(_options.animation.duration.tooltip)
         .style('opacity', 0);
     }
 

@@ -1,4 +1,4 @@
-import { mouse } from 'd3-selection';
+import { select, mouse } from 'd3-selection';
 import { linearStops, applyVoronoi } from 'vizart-core';
 
 import { x, y } from '../../helper/withCartesian';
@@ -13,9 +13,9 @@ const animate = state => {
     _animationState: previousState,
     _data: data,
     _options: opt,
+    _containerId,
     _frontCanvas: frontCanvas,
     _frontContext: frontContext,
-    _tooltip: tooltip,
     _listeners: listeners,
   } = state;
 
@@ -47,6 +47,14 @@ const animate = state => {
   });
 
   state._animationState = finalState;
+
+  const tooltip = select(_containerId)
+    .selectAll('.vizart-tooltip')
+    .data([1])
+    .enter()
+    .append('div')
+    .attr('class', 'vizart-tooltip')
+    .style('opacity', 0);
 
   animateStates(
     initialState,
@@ -82,7 +90,7 @@ const animate = state => {
       } else {
         tooltip
           .transition()
-          .duration(opt.animation.tooltip)
+          .duration(opt.animation.duration.tooltip)
           .style('opacity', 0);
 
         drawCanvas(frontContext, res, opt, false);

@@ -1,5 +1,5 @@
 import { min } from 'd3-array';
-import { mouse } from 'd3-selection';
+import { mouse, select } from 'd3-selection';
 import { applyVoronoi } from 'vizart-core';
 
 import animateStates from './tween-states';
@@ -17,7 +17,7 @@ const animate = state => {
     _options: opt,
     _frontCanvas: frontCanvas,
     _frontContext: frontContext,
-    _tooltip: tooltip,
+    _containerId,
     _listeners: listeners,
   } = state;
 
@@ -71,6 +71,14 @@ const animate = state => {
   // cache finalState as the initial state of next animation call
   state._animationState = finalState;
 
+  const tooltip = select(_containerId)
+    .selectAll('.vizart-tooltip')
+    .data([1])
+    .enter()
+    .append('div')
+    .attr('class', 'vizart-tooltip')
+    .style('opacity', 0);
+
   animateStates(
     initialState,
     finalState,
@@ -110,29 +118,35 @@ const animate = state => {
         tooltip
           .html(tooltipMarkup(closest.data.data, state))
           .transition()
-          .duration(opt.animation.tooltip)
+          .duration(opt.animation.duration.tooltip)
           .style('left', mx + opt.tooltip.offset[0] + 'px')
           .style('top', my + opt.tooltip.offset[1] + 'px')
           .style('opacity', 1);
 
-        drawCanvas(frontCanvas, res, opt);
-        highlightNode(frontCanvas, opt, closest.data.c, closest[0], closest[1]);
+        drawCanvas(frontContext, res, opt);
+        highlightNode(
+          frontContext,
+          opt,
+          closest.data.c,
+          closest[0],
+          closest[1]
+        );
       } else {
         tooltip
           .transition()
-          .duration(opt.animation.tooltip)
+          .duration(opt.animation.duration.tooltip)
           .style('opacity', 0);
-        drawCanvas(frontCanvas, res, opt);
+        drawCanvas(frontContext, res, opt);
       }
     }
 
     function mouseOutHandler() {
       tooltip
         .transition()
-        .duration(opt.animation.tooltip)
+        .duration(opt.animation.duration.tooltip)
         .style('opacity', 0);
 
-      drawCanvas(frontCanvas, res, opt);
+      drawCanvas(frontContext, res, opt);
     }
 
     frontCanvas.on('mousemove', mouseMoveHandler);

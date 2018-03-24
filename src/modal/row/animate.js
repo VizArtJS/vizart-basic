@@ -11,7 +11,6 @@ const forceMetricDesc = state => {
 };
 
 const animate = state => {
-  console.log(state);
   forceMetricDesc(state);
 
   const { _options, _data } = state;
