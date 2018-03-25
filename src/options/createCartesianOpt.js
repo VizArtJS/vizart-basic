@@ -1,9 +1,10 @@
-import { mergeBase } from 'vizart-core';
+import { mergeOptions } from 'vizart-core';
 
 import CartesianOptions from './CartesianOptions';
 
 const createCartesianOpt = (chartOpt, userOpt) => {
-  const cartesianOpt = mergeBase(CartesianOptions, chartOpt, userOpt);
+  const cartesianOpt = mergeOptions(CartesianOptions, chartOpt, userOpt);
+    console.log(cartesianOpt);
 
   if (!userOpt.hasOwnProperty('ordering')) {
     cartesianOpt.ordering.accessor = cartesianOpt.data.x.accessor;
