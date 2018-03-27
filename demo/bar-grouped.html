@@ -70,7 +70,7 @@
         };
 
 
-        var chart = new VizArtBasic.StackedBar('#chart', options);
+        var chart = VizArtBasic.stackedBar('#chart', options);
 
         d3.csv('assets/movies.csv', function(err, res){
             var data = _.uniqWith(res, function(a, b) {
@@ -81,19 +81,21 @@
 
         });
 
+        var opt = chart.options();
+
 
         // change color
         $('#group').click(function(){
-            chart.groupedLayout();
+            chart.group();
         });
 
         $('#zero').click(function(){
-            chart.stackLayout();
+            chart.stack();
 
         });
 
         $('#expand').click(function(){
-            chart.expandLayout();
+            chart.expand();
         });
 
         $('#x-asc').click(function () {

@@ -76,44 +76,38 @@
 
 
 
-        var chart = new VizArtBasic.Stream('#chart', options);
+        var chart = VizArtBasic.stream('#chart', options);
         chart.render(fakeData);
 
         var options2 = chart.options();
 
         // change color
         $('#wiggle').click(function(){
-            options2.plots.stackMethod = "wiggle";
-            chart.options(options2);
-            chart.update();
+            chart.wiggle();
         });
 
         $('#silhouette').click(function(){
-            options2.plots.stackMethod = "silhouette";
-            chart.options(options2);
-            chart.update();
+            chart.silhouette();
         });
 
         $('#divergent').click(function(){
-            options2.plots.stackMethod = "divergent";
-            chart.options(options2);
-            chart.update();
+            chart.divergent();
         });
 
         // change color
         $('#color1').click(function(){
             options2.color.scheme = "Paired";
-            chart.transitionColor(options2.color);
+            chart.color(options2.color);
         });
 
         $('#color2').click(function(){
             options2.color.scheme = "Dark2";
-            chart.transitionColor(options2.color)
+            chart.color(options2.color)
         });
 
         $('#color3').click(function(){
             options2.color.scheme = "Accent";
-            chart.transitionColor(options2.color)
+            chart.color(options2.color)
         });
 
 

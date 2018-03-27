@@ -33,10 +33,10 @@
     $(document).ready(function () {
         var options = {
             data: {
-                s: { name: 'Page', type: 'string', accessor: 'page'},
+                s: { name: 'AppId', type: 'string', accessor: 'appid'},
                 x: { name: 'Hour', type: 'number', accessor: 'hour'},
                 y: [
-                    { name: 'Views', type: 'number', accessor: 'views', yAxis: 0},
+                    { name: 'Downloads', type: 'number', accessor: 'downloads', yAxis: 0},
                 ],
             },
             plots: {
@@ -70,9 +70,9 @@
             }
         };
 
-        var chart = new VizArtBasic.Radar('#chart', options);
+        var chart = VizArtBasic.radar('#chart', options);
 
-        d3.csv('assets/corona_page_views.csv', function(err, res){
+        d3.csv('assets/app-downloads.csv', function(err, res){
             chart.render(res);
 
         });

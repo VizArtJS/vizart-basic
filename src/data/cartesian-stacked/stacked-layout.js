@@ -1,14 +1,12 @@
-import { check } from 'vizart-core';
 import getStack from './stack';
 import transformSeriesToMatrix from './series-to-matrix';
 import isSeriesDefined from '../helper/is-series-defined';
-import find from 'lodash-es/find';
-import uniq from 'lodash-es/uniq';
-import map from 'lodash-es/map';
 
 const generateStackLayout = (data, opt) => {
   if (isSeriesDefined(opt)) {
-    opt.data.s.values = uniq(map(data, opt.data.s.accessor));
+    opt.data.s.values = data
+      .map(d => d[opt.data.s.accessor])
+      .filter((ele, pos, arr) => arr.indexOf(ele) === pos);
   } else {
     opt.data.s.values = opt.data.y.map(d => d.accessor);
   }
@@ -22,7 +20,7 @@ const generateStackLayout = (data, opt) => {
   const layout = stack(matrix);
 
   return layout.map(d => {
-    const metric = find(opt.data.y, e => e.accessor === d.key);
+    const metric = opt.data.y.find(e => e.accessor === d.key);
 
     return {
       label: metric ? metric.name : d.key,

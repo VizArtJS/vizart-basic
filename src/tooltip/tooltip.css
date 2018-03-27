@@ -1,0 +1,31 @@
+.vizart-tooltip {
+    position: absolute;
+    pointer-events: none;
+    z-index: 1001;
+    margin: 2px;
+    font-size: 12px;
+}
+
+.vizart-tooltip .tooltip-content {
+    border: 1px solid;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.83);
+    padding: 5px 5px 10px 10px;
+    box-shadow: 2px 2px 4px 0px rgba(0,0,0,0.2);
+}
+
+.vizart-tooltip .tooltip-header {
+    font-size: 18px;
+}
+.vizart-tooltip .tooltip-row {
+    display: inline-flex;
+    font-size: 14px;
+}
+
+.vizart-tooltip .tooltip-row .col:not(:last-child) {
+    margin-right: 30px;
+}
+
+.vizart-tooltip .tooltip-row .col:last-child {
+    margin-right: 10px;
+}

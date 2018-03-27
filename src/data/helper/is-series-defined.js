@@ -1,5 +1,7 @@
-import { check } from 'vizart-core';
-
-const isSeriesDefined = opt => check(opt.data.s) && check(opt.data.s.accessor);
+const isSeriesDefined = opt =>
+  opt.data.s !== undefined &&
+  opt.data.s !== null &&
+  opt.data.s.accessor !== undefined &&
+  opt.data.s.accessor !== null;
 
 export default isSeriesDefined;
