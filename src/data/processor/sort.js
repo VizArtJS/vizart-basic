@@ -1,14 +1,13 @@
-import { Globals, check } from 'vizart-core';
-import has from 'lodash-es/has';
+import { Globals } from 'vizart-core';
 import getSortDef from '../helper/get-sort-def';
 
 const sortData = (_data, _options) => {
-  if (has(_options, 'ordering')) {
+  if (_options.hasOwnProperty('ordering')) {
     let _field = getSortDef(_options);
 
     let _accessor = _field.accessor;
 
-    if (check(_accessor)) {
+    if (_accessor !== undefined && _accessor !== null) {
       switch (_field.type) {
         case Globals.DataType.STRING:
           _data.sort((a, b) => {

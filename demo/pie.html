@@ -61,7 +61,7 @@
             },
         };
 
-        var pieChart = new VizArtBasic.Pie('#pie', options);
+        var pieChart = VizArtBasic.pie('#pie', options);
 
         d3.csv('assets/movies.csv', function(err, res){
             var data = _.uniqWith(res, function(a, b) {
@@ -92,22 +92,22 @@
         // change color
         $('#color1').click(function(){
             options2.color.scheme = "BuGn";
-            pieChart.transitionColor(options2.color);
+            pieChart.color(options2.color);
         });
 
         $('#color2').click(function(){
             options2.color.scheme = "Blues";
-            pieChart.transitionColor(options2.color)
+            pieChart.color(options2.color)
         });
 
         $('#color3').click(function(){
             options2.color.scheme = "Warm";
-            pieChart.transitionColor(options2.color)
+            pieChart.color(options2.color)
         });
 
         $('#color4').click(function(){
             options2.color.scheme = "Cubehelix";
-            pieChart.transitionColor(options2.color);
+            pieChart.color(options2.color);
         });
 
         $('#set1').click(function(){
@@ -115,7 +115,7 @@
                 '#deebf7',
                 '#3182bd'
             ];
-            pieChart.transitionColor(options2.color);
+            pieChart.color(options2.color);
         });
 
 
@@ -125,7 +125,7 @@
                 '#9ecae1',
                 '#3182bd'
             ];
-            pieChart.transitionColor(options2.color);
+            pieChart.color(options2.color);
         });
 
 
@@ -137,7 +137,7 @@
                 '#3182bd',
                 '#08519c',
             ];
-            pieChart.transitionColor(options2.color);
+            pieChart.color(options2.color);
         });
 
 
@@ -155,7 +155,7 @@
                 '#08519c',
                 '#08306b'
             ];
-            pieChart.transitionColor(options2.color);
+            pieChart.color(options2.color);
         });
 
 

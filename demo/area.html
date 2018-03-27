@@ -8,6 +8,7 @@
     <link href="./lib/bootstrap-3.3.7/css/bootstrap.css" rel="stylesheet" type="text/css">
     <script src="./lib/stats.js"></script>
     <script src="./lib/chance.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/es6-shim/0.35.3/es6-shim.js"></script>
     <script src="./lib/d3.js"></script>
     <script src="./lib/jquery-1.12.4.min.js"></script>
     <script src="./lib/bootstrap-3.3.7/js/bootstrap.js"></script>
@@ -64,7 +65,7 @@
                 },
             },
             animation: {
-              enabled: false
+              enabled: true
             },
             ordering: {
                 accessor: 'date',
@@ -80,7 +81,7 @@
             }
         };
 
-        var area = new VizArtBasic.Area('#bar', options);
+        var area = VizArtBasic.area('#bar', options);
 //        area.on('rendered', function(){
 //            area.revealVoronoi();
 //            area.revealQuadtree();
@@ -108,35 +109,56 @@
         // change color
         $('#color1').click(function(){
             options2.color.scheme = "BuGn";
-            area.transitionColor(options2.color);
+            area.color(options2.color);
         });
 
         $('#color2').click(function(){
             options2.color.scheme = "Blues";
-            area.transitionColor(options2.color)
+            area.color(options2.color)
         });
 
         $('#color3').click(function(){
             options2.color.scheme = "Warm";
-            area.transitionColor(options2.color)
+            area.color(options2.color)
         });
 
         $('#color4').click(function(){
             options2.color.scheme = "Cubehelix";
-            area.transitionColor(options2.color);
+            area.color(options2.color);
+            console.log(area);
         });
 
         $('#a1').click(function(){
-            area.sort('date', 'asc');
+            options2.ordering = {
+                accessor: 'date',
+                direction: 'asc'
+            }
+            area.options(options2);
+            area.update();
         })
         $('#a2').click(function(){
-            area.sort('date', 'desc');
+            options2.ordering = {
+                accessor: 'date',
+                direction: 'desc'
+            }
+            area.options(options2);
+            area.update();
         });
         $('#a3').click(function(){
-            area.sort(metricAccessor, 'asc');
+            options2.ordering = {
+                accessor: metricAccessor,
+                direction: 'asc'
+            }
+            area.options(options2);
+            area.update();
         });
         $('#a4').click(function(){
-            area.sort(metricAccessor, 'desc');
+            options2.ordering = {
+                accessor: metricAccessor,
+                direction: 'desc'
+            }
+            area.options(options2);
+            area.update();
         });
 
     });

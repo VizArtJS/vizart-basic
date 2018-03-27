@@ -111,7 +111,7 @@
         };
 
 
-        var scatter = new VizArtBasic.Scatter('#bar', options);
+        var scatter = VizArtBasic.scatter('#bar', options);
 //        scatter.on('rendered', function(){
 //            scatter._revealVoronoi();
 //            scatter._revealQuadtree();
@@ -140,22 +140,22 @@
                 '#ff5730',
                 '#eb3ba6'
             ];
-            scatter.transitionColor(options2.color);
+            scatter.color(options2.color);
         });
 
         $('#color2').click(function(){
             options2.color.scheme = "Cold";
-            scatter.transitionColor(options2.color)
+            scatter.color(options2.color)
         });
 
         $('#color3').click(function(){
             options2.color.scheme = "Warm";
-            scatter.transitionColor(options2.color)
+            scatter.color(options2.color)
         });
 
         $('#color4').click(function(){
             options2.color.scheme = "Cubehelix";
-            scatter.transitionColor(options2.color);
+            scatter.color(options2.color);
         });
 
         $('#a1').click(function(){

@@ -75,7 +75,7 @@
             }
         };
 
-        var line = new VizArtBasic.Line('#bar', options);
+        var line = VizArtBasic.line('#bar', options);
         line.on('rendered', function(){
 //            line._revealVoronoi();
 //            line._revealQuadtree();
@@ -103,35 +103,55 @@
         // change color
         $('#color1').click(function(){
             options2.color.scheme = "BuGn";
-            line.transitionColor(options2.color);
+            line.color(options2.color);
         });
 
         $('#color2').click(function(){
             options2.color.scheme = "Blues";
-            line.transitionColor(options2.color)
+            line.color(options2.color)
         });
 
         $('#color3').click(function(){
             options2.color.scheme = "Warm";
-            line.transitionColor(options2.color)
+            line.color(options2.color)
         });
 
         $('#color4').click(function(){
             options2.color.scheme = "Cubehelix";
-            line.transitionColor(options2.color);
+            line.color(options2.color);
         });
 
         $('#a1').click(function(){
-            line.sort('date', 'asc');
+            options2.ordering = {
+                accessor: 'date',
+                direction: 'asc'
+            }
+            line.options(options2);
+            line.update();
         })
         $('#a2').click(function(){
-            line.sort('date', 'desc');
+            options2.ordering = {
+                accessor: 'date',
+                direction: 'desc'
+            }
+            line.options(options2);
+            line.update();
         });
         $('#a3').click(function(){
-            line.sort(metricAccessor, 'asc');
+            options2.ordering = {
+                accessor: metricAccessor,
+                direction: 'asc'
+            }
+            line.options(options2);
+            line.update();
         });
         $('#a4').click(function(){
-            line.sort(metricAccessor, 'desc');
+            options2.ordering = {
+                accessor: metricAccessor,
+                direction: 'desc'
+            }
+            line.options(options2);
+            line.update();
         });
 
     });

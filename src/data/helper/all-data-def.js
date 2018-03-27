@@ -1,4 +1,3 @@
-import { check } from 'vizart-core';
 import isSeriesDefined from './is-series-defined';
 
 const getAllDataDef = opt => {

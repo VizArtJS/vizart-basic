@@ -135,7 +135,7 @@
             }
         };
 
-        var chart = new VizArtBasic.Corona('#chart', options);
+        var chart = VizArtBasic.corona('#chart', options);
 
         d3.csv('assets/app-downloads.csv', function(err, res){
             chart.render(res);
@@ -150,24 +150,16 @@
 
         // change color
         $('#group').click(function(){
-            opt.plots.stackLayout = false;
-            chart.options(opt);
-            chart.update();
+            chart.group();
         });
 
         $('#zero').click(function(){
-            opt.plots.stackLayout = true;
-            opt.plots.stackMethod = 'zero';
-            chart.options(opt);
-            chart.update();
+            chart.stack();
 
         });
 
         $('#expand').click(function(){
-            opt.plots.stackLayout = true;
-            opt.plots.stackMethod = 'expand';
-            chart.options(opt);
-            chart.update();
+            chart.expand();
         });
 
         $('#dark').click(function(){

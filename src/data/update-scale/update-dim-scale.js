@@ -3,16 +3,19 @@ import { Globals } from 'vizart-core';
 import { scaleLinear, scaleTime, scaleBand, scalePoint } from 'd3-scale';
 import { interpolateRound } from 'd3-interpolate';
 import { extent } from 'd3-array';
-import uniq from 'lodash-es/uniq';
-import map from 'lodash-es/map';
 
 import { isYSort, isBar } from '../helper';
 
+const dims = (data, dim) =>
+  data
+    .map(d => d[dim.accessor])
+    .filter((ele, pos, arr) => arr.indexOf(ele) === pos);
+
 const updateDimensionScale = (data, opt) => {
-  let dim = opt.data.x;
+  const dim = opt.data.x;
 
   if (isBar(opt)) {
-    dim.values = uniq(map(data, dim.accessor));
+    dim.values = dims(data, dim);
 
     dim.scale = scaleBand()
       .domain(dim.values)
@@ -24,7 +27,7 @@ const updateDimensionScale = (data, opt) => {
   }
 
   if (isYSort(opt)) {
-    dim.values = uniq(map(data, dim.accessor));
+    dim.values = dims(data, dim);
     dim.scale = scalePoint()
       .domain(dim.values)
       .range([0, opt.chart.innerWidth]);
@@ -34,7 +37,7 @@ const updateDimensionScale = (data, opt) => {
 
   switch (dim.type) {
     case Globals.DataType.DATE:
-      dim.values = uniq(map(data, dim.accessor));
+      dim.values = dims(data, dim);
 
       let _range = extent(data, d => d[dim.accessor]);
 
@@ -50,7 +53,7 @@ const updateDimensionScale = (data, opt) => {
 
     case Globals.DataType.NUMBER:
       // todo number format
-      dim.values = uniq(map(data, dim.accessor));
+      dim.values = dims(data, dim);
 
       let _rangeNm = extent(data, d => d[dim.accessor]);
 
@@ -65,7 +68,7 @@ const updateDimensionScale = (data, opt) => {
 
       break;
     case Globals.DataType.STRING:
-      dim.values = uniq(map(data, dim.accessor));
+      dim.values = dims(data, dim);
       dim.scale = scalePoint()
         .domain(dim.values)
         .range([0, opt.chart.innerWidth]);

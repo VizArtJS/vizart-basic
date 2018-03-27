@@ -1,4 +1,3 @@
-import cloneDeep from 'lodash-es/cloneDeep';
 import sortData from '../processor/sort';
 import cleanse from '../processor/cleanse';
 import updateOptionScales from '../update-scale/index';
@@ -9,7 +8,7 @@ import updateOptionScales from '../update-scale/index';
  * @param opt _options
  */
 const processCartesianData = (data, opt, cleanseData = true) => {
-  const copy = cloneDeep(data);
+  const copy = data.slice();
   // a cleansed copy of data.
   let cleansed = cleanseData === true ? cleanse(copy, opt) : copy;
 
