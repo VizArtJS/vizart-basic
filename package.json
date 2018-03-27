@@ -42,7 +42,7 @@
     "d3-timer": "^1.0.7",
     "d3-transition": "^1.1.1",
     "d3-voronoi": "^1.1.2",
-    "vizart-core": "^2.0.0-rc.5"
+    "vizart-core": "^2.0.0-rc.6"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
