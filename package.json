@@ -1,7 +1,7 @@
 {
   "name": "vizart-basic",
-  "version": "2.0.0",
-  "description": "VizArt: Basic Charts",
+  "version": "2.0.0-alpha",
+  "description": "VizArt Basic Charts: bar, row, rose, line, area, etc.",
   "main": "dist/vizart-basic.js",
   "module": "dist/vizart-basic.mjs",
   "jsnext:main": "dist/vizart-basic.mjs",
@@ -77,5 +77,5 @@
   ],
   "author": "Xing Yun",
   "license": "MIT",
-  "homepage": "www.vizart.org"
+  "homepage": "https://vizartjs.github.io/"
 }
