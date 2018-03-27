@@ -22,17 +22,4 @@ const c = state => d => {
   }
 };
 
-const withCartesian = state =>
-  Object.assign(state, {
-    _metric: getMetric(state),
-    _dimension: getDimension(state),
-    _getDimensionVal: getDimensionVal(state),
-    _getMetricVal: getMetricVal(state),
-    _x: x(state),
-    _y: y(state),
-    _c: c(state),
-  });
-
-export default withCartesian;
-
 export { getMetric, getMetricVal, getDimension, getDimensionVal, x, y, c };
