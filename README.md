@@ -45,6 +45,10 @@ opt.plots.opacityArea = o.4
 // or in minimum
 const opt = { plots: {opacityArea: 0.2 }};
 
+// update options and redraw chart
+chart.options(opt);
+chart.update();
+
 ```
 
 
