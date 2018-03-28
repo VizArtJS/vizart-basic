@@ -36,13 +36,15 @@ You only need to provide essential options. [Demo](https://vizartjs.github.io/de
 ```
 chart.render(data) // this should be called only once
 ```
-3. Change a chart on the fly
+3. Change a chart on the fly (with options in a minimum)
 ```
+// copy and update full options
 const opt = chart.options();
 opt.plots.opacityArea = o.4
-chart.options(opt);
 
-chart.update();
+// or in minimum
+const opt = { plots: {opacityArea: 0.2 }};
+
 ```
 
 
