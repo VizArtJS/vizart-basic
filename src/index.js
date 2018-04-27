@@ -19,3 +19,4 @@ export { default as row } from './model/row';
 
 export * from './data';
 export * from './options';
+export * from './helper';
