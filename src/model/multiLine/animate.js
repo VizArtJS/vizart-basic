@@ -121,7 +121,7 @@ const animate = state => {
           .duration(_options.animation.duration.tooltip)
           .style('opacity', 0);
 
-        drawCanvas(_frontContext, res, opt);
+        drawCanvas(_frontContext, res, _options);
       }
     }
 
@@ -131,7 +131,7 @@ const animate = state => {
         .duration(_options.animation.duration.tooltip)
         .style('opacity', 0);
 
-      drawCanvas(ctx, res, opt);
+      drawCanvas(_frontContext, res, _options);
     }
 
     state._frontCanvas.on('mousemove', mouseMoveHandler);

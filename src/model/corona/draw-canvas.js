@@ -2,8 +2,8 @@ import drawGridArc from './draw-grid-arc';
 import drawGridLabel from './draw-grid-label';
 import drawAxisLabel from './draw-axis-label';
 import drawGradientBoundary from './draw-gradient-bundary';
-import drawMonths from './draw-months';
 import drawArea from './draw-area';
+import drawMonths from './draw-months';
 import drawLine from './draw-line';
 import drawChord from './draw-chord';
 import drawHistogram from './draw-histogram';
@@ -14,6 +14,7 @@ const drawCanvas = (context, state, opt) => {
   drawGridArc(context, opt);
   drawGridLabel(context, state, opt);
   drawAxisLabel(context, opt);
+
   // drawMonths(context, opt);
   // drawHistogram(context, state, opt);
   // drawChord(context, state, opt);
