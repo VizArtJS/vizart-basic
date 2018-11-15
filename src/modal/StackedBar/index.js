@@ -132,8 +132,8 @@ class StackedBar extends AbstractStackedCartesianChartWithAxes {
     const initialState = this.previousState
       ? this.previousState
       : this._options.plots.stackLayout === true
-        ? this._data.nested.map(initialStackLayout)
-        : this._data.nested.map(initialGroupLayout);
+      ? this._data.nested.map(initialStackLayout)
+      : this._data.nested.map(initialGroupLayout);
 
     const finalState =
       this._options.plots.stackLayout === true

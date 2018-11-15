@@ -40,7 +40,7 @@ class Corona extends AbstractStackedCartesianChart {
             values: d.values.map((e, i) => {
               return {
                 key: d.key,
-                angle: Math.PI * 2 * i / d.values.length,
+                angle: (Math.PI * 2 * i) / d.values.length,
                 r: innerRadius,
                 r0: innerRadius,
                 r1: innerRadius,
@@ -62,7 +62,7 @@ class Corona extends AbstractStackedCartesianChart {
         values: d.values.map((e, i) => {
           return {
             key: d.key,
-            angle: Math.PI * 2 * i / d.values.length,
+            angle: (Math.PI * 2 * i) / d.values.length,
             r: radiusScale(e.y),
             r0: rawRadiusScale(e.y0),
             r1: rawRadiusScale(e.y1),

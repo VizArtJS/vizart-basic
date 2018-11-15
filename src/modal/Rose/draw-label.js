@@ -3,7 +3,7 @@ import { drawCircularText } from 'vizart-core';
 
 const drawLabel = (context, opt, text, i, sliceNum, maxR, scale) => {
   const radius = getLabelRadius(opt, scale, maxR);
-  const angle = 2 * Math.PI / sliceNum;
+  const angle = (2 * Math.PI) / sliceNum;
 
   drawCircularText(
     context,

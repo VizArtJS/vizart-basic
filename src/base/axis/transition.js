@@ -2,7 +2,7 @@ import rotateXTicks from './rotete';
 
 const transitionTicks = (svg, data, opt, xAxis, yAxis) => {
   const transition = svg.transition().duration(opt.animation.duration.update);
-  const delay = (d, i) => i / data.length * opt.animation.duration.update;
+  const delay = (d, i) => (i / data.length) * opt.animation.duration.update;
 
   transition
     .select('.x.axis')

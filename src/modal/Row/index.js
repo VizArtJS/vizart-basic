@@ -307,7 +307,7 @@ class Row extends AbstractBasicCartesianChart {
           .transition('update-rect-transition')
           .delay(
             (d, i) =>
-              i / this._data.length * this._options.animation.duration.update
+              (i / this._data.length) * this._options.animation.duration.update
           )
           .attr('fill', c)
           .attr('x', y)
@@ -335,7 +335,7 @@ class Row extends AbstractBasicCartesianChart {
           .transition()
           .delay(
             (d, i) =>
-              i / this._data.length * this._options.animation.duration.update
+              (i / this._data.length) * this._options.animation.duration.update
           )
           .attr('width', w)
           .tween('append.rects', drawCanvasInTransition);

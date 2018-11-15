@@ -54,8 +54,8 @@ class Rose extends AbstractStackedCartesianChart {
 
     // y is area
     // https://understandinguncertainty.org/node/214
-    const area = r => Math.PI * Math.pow(r, 2) / 3;
-    const radiusOfArea = area => Math.sqrt(area * 3 / Math.PI);
+    const area = r => (Math.PI * Math.pow(r, 2)) / 3;
+    const radiusOfArea = area => Math.sqrt((area * 3) / Math.PI);
 
     const radiusScale = scaleLinear()
       .domain([0, radiusOfArea(this._data.maxY)])

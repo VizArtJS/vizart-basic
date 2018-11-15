@@ -95,19 +95,16 @@ class Bar extends AbstractBasicCartesianChartWithAxes {
           .transition('update-rect-transition')
           .delay(
             (d, i) =>
-              i / this._data.length * this._options.animation.duration.update
+              (i / this._data.length) * this._options.animation.duration.update
           )
           .attr('fill', this._c)
           .attr('x', this._x)
           .attr('width', this._w)
-          .attr(
-            'y',
-            d => (this._getMetricVal(d) > 0 ? this._y(d) : this._zero())
+          .attr('y', d =>
+            this._getMetricVal(d) > 0 ? this._y(d) : this._zero()
           )
-          .attr(
-            'height',
-            d =>
-              _hasNegative ? Math.abs(this._y(d) - this._zero()) : this._h(d)
+          .attr('height', d =>
+            _hasNegative ? Math.abs(this._y(d) - this._zero()) : this._h(d)
           )
           .tween('update.rects', drawCanvasInTransition);
       });
@@ -134,16 +131,13 @@ class Bar extends AbstractBasicCartesianChartWithAxes {
           .duration(this._options.animation.duration.add)
           .delay(
             (d, i) =>
-              i / this._data.length * this._options.animation.duration.add
+              (i / this._data.length) * this._options.animation.duration.add
           )
-          .attr(
-            'y',
-            d => (this._getMetricVal(d) > 0 ? this._y(d) : this._zero())
+          .attr('y', d =>
+            this._getMetricVal(d) > 0 ? this._y(d) : this._zero()
           )
-          .attr(
-            'height',
-            d =>
-              _hasNegative ? Math.abs(this._y(d) - this._zero()) : this._h(d)
+          .attr('height', d =>
+            _hasNegative ? Math.abs(this._y(d) - this._zero()) : this._h(d)
           )
           .tween('append.rects', drawCanvasInTransition);
       });
@@ -209,7 +203,7 @@ class Bar extends AbstractBasicCartesianChartWithAxes {
       .duration(this._options.animation.duration.update)
       .delay(
         (d, i) =>
-          i / this._data.length * this._options.animation.duration.update
+          (i / this._data.length) * this._options.animation.duration.update
       )
       .attr('x', this._x);
   }
@@ -239,7 +233,7 @@ class Bar extends AbstractBasicCartesianChartWithAxes {
       .duration(this._options.animation.duration.update)
       .delay(
         (d, i) =>
-          i / this._data.length * this._options.animation.duration.update
+          (i / this._data.length) * this._options.animation.duration.update
       )
       .attr('x', this._x)
       .tween('append.rects', drawCanvasInTransition);
