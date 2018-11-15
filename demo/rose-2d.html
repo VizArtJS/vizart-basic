@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Rose</title>
+    <title>Rose 2D</title>
     <link href="./vizart-basic.css" rel="stylesheet" type="text/css"/>
     <link href="./css/main.css" rel="stylesheet" type="text/css"/>
     <link href="./lib/bootstrap-3.3.7/css/bootstrap.css" rel="stylesheet" type="text/css">
@@ -33,23 +33,21 @@
     $(document).ready(function () {
         var opt = {
             chart: {
-              margin: {
-                  left: 0,
-                  right: 0,
-                  top: 0,
-                  bottom: 0
-              }
+                margin: {
+                    left: 0,
+                    right: 0,
+                    top: 0,
+                    bottom: 0
+                }
             },
             color: {
-               type: 'categorical',
-               scheme: ['#000000', '#fc0d1b', '#64b3fc']
+                type: 'categorical',
+                scheme: ['#000000', '#fc0d1b', '#64b3fc']
             },
             data: {
                 x:   { name: 'Director', type: 'string', accessor: 'dimension'},
                 y: [
                     { name: 'Total', type: 'number', accessor: 'metric'},
-                    { name: 'm2', type: 'number', accessor: 'm2'},
-                    { name: 'm3', type: 'number', accessor: 'm3'}
                 ],
             },
             plots: {
