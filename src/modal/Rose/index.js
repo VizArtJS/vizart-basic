@@ -17,8 +17,10 @@ const RoseOpt = {
   },
 
   plots: {
+    innerRadiusRatio: 0.4,
     opacity: 0.5,
     outerRadiusMargin: 10,
+    padAngle: 0.04,
     axisLabel: null,
     axisLabelAlign: true,
     axisLabelAlignThreshold: 0.5,
@@ -47,6 +49,7 @@ class Rose extends AbstractStackedCartesianChart {
   _animate() {
     const colorScale = scaleOrdinal().range(this._color.range());
     const c = d => colorScale(d);
+    const innerRadius = getRadius(this._options)[0];
     const outerRadius = getRadius(this._options)[1];
 
     // y is area
@@ -56,7 +59,7 @@ class Rose extends AbstractStackedCartesianChart {
 
     const radiusScale = scaleLinear()
       .domain([0, radiusOfArea(this._data.maxY)])
-      .range([0, outerRadius]);
+      .range([innerRadius, outerRadius]);
 
     const r = d => radiusScale(radiusOfArea(d));
 
@@ -80,6 +83,7 @@ class Rose extends AbstractStackedCartesianChart {
           alpha: this._options.plots.opacity,
           startAngle: angleScale(i),
           endAngle: angleScale(i + 1),
+          r0: innerRadius,
           r: r(e.values[i]._y),
           data: e.values[i],
         };
@@ -174,9 +178,9 @@ class Rose extends AbstractStackedCartesianChart {
       const arcDiagram = arc()
         .startAngle(d => d.startAngle)
         .endAngle(d => d.endAngle)
-        .innerRadius(0)
+        .innerRadius(innerRadius)
         .outerRadius(d => d.r)
-        .padAngle(0.04);
+        .padAngle(opt.padAngle || 0);
 
       const groups = dataJoin
         .append('g')
