@@ -27,7 +27,18 @@
     </ul>
 </div>
 
-<div id="chart" class="chart-container"></div>
+<div class="container" style="height:100%">
+    <div class="row" style="height:100%">
+        <div class="col-lg-6" style="height: 100%;">
+            <div id="chart0" class="chart-container"></div>
+        </div>
+
+        <div class="col-lg-6" style="height: 100%;">
+            <div id="chart" class="chart-container"></div>
+        </div>
+    </div>
+</div>
+
 
 <script>
     $(document).ready(function () {
@@ -53,6 +64,8 @@
                 ],
             },
             plots: {
+                innerRadiusRatio: 0.4,
+                padAngle: 0.04,
                 opacity: 0.7,
                 outerRadiusMargin: 20,
                 axisLabelAlign: true,
@@ -72,7 +85,49 @@
             },
         };
 
+        var opt0 = {
+            chart: {
+                margin: {
+                    left: 0,
+                    right: 0,
+                    top: 0,
+                    bottom: 0
+                }
+            },
+            color: {
+                type: 'categorical',
+                scheme: ['#000000', '#fc0d1b', '#64b3fc']
+            },
+            data: {
+                x:   { name: 'Director', type: 'string', accessor: 'dimension'},
+                y: [
+                    { name: 'Total', type: 'number', accessor: 'metric'},
+                ],
+            },
+            plots: {
+                innerRadiusRatio: 0,
+                padAngle: 0,
+                opacity: 1,
+                outerRadiusMargin: 20,
+                axisLabelAlign: true,
+                axisLabelAlignThreshold: 0.7,
+                dimensionOrder: ["January",
+                    "February",
+                    "March",
+                    "April",
+                    "May",
+                    "June",
+                    "July",
+                    "August",
+                    "September",
+                    "October",
+                    "November",
+                    "December"]
+            },
+        };
+
         var rose = VizArtBasic.rose('#chart', opt);
+        var rose0 = VizArtBasic.rose('#chart0', opt0);
 
         var data = [
             {"dimension": "January", "metric": 10, m2: 4, m3: 34},
@@ -90,6 +145,7 @@
         ]
 
         rose.render(data);
+        rose0.render(data);
 
 
         // live update button is clicked
