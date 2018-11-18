@@ -81,7 +81,9 @@ const animate = state => {
         .attr('dimension', _getDimensionVal)
         .attr('metric', _getMetricVal)
         .transition('update-rect-transition')
-        .delay((d, i) => i / _data.length * _options.animation.duration.update)
+        .delay(
+          (d, i) => (i / _data.length) * _options.animation.duration.update
+        )
         .attr('fill', _c)
         .attr('x', _x)
         .attr('width', _w)
@@ -107,7 +109,7 @@ const animate = state => {
         .attr('height', 0)
         .transition()
         .duration(_options.animation.duration.add)
-        .delay((d, i) => i / _data.length * _options.animation.duration.add)
+        .delay((d, i) => (i / _data.length) * _options.animation.duration.add)
         .attr('y', d => (_getMetricVal(d) > 0 ? _y(d) : _zero()))
         .attr('height', d => (_hasNegative ? Math.abs(_y(d) - _zero()) : _h(d)))
         .tween('append.rects', drawCanvasInTransition);

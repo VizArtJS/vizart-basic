@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Rose</title>
+    <title>Rose 2D</title>
     <link href="./vizart-basic.css" rel="stylesheet" type="text/css"/>
     <link href="./css/main.css" rel="stylesheet" type="text/css"/>
     <link href="./lib/bootstrap-3.3.7/css/bootstrap.css" rel="stylesheet" type="text/css">
@@ -23,38 +23,37 @@
         <li id="color1"><a href="#">Metro</a></li>
         <li id="color2"><a href="#">Dawn</a></li>
         <li id="color3"><a href="#">Cold</a></li>
+        <li id="color4"><a href="#">Light</a></li>
     </ul>
 </div>
 
 <div id="chart" class="chart-container"></div>
 
-
 <script>
     $(document).ready(function () {
         var opt = {
             chart: {
-              margin: {
-                  left: 0,
-                  right: 0,
-                  top: 0,
-                  bottom: 0
-              }
+                margin: {
+                    left: 0,
+                    right: 0,
+                    top: 0,
+                    bottom: 0
+                }
             },
             color: {
-               type: 'categorical',
-               scheme: ['#000000', '#fc0d1b', '#64b3fc']
+                type: 'categorical',
+                scheme: [
+                    '#37A2DA', '#32C5E9', '#67E0E3', '#9FE6B8', '#FFDB5C', '#ff9f7f',
+                    '#fb7293', '#E062AE', '#E690D1', '#e7bcf3', '#9d96f5', '#8378EA', '#96BFFF'
+                ]
             },
             data: {
                 x:   { name: 'Director', type: 'string', accessor: 'dimension'},
                 y: [
                     { name: 'Total', type: 'number', accessor: 'metric'},
-                    { name: 'm2', type: 'number', accessor: 'm2'},
-                    { name: 'm3', type: 'number', accessor: 'm3'}
                 ],
             },
             plots: {
-                innerRadiusRatio: 0,
-                padAngle: 0.04,
                 opacity: 0.7,
                 outerRadiusMargin: 20,
                 axisLabelAlign: true,
@@ -74,7 +73,6 @@
             },
         };
 
-
         var rose = VizArtBasic.rose('#chart', opt);
 
         var data = [
@@ -93,16 +91,6 @@
         ]
 
         rose.render(data);
-
-
-        // live update button is clicked
-        $('#update').click(function(){
-            var random = d3.randomUniform(10, 20)
-            var ranIndex = random();
-            fakeData[ranIndex].y = random();
-            rose.data(fakeData);
-            rose.update();
-        });
 
         var options2 = rose.options();
 
@@ -135,7 +123,13 @@
             rose.color(options2.color)
         });
 
-
+        $('#color4').click(function(){
+            options2.color.scheme = [
+                '#37A2DA', '#32C5E9', '#67E0E3', '#9FE6B8', '#FFDB5C', '#ff9f7f',
+                '#fb7293', '#E062AE', '#E690D1', '#e7bcf3', '#9d96f5', '#8378EA', '#96BFFF'
+            ];
+            rose.color(options2.color)
+        });
     });
 </script>
 </body>

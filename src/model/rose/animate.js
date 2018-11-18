@@ -27,16 +27,17 @@ const animate = state => {
 
   const colorScale = scaleOrdinal().range(_color.range());
   const c = d => colorScale(d);
+  const innerRadius = getRadius(_options)[0];
   const outerRadius = getRadius(_options)[1];
 
   // y is area
   // https://understandinguncertainty.org/node/214
-  const area = r => Math.PI * Math.pow(r, 2) / 3;
-  const radiusOfArea = area => Math.sqrt(area * 3 / Math.PI);
+  const area = r => (Math.PI * Math.pow(r, 2)) / 3;
+  const radiusOfArea = area => Math.sqrt((area * 3) / Math.PI);
 
   const radiusScale = scaleLinear()
     .domain([0, radiusOfArea(_data.maxY)])
-    .range([0, outerRadius]);
+    .range([innerRadius, outerRadius]);
 
   const r = d => radiusScale(radiusOfArea(d));
 
@@ -55,6 +56,7 @@ const animate = state => {
         alpha: _options.plots.opacity,
         startAngle: angleScale(i),
         endAngle: angleScale(i + 1),
+        r0: innerRadius,
         r: r(e.values[i]._y),
         data: e.values[i],
       };
@@ -154,7 +156,7 @@ const animate = state => {
     const arcDiagram = arc()
       .startAngle(d => d.startAngle)
       .endAngle(d => d.endAngle)
-      .innerRadius(0)
+      .innerRadius(d => d.r0)
       .outerRadius(d => d.r)
       .padAngle(0.04);
 

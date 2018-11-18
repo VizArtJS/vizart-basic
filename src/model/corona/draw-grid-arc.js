@@ -11,9 +11,9 @@ const drawGridArc = (context, opt) => {
 
   const gridArc = arc()
     .innerRadius(
-      d => (outerRadius - innerRadius) / levels * (d - 1) + innerRadius
+      d => ((outerRadius - innerRadius) / levels) * (d - 1) + innerRadius
     )
-    .outerRadius(d => (outerRadius - innerRadius) / levels * d + innerRadius)
+    .outerRadius(d => ((outerRadius - innerRadius) / levels) * d + innerRadius)
     .startAngle(0)
     .endAngle(2 * Math.PI)
     .context(context);

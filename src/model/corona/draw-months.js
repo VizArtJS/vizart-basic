@@ -61,7 +61,7 @@ const drawMonths = (context, opt, onTop = false) => {
   context.beginPath();
 
   for (const [i, d] of Months.entries()) {
-    const slice = Math.PI * 2 / Months.length;
+    const slice = (Math.PI * 2) / Months.length;
     const start = slice * i;
     const end = start + slice;
 

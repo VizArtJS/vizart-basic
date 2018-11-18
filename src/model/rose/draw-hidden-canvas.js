@@ -8,9 +8,9 @@ const drawHiddenCanvas = (context, state, opt) => {
   const gridArc = arc()
     .startAngle(d => d.startAngle)
     .endAngle(d => d.endAngle)
-    .innerRadius(0)
+    .innerRadius(d => d.r0)
     .outerRadius(d => d.r)
-    .padAngle(0.04)
+    .padAngle(opt.padAngle)
     .context(context);
 
   let i = 0;

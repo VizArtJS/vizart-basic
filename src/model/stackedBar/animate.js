@@ -145,8 +145,8 @@ const animate = state => {
   const initialState = _animationState
     ? _animationState
     : _options.plots.stackLayout === true
-      ? _data.nested.map(initialStackLayout)
-      : _data.nested.map(initialGroupLayout);
+    ? _data.nested.map(initialStackLayout)
+    : _data.nested.map(initialGroupLayout);
 
   const finalState =
     _options.plots.stackLayout === true

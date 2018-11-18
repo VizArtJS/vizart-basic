@@ -16,7 +16,7 @@ const drawHistogram = (context, state, opt) => {
   const [innerRadius, outerRadius] = getRadius(opt);
 
   const arcRadius = innerRadius - 35;
-  const slice = 2 * Math.PI / SliceNum;
+  const slice = (2 * Math.PI) / SliceNum;
 
   const random = randomUniform(10, 30);
 

@@ -12,8 +12,8 @@ const drawCanvas = (context, state, opt) => {
     opt.plots.outerRadiusMargin;
   const arcDiagram = arc()
     .outerRadius(radius)
-    .innerRadius(
-      () => (opt.plots.isDonut ? radius * opt.plots.innerRadiusRatio : 0)
+    .innerRadius(() =>
+      opt.plots.isDonut ? radius * opt.plots.innerRadiusRatio : 0
     )
     .context(context);
 
