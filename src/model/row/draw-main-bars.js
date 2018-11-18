@@ -94,7 +94,7 @@ const drawMainBars = (state, data) => {
         .attr('dimension', _getDimensionVal)
         .attr('metric', _getMetricVal)
         .transition('update-rect-transition')
-        .delay((d, i) => i / data.length * _options.animation.duration.update)
+        .delay((d, i) => (i / data.length) * _options.animation.duration.update)
         .attr('fill', c)
         .attr('x', y)
         .attr('width', w)
@@ -119,7 +119,7 @@ const drawMainBars = (state, data) => {
         .attr('metric', _getMetricVal)
         .attr('height', h)
         .transition()
-        .delay((d, i) => i / data.length * _options.animation.duration.update)
+        .delay((d, i) => (i / data.length) * _options.animation.duration.update)
         .attr('width', w)
         .tween('append.rects', drawCanvasInTransition);
     });

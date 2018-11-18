@@ -65,9 +65,9 @@ const _tickPositive = (range, ticks, tier) => {
     let multiplier = 1;
 
     if (maxTicks == 0) {
-      if (max < adjust * maxRange / 5) {
+      if (max < (adjust * maxRange) / 5) {
         unit = 50;
-      } else if (max < adjust * maxRange / 2) {
+      } else if (max < (adjust * maxRange) / 2) {
         unit = 20;
       } else if (max < adjust * maxRange) {
         unit = 10;
@@ -75,9 +75,9 @@ const _tickPositive = (range, ticks, tier) => {
     } else {
       multiplier = maxTicks;
       unit = Math.pow(10, maxTicks.toString().length);
-      if (max < adjust * maxRange * 2 / unit) {
+      if (max < (adjust * maxRange * 2) / unit) {
         unit = unit * 5;
-      } else if (max < adjust * maxRange * 5 / unit) {
+      } else if (max < (adjust * maxRange * 5) / unit) {
         unit = unit * 2;
       }
     }
@@ -189,9 +189,9 @@ const tickBothNegativeAndPositive = (range, ticks, tier) => {
     let multiplier = 1;
 
     if (maxTicks == 0) {
-      if (max < adjust * maxRange / 5) {
+      if (max < (adjust * maxRange) / 5) {
         unit = 50;
-      } else if (max < adjust * maxRange / 2) {
+      } else if (max < (adjust * maxRange) / 2) {
         unit = 20;
       } else if (max < adjust * maxRange) {
         unit = 10;
@@ -199,9 +199,9 @@ const tickBothNegativeAndPositive = (range, ticks, tier) => {
     } else {
       multiplier = maxTicks;
       unit = Math.pow(10, maxTicks.toString().length);
-      if (max < adjust * maxRange * 2 / unit) {
+      if (max < (adjust * maxRange * 2) / unit) {
         unit = unit * 5;
-      } else if (max < adjust * maxRange * 5 / unit) {
+      } else if (max < (adjust * maxRange * 5) / unit) {
         unit = unit * 2;
       }
     }

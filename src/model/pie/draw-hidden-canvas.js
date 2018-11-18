@@ -8,8 +8,8 @@ const drawHiddenCanvas = (context, state, opt) => {
   const radius = Math.min(opt.chart.innerWidth, opt.chart.innerHeight) / 2;
   const arcDiagram = arc()
     .outerRadius(radius * 0.8)
-    .innerRadius(
-      () => (opt.plots.isDonut ? radius * opt.plots.innerRadiusRatio : 0)
+    .innerRadius(() =>
+      opt.plots.isDonut ? radius * opt.plots.innerRadiusRatio : 0
     )
     .context(context);
 

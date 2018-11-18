@@ -30,7 +30,7 @@ const apiSort = state => ({
       .selectAll('.bar')
       .transition()
       .duration(_options.animation.duration.update)
-      .delay((d, i) => i / _data.length * _options.animation.duration.update)
+      .delay((d, i) => (i / _data.length) * _options.animation.duration.update)
       .attr('x', _x)
       .tween('append.rects', drawCanvasInTransition);
 
