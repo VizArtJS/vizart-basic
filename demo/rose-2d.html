@@ -14,7 +14,6 @@
 </head>
 <body>
 
-<div id="update" class="btn btn-info" style="position: fixed;top: 10px; left: 70px; z-index: 99">Update</div>
 <div class="dropdown" style="position: fixed; top: 10px; left: 160px; z-index: 99">
     <button  class="btn btn-info dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
         Color
@@ -24,6 +23,7 @@
         <li id="color1"><a href="#">Metro</a></li>
         <li id="color2"><a href="#">Dawn</a></li>
         <li id="color3"><a href="#">Cold</a></li>
+        <li id="color4"><a href="#">Light</a></li>
     </ul>
 </div>
 
@@ -42,7 +42,10 @@
             },
             color: {
                 type: 'categorical',
-                scheme: ['#000000', '#fc0d1b', '#64b3fc']
+                scheme: [
+                    '#37A2DA', '#32C5E9', '#67E0E3', '#9FE6B8', '#FFDB5C', '#ff9f7f',
+                    '#fb7293', '#E062AE', '#E690D1', '#e7bcf3', '#9d96f5', '#8378EA', '#96BFFF'
+                ]
             },
             data: {
                 x:   { name: 'Director', type: 'string', accessor: 'dimension'},
@@ -89,16 +92,6 @@
 
         rose.render(data);
 
-
-        // live update button is clicked
-        $('#update').click(function(){
-            var random = d3.randomUniform(10, 20)
-            var ranIndex = random();
-            fakeData[ranIndex].y = random();
-            rose.data(fakeData);
-            rose.update();
-        });
-
         var options2 = rose.options();
 
         // change color
@@ -130,7 +123,13 @@
             rose.color(options2.color)
         });
 
-
+        $('#color4').click(function(){
+            options2.color.scheme = [
+                '#37A2DA', '#32C5E9', '#67E0E3', '#9FE6B8', '#FFDB5C', '#ff9f7f',
+                '#fb7293', '#E062AE', '#E690D1', '#e7bcf3', '#9d96f5', '#8378EA', '#96BFFF'
+            ];
+            rose.color(options2.color)
+        });
     });
 </script>
 </body>

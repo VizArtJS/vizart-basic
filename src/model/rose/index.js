@@ -10,7 +10,7 @@ const RoseOpt = {
     innerRadiusRatio: 0.4,
     opacity: 0.5,
     outerRadiusMargin: 10,
-    padAngle: 0.04,
+    padAngle: 0,
     axisLabel: null,
     axisLabelAlign: true,
     axisLabelAlignThreshold: 0.5,
