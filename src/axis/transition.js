@@ -1,15 +1,16 @@
 import rotateXTicks from './rotete';
+import { transition } from 'd3-transition';
 
 const transitionTicks = (svg, data, opt, xAxis, yAxis) => {
-  const transition = svg.transition().duration(opt.animation.duration.update);
+  const _transition = transition().duration(opt.animation.duration.update);
   const delay = (d, i) => (i / data.length) * opt.animation.duration.update;
 
-  transition
+  _transition
     .select('.x.axis')
     .delay(delay)
     .call(xAxis);
 
-  transition
+  _transition
     .select('.y.axis')
     .delay(delay)
     .call(yAxis);
