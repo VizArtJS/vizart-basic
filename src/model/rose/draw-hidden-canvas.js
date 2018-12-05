@@ -20,7 +20,10 @@ const drawHiddenCanvas = (context, state, opt) => {
       const color = genColorByIndex(++i);
 
       context.save();
-      context.translate(opt.chart.width / 2, opt.chart.height / 2);
+      context.translate(
+        opt.chart.innerWidth / 2 + opt.chart.margin.left,
+        opt.chart.innerHeight / 2 + opt.chart.margin.top
+      );
       context.beginPath();
       context.fillStyle = color;
 
