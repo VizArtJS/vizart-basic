@@ -135,6 +135,7 @@
 
         // change color
         $('#color1').click(function(){
+            options2.color.type = 'sequential';
             options2.color.scheme = [
                 '#ffe100',
                 '#ffbf00',
@@ -146,21 +147,25 @@
         });
 
         $('#color2').click(function(){
+            options2.color.type = 'sequential';
             options2.color.scheme = "Cold";
             barChart.color(options2.color)
         });
 
         $('#color3').click(function(){
+            options2.color.type = 'categorical';
             options2.color.scheme = "Warm";
             barChart.color(options2.color)
         });
 
         $('#color4').click(function(){
+            options2.color.type = 'categorical';
             options2.color.scheme = d3.interpolateCubehelixDefault;
             barChart.color(options2.color);
         });
 
         $('#set1').click(function(){
+            options2.color.type = 'sequential';
             options2.color.scheme = [
                 '#deebf7',
                 '#3182bd'
@@ -170,6 +175,7 @@
 
 
         $('#set2').click(function(){
+            options2.color.type = 'sequential';
             options2.color.scheme = [
                 '#deebf7',
                 '#9ecae1',
@@ -180,6 +186,7 @@
 
 
         $('#set3').click(function(){
+            options2.color.type = 'sequential';
             options2.color.scheme = [
                 '#eff3ff',
                 '#bdd7e7',
@@ -194,6 +201,7 @@
 
 
         $('#set4').click(function(){
+            options2.color.type = 'sequential';
             options2.color.scheme = [
                 '#f7fbff',
                 '#deebf7',
@@ -209,16 +217,32 @@
         });
 
         $('#a1').click(function(){
-            barChart.sort('Director', 'asc');
+            options2.color.ordering = {
+                accessor: 'Director',
+                direction: 'asc'
+            };
+            barChart.update();
         })
         $('#a2').click(function(){
-            barChart.sort('Director', 'desc');
+            options2.color.ordering = {
+                accessor: 'Director',
+                direction: 'desc'
+            };
+            barChart.update();
         });
         $('#a3').click(function(){
-            barChart.sort('Total', 'asc');
+            options2.color.ordering = {
+                accessor: 'Total',
+                direction: 'asc'
+            };
+            barChart.update();
         });
         $('#a4').click(function(){
-            barChart.sort('Total', 'desc');
+            options2.color.ordering = {
+                accessor: 'Total',
+                direction: 'desc'
+            };
+            barChart.update();
         });
 
     });
