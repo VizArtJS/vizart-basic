@@ -11,8 +11,8 @@ const drawLabel = (context, opt, text, i, sliceNum, maxR, scale) => {
     14,
     'Oswald',
     opt.plots.axisLabelColor,
-    opt.chart.innerWidth / 2 + opt.chart.margin.left,
-    opt.chart.innerHeight / 2 + opt.chart.margin.top,
+    opt.chart.innerWidth,
+    opt.chart.innerHeight,
     radius,
     angle * i + angle / 2,
     0

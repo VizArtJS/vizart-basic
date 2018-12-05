@@ -13,10 +13,7 @@ const drawPetal = (context, selection, opt, sliceNum) => {
     let maxR = 0;
     group.selectAll('.petal').each(function(d) {
       context.save();
-      context.translate(
-        opt.chart.innerWidth / 2 + opt.chart.margin.left,
-        opt.chart.innerHeight / 2 + opt.chart.margin.top
-      );
+      context.translate(opt.chart.innerWidth, opt.chart.innerHeight);
 
       const petal = select(this);
       const color = petal.attr('fill');

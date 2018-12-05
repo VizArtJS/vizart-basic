@@ -1,4 +1,5 @@
 import animateStates from './tween-states';
+import { applyVoronoi } from 'vizart-core';
 import { mouse } from 'd3-selection';
 import { getDimensionVal, getMetric } from '../../helper/withCartesian';
 import getRadius from './get-radius';
