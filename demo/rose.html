@@ -10,6 +10,7 @@
     <script src="./lib/bootstrap-3.3.7/js/bootstrap.js"></script>
     <script src="./lib/d3.js"></script>
     <script src="./lib/lodash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/es6-shim/0.35.3/es6-shim.js"></script>
     <script src="./vizart-basic.standalone.js" type="text/javascript"></script>
 </head>
 <body>
@@ -26,15 +27,23 @@
     </ul>
 </div>
 
-<div id="chart" class="chart-container"></div>
-
+<div class="container" style="width: 100%; height: 100%">
+    <div class="row"  style="width: 100%; height: 100%">
+        <div class="col-lg-6"  style="height: 100%">
+            <div id="chart" class="chart-container"></div>
+        </div>
+        <div class="col-lg-6"  style="height: 100%">
+            <div id="chart2" class="chart-container"></div>
+        </div>
+    </div>
+</div>
 
 <script>
     $(document).ready(function () {
-        var opt = {
+        const opt = {
             chart: {
               margin: {
-                  left: 0,
+                  left: 10,
                   right: 0,
                   top: 0,
                   bottom: 0
@@ -52,6 +61,7 @@
                     { name: 'm3', type: 'number', accessor: 'm3'}
                 ],
             },
+            legend: { enabled : true },
             plots: {
                 innerRadiusRatio: 0,
                 padAngle: 0.04,
@@ -74,10 +84,60 @@
             },
         };
 
+        const opt2 = {
+            chart: {
+                margin: {
+                    left: 10,
+                    right: 10,
+                    top: 0,
+                    bottom: 0
+                }
+            },
+            color: {
+                type: 'categorical',
+                scheme: [
+                    '#37A2DA', '#32C5E9', '#67E0E3', '#9FE6B8', '#FFDB5C', '#ff9f7f',
+                    '#fb7293', '#E062AE', '#E690D1', '#e7bcf3', '#9d96f5', '#8378EA', '#96BFFF'
+                ]
+            },
+            legend: { enabled : false },
+            data: {
+                x:   { name: 'Director', type: 'string', accessor: 'dimension'},
+                y: [
+                    { name: 'Total', type: 'number', accessor: 'metric'},
+                ],
+            },
+            plots: {
+                innerRadiusRatio: 0.4,
+                padAngle: 0,
+                opacity: 1,
+                outerRadiusMargin: 20,
+                axisLabelAlign: true,
+                axisLabelAlignThreshold: 0.7,
+                dimensionOrder: ["January",
+                    "February",
+                    "March",
+                    "April",
+                    "May",
+                    "June",
+                    "console.log(userOpt)July",
+                    "August",
+                    "September",
+                    "October",
+                    "November",
+                    "December"]
+            },
+        };
 
-        var rose = VizArtBasic.rose('#chart', opt);
 
-        var data = [
+
+        const rose = VizArtBasic.rose('#chart', opt);
+        const rose2 = VizArtBasic.rose('#chart2', opt2);
+        console.log(rose._options.chart.margin);
+        console.log(rose2._options.chart.margin);
+
+
+        const data = [
             {"dimension": "January", "metric": 10, m2: 4, m3: 34},
             {"dimension": "February", "metric": 15, m2: 2, m3: 24},
             {"dimension": "March", "metric": 12, m2: 3, m3: 25},
@@ -92,8 +152,23 @@
             {"dimension": "December", "metric": 20, m2: 12, m3: 13}
         ]
 
-        rose.render(data);
+        const data2 = [
+            {"dimension": "January", "metric": 2, m2: 142, m3: 324},
+            {"dimension": "February", "metric": 15, m2: 29, m3: 234},
+            {"dimension": "March", "metric": 12, m2: 3, m3: 25},
+            {"dimension": "April", "metric": 4, m2: 6, m3: 35},
+            {"dimension": "May", "metric": 20, m2: 7, m3: 63},
+            {"dimension": "June", "metric": 21, m2: 5, m3: 38},
+            {"dimension": "July", "metric": 2, m2: 2, m3: 33},
+            {"dimension": "August", "metric": 8, m2: 1, m3: 52},
+            {"dimension": "September", "metric": 7, m2: 9, m3: 45},
+            {"dimension": "October", "metric": 12, m2: 5, m3: 10},
+            {"dimension": "November", "metric": 22, m2: 12, m3: 3},
+            {"dimension": "December", "metric": 20, m2: 12, m3: 13}
+        ]
 
+        rose.render(data);
+        rose2.render(data2);
 
         // live update button is clicked
         $('#update').click(function(){

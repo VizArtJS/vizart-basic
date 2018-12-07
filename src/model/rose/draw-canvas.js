@@ -18,10 +18,7 @@ const drawCanvas = (context, state, opt) => {
     let maxR = 0;
     for (let e of d.slice) {
       context.save();
-      context.translate(
-        opt.chart.width / 2,
-        opt.chart.height / 2
-      );
+      context.translate(opt.chart.width / 2, opt.chart.height / 2);
       context.beginPath();
       context.fillStyle = getTransparentColor(e.c, e.alpha);
       context.strokeWidth = 1;
