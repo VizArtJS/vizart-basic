@@ -1,5 +1,5 @@
-import { mouse, select } from 'd3-selection';
-import { transition } from 'd3-transition';
+import { mouse, select, selection } from 'd3-selection';
+import 'd3-transition';
 import drawRects from './draw-rects';
 import drawHiddenRects from './draw-hidden-rects';
 
@@ -61,7 +61,7 @@ const animate = state => {
   const dataJoin = dataUpdate.enter();
   const dataRemove = dataUpdate.exit();
 
-  const exitTransition = transition()
+  const exitTransition = selection().transition()
     .duration(_options.animation.duration.remove)
     .each(() => {
       dataRemove
