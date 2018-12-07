@@ -159,16 +159,36 @@
         });
 
         $('#a1').click(function(){
-            scatter.sort('exp_dat', 'asc');
+            options2.ordering = {
+                accessor: 'exp_dat',
+                direction: 'asc'
+            }
+            scatter.options(options2);
+            scatter.update();
         })
         $('#a2').click(function(){
-            scatter.sort('exp_dat', 'desc');
+            options2.ordering = {
+                accessor: 'exp_dat',
+                direction: 'desc'
+            }
+            scatter.options(options2);
+            scatter.update();
         });
         $('#a3').click(function(){
-            scatter.sort('exp_amo', 'asc');
+            options2.ordering = {
+                accessor: 'exp_amo',
+                direction: 'asc'
+            }
+            scatter.options(options2);
+            scatter.update();
         });
         $('#a4').click(function(){
-            scatter.sort('exp_amo', 'desc');
+            options2.ordering = {
+                accessor: 'exp_amo',
+                direction: 'desc'
+            }
+            scatter.options(options2);
+            scatter.update();
         });
 
     });
