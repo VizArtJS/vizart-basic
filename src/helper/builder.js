@@ -44,7 +44,6 @@ const build = builderConfig => (ChartOpt, animate, apis = []) => (id, opt) => {
   const baseChart = canvasLayer(id, opt, compose(ChartOpt));
 
   const chart = Object.assign(
-    {},
     baseChart,
     apiRender(baseChart, animate, hasAxis, stacked),
     apiUpdateChart(baseChart, animate, hasAxis, stacked)
