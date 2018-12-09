@@ -179,35 +179,30 @@
             rose.update();
         });
 
-        var options2 = rose.options();
-
         // change color
         $('#color1').click(function(){
-            options2.color.scheme = [    '#1bcebf',
-                '#24bbd2',
-                '#1572ca',
-                '#1f33a1',
-                '#5f26c1',];
-            rose.color(options2.color);
+            rose.color({scheme: ['#1bcebf',
+                    '#24bbd2',
+                    '#1572ca',
+                    '#1f33a1',
+                    '#5f26c1',]});
         });
 
         $('#color2').click(function(){
-            options2.color.scheme = [
-                '#ffe100',
-                '#ffbf00',
-                '#ff5730',
-                '#eb3ba6'
-            ];
-            rose.color(options2.color)
+            rose.color({scheme: [
+                    '#ffe100',
+                    '#ffbf00',
+                    '#ff5730',
+                    '#eb3ba6'
+                ]})
         });
 
         $('#color3').click(function(){
-            options2.color.scheme = [
-                '#79e70f',
-                '#10d9ec',
-                '#1f97e7'
-            ];
-            rose.color(options2.color)
+            rose.color({scheme: [
+                    '#79e70f',
+                    '#10d9ec',
+                    '#1f97e7'
+                ]})
         });
 
 

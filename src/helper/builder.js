@@ -26,7 +26,14 @@ const apiUpdateChart = (state, animate, hasAxis, stacked) => ({
 
 const apiColor = state => ({
   color(colorOpt) {
-    state._options.color = colorOpt;
+    if (colorOpt.type) {
+      state._options.color.type = colorOpt.type;
+    }
+
+    if (colorOpt.scheme) {
+      state._options.color.scheme = colorOpt.scheme;
+    }
+
     state.update();
   },
 });

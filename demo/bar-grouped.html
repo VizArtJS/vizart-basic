@@ -99,51 +99,20 @@
         });
 
         $('#x-asc').click(function () {
-            var _opt = chart.options();
-
-            _opt.ordering = {
-                accessor: 'mx',
-                direction: 'asc'
-            }
-
-            chart.options(_opt);
-            chart.update();
+            chart.sort('mx', 'asc');
         })
 
         $('#x-desc').click(function () {
-            var _opt = chart.options();
-
-            _opt.ordering = {
-                accessor: 'mx',
-                direction: 'desc'
-            }
-
-            chart.options(_opt);
-            chart.update();
+            chart.sort('mx', 'desc');
         })
 
         $('#s-asc').click(function () {
-            var _opt = chart.options();
+            chart.sort('ms', 'asc');
 
-            _opt.ordering = {
-                accessor: 'ms',
-                direction: 'asc'
-            }
-
-            chart.options(_opt);
-            chart.update();
         })
 
         $('#s-desc').click(function () {
-            var _opt = chart.options();
-
-            _opt.ordering = {
-                accessor: 'ms',
-                direction: 'desc'
-            }
-
-            chart.options(_opt);
-            chart.update();
+            chart.sort('ms', 'desc');
         })
 
     });

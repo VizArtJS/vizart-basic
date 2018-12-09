@@ -98,27 +98,21 @@
             line.update();
         });
 
-        var options2 = line.options();
-
         // change color
         $('#color1').click(function(){
-            options2.color.scheme = "BuGn";
-            line.color(options2.color);
+            line.color({scheme: 'BuGn'})
         });
 
         $('#color2').click(function(){
-            options2.color.scheme = "Blues";
-            line.color(options2.color)
+            line.color({scheme: 'Blues'})
         });
 
         $('#color3').click(function(){
-            options2.color.scheme = "Warm";
-            line.color(options2.color)
+            line.color({scheme: 'Warm'})
         });
 
         $('#color4').click(function(){
-            options2.color.scheme = "Cubehelix";
-            line.color(options2.color);
+            line.color({scheme: 'Cubehelix'})
         });
 
         $('#a1').click(function(){

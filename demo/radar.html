@@ -79,30 +79,20 @@
 
         chart.on('rendered', function(){
             chart.revealVoronoi();
-        })
-
-        var options2 = chart.options();
+        });
 
         // change color
         $('#group').click(function(){
-            options2.plots.stackLayout = false;
-            chart.options(options2);
-            chart.update();
+            chart.group();
         });
 
         $('#zero').click(function(){
-            options2.plots.stackLayout = true;
-            options2.plots.stackMethod = 'zero';
-            chart.options(options2);
-            chart.update();
+            chart.stack();
 
         });
 
         $('#expand').click(function(){
-            options2.plots.stackLayout = true;
-            options2.plots.stackMethod = 'expand';
-            chart.options(options2);
-            chart.update();
+            chart.expand();
         });
 
     });

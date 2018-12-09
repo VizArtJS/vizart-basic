@@ -126,38 +126,31 @@
         });
 
 
-        var options2 = scatter.options();
-
         $('#update').click(function(){
             scatter.hexbinLayout();
         });
 
         // change color
         $('#color1').click(function(){
-            options2.color.scheme = [
-                '#ffe100',
-                '#ffbf00',
-                '#ff5730',
-                '#eb3ba6'
-            ];
-            scatter.color(options2.color);
+            scatter.color({scheme: [
+                    '#ffe100',
+                    '#ffbf00',
+                    '#ff5730',
+                    '#eb3ba6'
+                ]});
         });
 
         $('#color2').click(function(){
-            options2.color.scheme = "Cold";
-            scatter.color(options2.color)
+            scatter.color({scheme: 'Blues'});
         });
 
         $('#color3').click(function(){
-            options2.color.scheme = "Warm";
-            scatter.color(options2.color)
+            scatter.color({scheme: 'Warm'});
         });
 
         $('#color4').click(function(){
-            options2.color.scheme = "Cubehelix";
-            scatter.color(options2.color);
+            scatter.color({scheme: 'Cubehelix'});
         });
-
         $('#a1').click(function(){
             scatter.sort('exp_dat', 'asc');
         })

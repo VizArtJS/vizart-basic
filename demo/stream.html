@@ -79,8 +79,6 @@
         var chart = VizArtBasic.stream('#chart', options);
         chart.render(fakeData);
 
-        var options2 = chart.options();
-
         // change color
         $('#wiggle').click(function(){
             chart.wiggle();
@@ -96,21 +94,16 @@
 
         // change color
         $('#color1').click(function(){
-            options2.color.scheme = "Paired";
-            chart.color(options2.color);
+            chart.color({scheme: 'Paired'});
         });
 
         $('#color2').click(function(){
-            options2.color.scheme = "Dark2";
-            chart.color(options2.color)
+            chart.color({scheme: 'Dark2'});
         });
 
         $('#color3').click(function(){
-            options2.color.scheme = "Accent";
-            chart.color(options2.color)
+            chart.color({scheme: 'Accent'});
         });
-
-
     });
 </script>
 </body>
