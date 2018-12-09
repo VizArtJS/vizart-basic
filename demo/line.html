@@ -122,36 +122,16 @@
         });
 
         $('#a1').click(function(){
-            options2.ordering = {
-                accessor: 'date',
-                direction: 'asc'
-            }
-            line.options(options2);
-            line.update();
+            line.sort('date', 'asc');
         })
         $('#a2').click(function(){
-            options2.ordering = {
-                accessor: 'date',
-                direction: 'desc'
-            }
-            line.options(options2);
-            line.update();
+            line.sort('date', 'desc');
         });
         $('#a3').click(function(){
-            options2.ordering = {
-                accessor: metricAccessor,
-                direction: 'asc'
-            }
-            line.options(options2);
-            line.update();
+            line.sort(metricAccessor, 'asc');
         });
         $('#a4').click(function(){
-            options2.ordering = {
-                accessor: metricAccessor,
-                direction: 'desc'
-            }
-            line.options(options2);
-            line.update();
+            line.sort(metricAccessor, 'desc');
         });
 
     });

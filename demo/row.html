@@ -217,32 +217,16 @@
         });
 
         $('#a1').click(function(){
-            options2.color.ordering = {
-                accessor: 'Director',
-                direction: 'asc'
-            };
-            barChart.update();
+            barChart.sort('Director', 'asc');
         })
         $('#a2').click(function(){
-            options2.color.ordering = {
-                accessor: 'Director',
-                direction: 'desc'
-            };
-            barChart.update();
+            barChart.sort('Director', 'desc');
         });
         $('#a3').click(function(){
-            options2.color.ordering = {
-                accessor: 'Total',
-                direction: 'asc'
-            };
-            barChart.update();
+            barChart.sort('Total', 'asc');
         });
         $('#a4').click(function(){
-            options2.color.ordering = {
-                accessor: 'Total',
-                direction: 'desc'
-            };
-            barChart.update();
+            barChart.sort('Total', 'desc');
         });
 
     });
