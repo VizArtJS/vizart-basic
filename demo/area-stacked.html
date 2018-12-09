@@ -68,27 +68,18 @@
 //            chart.revealVoronoi();
 //            chart.revealQuadtree();
 //        })
-        var opt = chart.options();
 
         // change color
         $('#group').click(function(){
-            // opt.plots.stackLayout = false;
-            // chart.options(opt);
             chart.group();
         });
 
         $('#zero').click(function(){
-            // opt.plots.stackLayout = true;
-            // opt.plots.stackMethod = 'zero';
-            // chart.options(opt);
             chart.stack();
 
         });
 
         $('#expand').click(function(){
-            // opt.plots.stackLayout = true;
-            // opt.plots.stackMethod = 'expand';
-            // chart.options(opt);
             chart.expand();
         });
 

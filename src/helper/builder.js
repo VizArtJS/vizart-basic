@@ -1,5 +1,6 @@
 import { apiRenderCanvas, apiUpdate, canvasLayer } from 'vizart-core';
 import { renderAxis, updateAxis } from '../axis';
+import apiSort from './api-sort';
 
 import { stackedComposer, standardComposer } from './composers';
 
@@ -25,7 +26,14 @@ const apiUpdateChart = (state, animate, hasAxis, stacked) => ({
 
 const apiColor = state => ({
   color(colorOpt) {
-    state._options.color = colorOpt;
+    if (colorOpt.type) {
+      state._options.color.type = colorOpt.type;
+    }
+
+    if (colorOpt.scheme) {
+      state._options.color.scheme = colorOpt.scheme;
+    }
+
     state.update();
   },
 });
@@ -49,7 +57,7 @@ const build = builderConfig => (ChartOpt, animate, apis = []) => (id, opt) => {
     apiUpdateChart(baseChart, animate, hasAxis, stacked)
   );
 
-  return addApi(chart, [apiColor, ...apis]);
+  return addApi(chart, [apiColor, apiSort, ...apis]);
 };
 
 const cartesian = build({ hasAxis: true, stacked: false });

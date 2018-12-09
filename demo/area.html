@@ -104,61 +104,34 @@
             area.update();
         });
 
-        var options2 = area.options();
-
         // change color
         $('#color1').click(function(){
-            options2.color.scheme = "BuGn";
-            area.color(options2.color);
+            area.color({scheme: 'BuGn'});
         });
 
         $('#color2').click(function(){
-            options2.color.scheme = "Blues";
-            area.color(options2.color)
+            area.color({scheme: 'Blues'});
         });
 
         $('#color3').click(function(){
-            options2.color.scheme = "Warm";
-            area.color(options2.color)
+            area.color({scheme: 'Warm'});
         });
 
         $('#color4').click(function(){
-            options2.color.scheme = "Cubehelix";
-            area.color(options2.color);
-            console.log(area);
+            area.color({scheme: 'Cubehelix'});
         });
 
         $('#a1').click(function(){
-            options2.ordering = {
-                accessor: 'date',
-                direction: 'asc'
-            }
-            area.options(options2);
-            area.update();
+            area.sort('date', 'asc');
         })
         $('#a2').click(function(){
-            options2.ordering = {
-                accessor: 'date',
-                direction: 'desc'
-            }
-            area.options(options2);
-            area.update();
+            area.sort('date', 'desc');
         });
         $('#a3').click(function(){
-            options2.ordering = {
-                accessor: metricAccessor,
-                direction: 'asc'
-            }
-            area.options(options2);
-            area.update();
+            area.sort(metricAccessor, 'asc');
         });
         $('#a4').click(function(){
-            options2.ordering = {
-                accessor: metricAccessor,
-                direction: 'desc'
-            }
-            area.options(options2);
-            area.update();
+            area.sort(metricAccessor, 'desc');
         });
 
     });

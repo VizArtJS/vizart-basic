@@ -61,7 +61,8 @@ const animate = state => {
   const dataJoin = dataUpdate.enter();
   const dataRemove = dataUpdate.exit();
 
-  const exitTransition = selection().transition()
+  const exitTransition = selection()
+    .transition()
     .duration(_options.animation.duration.remove)
     .each(() => {
       dataRemove

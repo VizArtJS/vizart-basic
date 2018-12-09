@@ -28,7 +28,7 @@
     </ul>
 </div>
 
-<div class="dropdown2" style="position: fixed; top: 10px; left: 250px;">
+<div class="dropdown2" style="position: fixed; top: 10px; left: 250px; z-index: 99">
     <button  class="btn btn-info dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
         Sort
         <span class="caret"></span>
@@ -98,60 +98,34 @@
             line.update();
         });
 
-        var options2 = line.options();
-
         // change color
         $('#color1').click(function(){
-            options2.color.scheme = "BuGn";
-            line.color(options2.color);
+            line.color({scheme: 'BuGn'})
         });
 
         $('#color2').click(function(){
-            options2.color.scheme = "Blues";
-            line.color(options2.color)
+            line.color({scheme: 'Blues'})
         });
 
         $('#color3').click(function(){
-            options2.color.scheme = "Warm";
-            line.color(options2.color)
+            line.color({scheme: 'Warm'})
         });
 
         $('#color4').click(function(){
-            options2.color.scheme = "Cubehelix";
-            line.color(options2.color);
+            line.color({scheme: 'Cubehelix'})
         });
 
         $('#a1').click(function(){
-            options2.ordering = {
-                accessor: 'date',
-                direction: 'asc'
-            }
-            line.options(options2);
-            line.update();
+            line.sort('date', 'asc');
         })
         $('#a2').click(function(){
-            options2.ordering = {
-                accessor: 'date',
-                direction: 'desc'
-            }
-            line.options(options2);
-            line.update();
+            line.sort('date', 'desc');
         });
         $('#a3').click(function(){
-            options2.ordering = {
-                accessor: metricAccessor,
-                direction: 'asc'
-            }
-            line.options(options2);
-            line.update();
+            line.sort(metricAccessor, 'asc');
         });
         $('#a4').click(function(){
-            options2.ordering = {
-                accessor: metricAccessor,
-                direction: 'desc'
-            }
-            line.options(options2);
-            line.update();
+            line.sort(metricAccessor, 'desc');
         });
 
     });
