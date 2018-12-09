@@ -1,6 +1,6 @@
 {
   "name": "vizart-basic",
-  "version": "2.0.7",
+  "version": "2.0.8",
   "description": "VizArt Basic Charts: bar, row, rose, line, area, etc.",
   "main": "dist/vizart-basic.js",
   "module": "dist/vizart-basic.esm.js",
