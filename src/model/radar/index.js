@@ -1,5 +1,6 @@
 import { polarStacked } from '../../helper/builder';
 import animate from '../corona/animate';
+import { apiExpand, apiGroup, apiStack } from '../../helper/api-layout';
 
 const RadarOptions = {
   chart: {
@@ -39,6 +40,10 @@ const RadarOptions = {
   },
 };
 
-const radar = polarStacked(RadarOptions, animate);
+const radar = polarStacked(RadarOptions, animate, [
+  apiGroup,
+  apiStack,
+  apiExpand,
+]);
 
 export default radar;
