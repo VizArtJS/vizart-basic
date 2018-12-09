@@ -26,6 +26,14 @@ const apiUpdateChart = (state, animate, hasAxis, stacked) => ({
 
 const apiColor = state => ({
   color(colorOpt) {
+    if (!colorOpt){
+      console.warn('color opt is null, either scheme or type is required');
+      return;
+    } else if (!colorOpt.type && !colorOpt.scheme) {
+      console.warn('invalid color opt, either scheme or type is required');
+      return;
+    }
+
     if (colorOpt.type) {
       state._options.color.type = colorOpt.type;
     }
