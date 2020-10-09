@@ -18,7 +18,7 @@ const GroupedOptions = {
       color: 'black',
     },
     metricLabel: {
-      enabled: true,
+      enabled: false,
       color: 'black',
       offset: 10,
     },
