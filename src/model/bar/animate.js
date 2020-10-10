@@ -1,5 +1,6 @@
 import { mouse, select, selection } from 'd3-selection';
-import 'd3-transition';
+import selection_interrupt from 'd3-transition/src/selection/interrupt';
+import selection_transition from 'd3-transition/src/selection/transition';
 import drawRects from './draw-rects';
 import drawHiddenRects from './draw-hidden-rects';
 
@@ -16,6 +17,9 @@ import {
 } from '../../helper/withCartesian';
 import isFunction from '../../util/isFunction';
 import tooltipMarkup from '../../tooltip/markup';
+
+selection.prototype.interrupt = selection_interrupt;
+selection.prototype.transition = selection_transition;
 
 const animate = state => {
   const {
